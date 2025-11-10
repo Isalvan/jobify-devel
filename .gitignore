@@ -1,0 +1,16 @@
+.env
+
+# React
+frontend/node_modules
+frontend/.env
+
+# Laravel main .env
+backend/.env
+
+# Docker
+*.log
+docker-compose.override.yml
+
+# OS / Editor
+.DS_Store
+.vscode/
