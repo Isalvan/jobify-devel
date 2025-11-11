@@ -5,16 +5,33 @@
   box-sizing: border-box;
 }
 
+/* Footer fijo al fondo */
+html,
+body {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 /* Tipografía base */
 body {
   font-family: 'Arial', sans-serif;
   line-height: 1.5;
   background-color: #f8f9fa;
   color: #212529;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* Imágenes y videos */
-img, picture, video {
+img,
+picture,
+video {
   max-width: 100%;
   display: block;
 }
@@ -26,12 +43,16 @@ a {
 }
 
 /* Listas */
-ul, ol {
+ul,
+ol {
   list-style: none;
 }
 
 /* Botones y inputs */
-button, input, textarea, select {
+button,
+input,
+textarea,
+select {
   font: inherit;
   outline: none;
   border: none;
@@ -44,9 +65,26 @@ table {
   border-spacing: 0;
 }
 
+main {
+  flex: 1;
+}
+
 /* Header */
 #header {
   background-color: #00000007;
   padding: 1rem 0;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+#footer {
+  width: 100%;
+  background-color: #00000007;
+  text-align: center;
+  padding: 0;
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+#footer .container {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
