@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppLayout from "../layouts/AppLayout";
 import InicioPage from "../pages/InicioPage";
 import LoginPage from "../pages/LoginPage";
+import RegistroPage from "../pages/RegistroPage";
 
 /**
  * Devuelve el enrutador con todas las rutas del proyecto, tanto públicas como privadas
@@ -20,6 +21,9 @@ function AppEnrutador() {
 
                 {/* Login */}
                 <Route path="/login" element={<LoginPage />} />
+
+                {/* Registro */}
+                <Route path="/register" element={<RegistroPage />} />
             </Routes>
         </BrowserRouter>
     );

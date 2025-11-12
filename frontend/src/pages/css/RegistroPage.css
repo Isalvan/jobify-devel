@@ -1,0 +1,94 @@
+/* RegistroPage.css - estilos específicos para la página de registro */
+:root {
+    --primary: #0A66C2;
+    --bg-light: #ffffff;
+    --surface-light: #f3f4f6;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --card-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.registro-page {
+    background: var(--surface-light);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Work Sans', system-ui, sans-serif;
+    color: var(--text-primary);
+    padding: 1rem;
+}
+
+.registro-container {
+    background: var(--bg-light);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    /* ancho más generoso para registro */
+    max-width: 64rem;
+    width: 100%;
+    position: relative;
+    /* Permitir scroll en dispositivos pequeños */
+    max-height: 95vh;
+    overflow-y: auto;
+}
+
+@media (max-height: 800px) {
+    .registro-page {
+        align-items: flex-start;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+    .registro-container {
+        max-height: 95vh;
+    }
+}
+
+.registro-container h1,
+.registro-container p {
+    color: var(--text-primary);
+}
+
+.registro-container .input-group-text {
+    background: var(--bg-light);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    color: var(--text-secondary);
+}
+
+.registro-container .form-control {
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    padding-left: 2.25rem;
+    color: var(--text-primary);
+    height: 46px; /* entradas ligeramente más compactas */
+}
+
+.registro-container textarea.form-control {
+    height: auto;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.registro-container .btn-primary {
+    background: var(--primary);
+    border: none;
+    color: #fff;
+}
+
+.registro-container .volver {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+}
+
+.texto-bienvenida {
+    margin-top: 1rem;
+}
+
+@media (max-width: 767px) {
+    .registro-container {
+        padding: 1.25rem;
+    }
+    .registro-container .form-control {
+        height: 44px;
+    }
+}
