@@ -7,7 +7,7 @@ import logo from '../../assets/jobify-azul.svg';
  * @returns {JSX.Element}
  */
 function Header() {
-  const sesion = true; // TODO: Cambiar por sesión real
+  const sesion = false; // TODO: Cambiar por sesión real
   const imagenUsuario = true; // TODO: Cambiar por la imágen de usuario
 
   return <>
