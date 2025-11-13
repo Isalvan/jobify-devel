@@ -23,9 +23,21 @@
     padding: 2rem;
     border-radius: 12px;
     box-shadow: var(--card-shadow);
-    max-width: 40vh;
+    max-width: 64rem;
     width: 100%;
     position: relative;
+}
+
+@media (max-height: 800px) {
+    .login-page {
+        align-items: flex-start;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+    .login-container {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
 }
 
 .login-container h1,
