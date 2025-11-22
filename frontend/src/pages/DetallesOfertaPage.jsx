@@ -35,8 +35,8 @@ function DetallesOfertaPage() {
         valoracion: 4.5,
         valoraciones: [
             { usuario: 'Usuario1', comentario: 'Comentario del Usuario 1.', valoracion: 5 },
-            { usuario: 'Usuario2', comentario: 'Comentario del Usuario 2.', valoracion: 4.6 },
-            { usuario: 'Usuario3', comentario: 'Comentario del Usuario 3.', valoracion: 3.5 }
+            { usuario: 'Usuario2', comentario: 'Comentario del Usuario 2.', valoracion: 4 },
+            { usuario: 'Usuario3', comentario: 'Comentario del Usuario 3.', valoracion: 3 }
         ]
     };
 
