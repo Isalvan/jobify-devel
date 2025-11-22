@@ -6,6 +6,7 @@ import RegistroPage from "../pages/RegistroPage";
 import PerfilPage from "../pages/PerfilPage";
 import BusquedaPage from "../pages/BusquedaPage";
 import DetallesOfertaPage from "../pages/DetallesOfertaPage";
+import DetallesEmpresaPage from "../pages/DetallesEmpresaPage";
 
 /**
  * Devuelve el enrutador con todas las rutas del proyecto, tanto públicas como privadas
@@ -23,6 +24,7 @@ function AppEnrutador() {
                     <Route path="/perfil" element={<PerfilPage />} />
                     <Route path="/busqueda" element={<BusquedaPage />} />
                     <Route path="/oferta/:id" element={<DetallesOfertaPage />} />
+                    <Route path="/empresa/:id" element={<DetallesEmpresaPage />} />
                 </Route>
 
                 {/* Login */}

@@ -1,0 +1,355 @@
+/* Layout general de la página */
+.detalles-empresa-page {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Header - Ancho completo */
+.header-empresa {
+    width: 100%;
+}
+
+/* Contenedor con main y sidebar */
+.detalles-empresa-container {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.detalles-empresa-main {
+    flex: 1 1 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.detalles-empresa-sidebar {
+    flex: 1 1 35%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Tarjetas generales */
+.bloque.tarjeta {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.bloque.tarjeta h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+/* Header de la empresa */
+.header-empresa-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.logo-titulo {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.logo-empresa {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-empresa h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+    color: #212529;
+}
+
+.subtitulo {
+    color: #6c757d;
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+.btn.visitar-web {
+    padding: 0.7rem 1.5rem;
+    border-radius: 10px;
+    background: #0d6efd;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.btn.visitar-web:hover {
+    background: #0b5ed7;
+}
+
+/* Descripción */
+.descripcion-texto {
+    line-height: 1.6;
+    color: #495057;
+    margin: 0;
+}
+
+/* Datos de la empresa */
+.detalle-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detalle-row:last-child {
+    border-bottom: none;
+}
+
+.detalle-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.detalle-value {
+    color: #212529;
+    font-weight: 600;
+    text-align: right;
+}
+
+/* Ofertas de la empresa */
+.lista-ofertas {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.oferta-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s;
+}
+
+.oferta-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    border-color: #0d6efd;
+}
+
+.oferta-left {
+    flex-shrink: 0;
+}
+
+.oferta-left img {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.oferta-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.oferta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.oferta-titulo {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.oferta-titulo a {
+    color: #212529;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.oferta-titulo a:hover {
+    color: #0d6efd;
+}
+
+.oferta-empresa-ubicacion {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.oferta-empresa-ubicacion .location {
+    color: #6c757d;
+}
+
+.oferta-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.oferta-fecha {
+    color: #6c757d;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.bookmark {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6c757d;
+    font-size: 1.5rem;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.bookmark:hover {
+    color: #0d6efd;
+}
+
+.oferta-descripcion {
+    color: #495057;
+    line-height: 1.5;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.oferta-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    background: #e7f1ff;
+    color: #0d6efd;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Paginación */
+.paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    background: #fff;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-sm:hover {
+    background: #f8f9fa;
+    border-color: #0d6efd;
+    color: #0d6efd;
+}
+
+.btn-primary {
+    background: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #0b5ed7;
+    border-color: #0b5ed7;
+    color: #fff;
+}
+
+.btn-outline-secondary {
+    background: #fff;
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.text-muted {
+    color: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .detalles-empresa-page {
+        padding: 2rem;
+    }
+
+    .detalles-empresa-main,
+    .detalles-empresa-sidebar {
+        flex: 1 1 100%;
+    }
+
+    .header-empresa-content {
+        flex-direction: column;
+    }
+
+    .btn.visitar-web {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .detalles-empresa-page {
+        padding: 1rem;
+    }
+
+    .logo-empresa {
+        width: 80px;
+        height: 80px;
+    }
+
+    .header-empresa h1 {
+        font-size: 1.5rem;
+    }
+
+    .oferta-card {
+        flex-direction: column;
+    }
+
+    .oferta-left img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .oferta-header {
+        flex-direction: column;
+    }
+
+    .oferta-meta {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
