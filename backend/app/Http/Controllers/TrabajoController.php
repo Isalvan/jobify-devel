@@ -26,14 +26,17 @@ class TrabajoController extends Controller
      */
     public function index(Request $request)
     {
-        // Public access allowed, but we can filter if needed
-        // $this->authorize('viewAny', Trabajo::class);
-
         $query = Trabajo::activa()->with('empresa');
 
-        // Optional: Filter by company if requested or context implied (though usually public list is for everyone)
+        // Filter by company if requested. 'me' alias resolves to authenticated user's company.
         if ($request->has('empresa_id')) {
-            $query->porEmpresa($request->empresa_id);
+            $empresaId = $request->empresa_id;
+            if ($empresaId === 'me' && $request->user()) {
+                 $empresaId = $request->user()->empresa?->id;
+            }
+            if ($empresaId) {
+                $query->porEmpresa($empresaId);
+            }
         }
 
         if ($request->has('search')) {
