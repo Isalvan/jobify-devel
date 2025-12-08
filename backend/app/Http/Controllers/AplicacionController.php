@@ -40,7 +40,8 @@ class AplicacionController extends Controller
         if ($user->candidato) {
             return AplicacionResource::collection(
                 Aplicacion::porCandidato($user->candidato->id)
-                    ->with('trabajo.empresa')
+                    ->with('trabajo.empresa.usuario')
+                    ->latest()
                     ->get()
             );
         }
@@ -78,13 +79,8 @@ class AplicacionController extends Controller
         $user = $request->user();
         $candidato = $user->candidato;
 
-        // Policy already checks if candidate exists, but good to be safe or rely on logic
-        // logic moved to Policy: create returns true only if user->candidato exists.
-
         $validated = $request->validated();
 
-        // Check duplications via logic or validation rule.
-        // Doing it here for clarity or custom error message.
         $exists = Aplicacion::where('trabajo_id', $validated['trabajo_id'])
             ->where('candidato_id', $candidato->id)
             ->exists();
@@ -99,6 +95,36 @@ class AplicacionController extends Controller
             'mensaje' => $validated['mensaje'] ?? null,
             'estado' => 'PENDIENTE',
         ]);
+
+        $path = null;
+        if ($request->hasFile('cv_file')) {
+            $path = $request->file('cv_file')->store('cvs', 'public');
+        } elseif ($request->boolean('use_profile_cv') && $candidato->url_cv) {
+            // Logic to reuse profile CV
+            // Check if it's a local storage URL and valid
+            // url_cv stored as: http://.../storage/cvs_perfil/filename
+            // We need to extract relative path: cvs_perfil/filename
+            
+            // Allow basic parsing
+            $baseUrl = asset('storage/');
+            if (str_starts_with($candidato->url_cv, $baseUrl)) {
+                $relativePath = str_replace($baseUrl, '', $candidato->url_cv);
+                // Copy to new location or reference? Copy is safer for archival.
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($relativePath)) {
+                   $newPath = 'cvs/copy_' . time() . '_' . basename($relativePath);
+                   \Illuminate\Support\Facades\Storage::disk('public')->copy($relativePath, $newPath);
+                   $path = $newPath;
+                }
+            }
+        }
+
+        if ($path) {
+            \App\Models\DocumentoArchivo::create([
+                'aplicacion_id' => $aplicacion->id,
+                'tipo' => 'cv',
+                'ruta_archivo' => $path,
+            ]);
+        }
 
         return new AplicacionResource($aplicacion);
     }

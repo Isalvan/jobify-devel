@@ -28,6 +28,30 @@ class EmpresaController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/api/empresas/destacadas",
+     *     summary="Listar empresas destacadas",
+     *     tags={"Empresas"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de empresas destacadas (con decremento de impresiones)"
+     *     )
+     * )
+     */
+    public function destacadas()
+    {
+        // 1. Fetch random companies with remaining impressions
+        $empresas = Empresa::with('usuario')->destacada()->inRandomOrder()->limit(6)->get();
+
+        // 2. Decrement impressions for each fetched company
+        foreach ($empresas as $empresa) {
+            $empresa->decrement('impresiones_restantes');
+        }
+
+        return EmpresaResource::collection($empresas);
+    }
+
+    /**
      * @OA\Post(
      *     path="/api/empresas",
      *     summary="Crear empresa",

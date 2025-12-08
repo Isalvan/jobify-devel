@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../contexts/AppProvider';
 import './css/RegistroPage.css';
 
 function RegistroPage() {
@@ -17,6 +19,9 @@ function RegistroPage() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
+    const { register } = useContext(AppContext);
+    const navigate = useNavigate();
+
     const handleSubmit = async function (e) {
         e.preventDefault();
         setError('');
@@ -29,19 +34,25 @@ function RegistroPage() {
 
         setLoading(true);
         try {
-            // Simular llamada a API
-            await new Promise((resolve) => setTimeout(resolve, 1500));
+            const payload = {
+                name: nombre,
+                email,
+                password,
+                password_confirmation: confirmPassword,
+                apellidos,
+                telefono,
+                fecha_nacimiento: fechaNacimiento,
+                descripcion,
+                ubicacion: localizacion,
+            };
+
+            await register(payload);
+
             setSuccess('Cuenta creada correctamente.');
-            // Opcional: limpiar formulario
-            setNombre('');
-            setEmail('');
-            setPassword('');
-            setConfirmPassword('');
-            setTelefono('');
-            setApellidos('');
-            setFechaNacimiento('');
-            setDescripcion('');
-            setLocalizacion('');
+            setTimeout(() => {
+                navigate('/');
+            }, 1000);
+
         } catch (err) {
             setError(err.message || 'Error al crear la cuenta.');
         } finally {
@@ -64,7 +75,6 @@ function RegistroPage() {
                 <form onSubmit={handleSubmit}>
                     <div className="row gx-3">
                         <div className="col-12 col-md-6">
-                            {/* Nombre */}
                             <div className="mb-4">
                                 <label htmlFor="nombre" className="form-label fw-medium">Nombre <span className="text-danger ms-1" aria-hidden="true">*</span></label>
                                 <div className="input-group input-group-lg">
@@ -85,7 +95,6 @@ function RegistroPage() {
                         </div>
 
                         <div className="col-12 col-md-6">
-                            {/* Apellidos */}
                             <div className="mb-4">
                                 <label htmlFor="apellidos" className="form-label fw-medium">Apellidos <span className="text-danger ms-1" aria-hidden="true">*</span></label>
                                 <div className="input-group input-group-lg">
@@ -106,7 +115,6 @@ function RegistroPage() {
                         </div>
 
                         <div className="col-12 col-md-6">
-                            {/* Email */}
                             <div className="mb-4">
                                 <label htmlFor="email" className="form-label fw-medium">Correo Electrónico <span className="text-danger ms-1" aria-hidden="true">*</span></label>
                                 <div className="input-group input-group-lg">
@@ -127,7 +135,6 @@ function RegistroPage() {
                         </div>
 
                         <div className="col-12 col-md-6">
-                            {/* Fecha de nacimiento */}
                             <div className="mb-4">
                                 <label htmlFor="fechaNacimiento" className="form-label fw-medium">Fecha de Nacimiento <span className="text-danger ms-1" aria-hidden="true">*</span></label>
                                 <div className="input-group input-group-lg">
@@ -147,7 +154,6 @@ function RegistroPage() {
                         </div>
 
                         <div className="col-12 col-md-6">
-                            {/* Contraseña */}
                             <div className="mb-4">
                                 <label htmlFor="password" className="form-label fw-medium">Contraseña <span className="text-danger ms-1" aria-hidden="true">*</span></label>
                                 <div className="input-group input-group-lg position-relative">
@@ -179,7 +185,6 @@ function RegistroPage() {
                         </div>
 
                         <div className="col-12 col-md-6">
-                            {/* Repetir contraseña */}
                             <div className="mb-4">
                                 <label htmlFor="confirmPassword" className="form-label fw-medium">Repetir Contraseña <span className="text-danger ms-1" aria-hidden="true">*</span></label>
                                 <div className="input-group input-group-lg position-relative">
@@ -211,7 +216,6 @@ function RegistroPage() {
                         </div>
 
                         <div className="col-12 col-md-6">
-                            {/* Telefono */}
                             <div className="mb-4">
                                 <label htmlFor="telefono" className="form-label fw-medium">Teléfono</label>
                                 <div className="input-group input-group-lg">
@@ -231,9 +235,8 @@ function RegistroPage() {
                         </div>
 
                         <div className="col-12 col-md-6">
-                            {/* Localización */}
                             <div className="mb-4">
-                                <label htmlFor="localizacion" className="form-label fw-medium">Localización</label>
+                                <label htmlFor="localizacion" className="form-label fw-medium">Localización <span className="text-danger ms-1" aria-hidden="true">*</span></label>
                                 <div className="input-group input-group-lg">
                                     <span className="input-group-text material-symbols-outlined bg-light">place</span>
                                     <input
@@ -241,17 +244,17 @@ function RegistroPage() {
                                         id="localizacion"
                                         name="localizacion"
                                         className="form-control form-control-lg"
-                                        placeholder="Ciudad, país"
+                                        placeholder="Tu ciudad"
                                         value={localizacion}
                                         onChange={(e) => setLocalizacion(e.target.value)}
                                         disabled={loading}
+                                        required
                                     />
                                 </div>
                             </div>
                         </div>
 
                         <div className="col-12">
-                            {/* Descripción */}
                             <div className="mb-4">
                                 <label htmlFor="descripcion" className="form-label fw-medium">Descripción</label>
                                 <div>
@@ -270,7 +273,6 @@ function RegistroPage() {
                         </div>
                     </div>
 
-                    {/* Mensajes de estado */}
                     {error && (
                         <div className="alert alert-danger" role="alert">{error}</div>
                     )}

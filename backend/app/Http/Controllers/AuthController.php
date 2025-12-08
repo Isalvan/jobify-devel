@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use OpenApi\Annotations as OA;
+use App\Models\Candidato;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -90,19 +92,34 @@ class AuthController extends Controller
      */
     public function store(RegisterRequest $request)
     {
-        $user = Usuario::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        return DB::transaction(function () use ($request) {
+            // 1. Crear Usuario
+            $user = Usuario::create([
+                'nombre' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'telefono' => $request->telefono,
+                'rol' => 'CANDIDATO',
+                'estado' => 'ACTIVO',
+            ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+            // 2. Crear Candidato asociado
+            Candidato::create([
+                'usuario_id' => $user->id,
+                'apellidos' => $request->apellidos,
+                'fecha_nacimiento' => $request->fecha_nacimiento,
+                'descripcion' => $request->descripcion,
+                'ubicacion' => $request->ubicacion,
+            ]);
 
-        return response()->json([
-            'message' => 'Usuario registrado exitosamente',
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user
-        ], 201);
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'message' => 'Usuario registrado exitosamente',
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $user
+            ], 201);
+        });
     }
 }

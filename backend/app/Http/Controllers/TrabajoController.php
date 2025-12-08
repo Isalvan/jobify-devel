@@ -36,7 +36,69 @@ class TrabajoController extends Controller
             $query->porEmpresa($request->empresa_id);
         }
 
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('titulo', 'like', "%{$search}%")
+                  ->orWhere('descripcion', 'like', "%{$search}%")
+                  ->orWhereHas('empresa', function($q) use ($search) {
+                      $q->where('nombre', 'like', "%{$search}%");
+                  });
+            });
+        }
+
         return TrabajoResource::collection($query->paginate(15));
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/trabajos/mejores-valorados",
+     *     summary="Listar trabajos mejor valorados",
+     *     tags={"Trabajos"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de trabajos ordenados por valoración"
+     *     )
+     * )
+     */
+    public function topRated()
+    {
+        $trabajos = Trabajo::activa()
+            ->with('empresa')
+            ->withAvg('valoraciones', 'puntuacion')
+            ->orderByDesc('valoraciones_avg_puntuacion')
+            ->limit(6)
+            ->get();
+
+        return TrabajoResource::collection($trabajos);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/trabajos/{trabajo}/valoraciones",
+     *     summary="Listar valoraciones de un trabajo",
+     *     tags={"Trabajos"},
+     *     @OA\Parameter(
+     *         name="trabajo",
+     *         in="path",
+     *         required=true,
+     *         description="ID del trabajo",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista paginada de valoraciones"
+     *     )
+     * )
+     */
+    public function getReviews(Trabajo $trabajo)
+    {
+        $valoraciones = $trabajo->valoraciones()
+            ->with('candidato.usuario')
+            ->latest()
+            ->paginate(5);
+
+        return \App\Http\Resources\ValoracionResource::collection($valoraciones);
     }
 
     /**
@@ -89,7 +151,11 @@ class TrabajoController extends Controller
      */
     public function show(Trabajo $trabajo)
     {
-        return new TrabajoResource($trabajo->load('empresa'));
+        $trabajo->load(['empresa'])
+            ->loadCount('valoraciones')
+            ->loadAggregate('valoraciones', 'puntuacion', 'avg');
+
+        return new TrabajoResource($trabajo);
     }
 
     /**

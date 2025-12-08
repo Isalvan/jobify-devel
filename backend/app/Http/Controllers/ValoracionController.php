@@ -43,9 +43,26 @@ class ValoracionController extends Controller
      */
     public function store(StoreValoracionRequest $request)
     {
-        $this->authorize('create', Valoracion::class);
+        // 1. Check if user is a Candidate
+        $user = $request->user();
+        if (!$user->candidato) {
+            abort(403, 'Solo los candidatos pueden realizar valoraciones.');
+        }
 
-        $valoracion = Valoracion::create($request->validated());
+
+        $data = $request->validated();
+        
+        // Use updateOrCreate to allow modifying existing rating
+        $valoracion = Valoracion::updateOrCreate(
+            [
+                'trabajo_id' => $request->trabajo_id,
+                'candidato_id' => $user->candidato->id,
+            ],
+            [
+                'puntuacion' => $request->puntuacion,
+                'comentario' => $request->comentario,
+            ]
+        );
 
         return new ValoracionResource($valoracion);
     }

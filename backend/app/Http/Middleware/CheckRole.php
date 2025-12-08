@@ -21,14 +21,18 @@ class CheckRole
         }
 
         // Si el usuario es administrador, siempre tiene acceso (opcional, pero recomendado)
-        if ($request->user()->rol === 'administrador') {
+        // Comparación Case-Insensitive
+        $userRole = strtoupper($request->user()->rol);
+        
+        // Si el usuario es administrador (ADMIN o ADMINISTRADOR), siempre tiene acceso
+        if ($userRole === 'ADMIN' || $userRole === 'ADMINISTRADOR') {
             return $next($request);
         }
 
-        if (!in_array($request->user()->rol, $roles)) {
-            // Log para debugging (opcional)
-            // Log::info('User role: ' . $request->user()->rol . ' Required: ' . implode(',', $roles));
+        // Normalizar roles permitidos a mayúsculas
+        $allowedRoles = array_map('strtoupper', $roles);
 
+        if (!in_array($userRole, $allowedRoles)) {
             return response()->json(['message' => 'No tienes permisos para realizar esta acción.'], 403);
         }
 

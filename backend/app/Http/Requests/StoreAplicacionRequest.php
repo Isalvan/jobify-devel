@@ -46,6 +46,8 @@ class StoreAplicacionRequest extends FormRequest
         return [
             'trabajo_id' => ['required', 'exists:trabajos,id'],
             'mensaje' => ['nullable', 'string'],
+            'cv_file' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
+            'use_profile_cv' => ['nullable', 'boolean'],
         ];
     }
 }
