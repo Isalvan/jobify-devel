@@ -11,7 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Moved to 2025_12_04_180100_create_candidatos_table.php
+        Schema::create('categorias', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre', 100);
+            $table->string('slug', 100)->unique();
+            $table->text('descripcion')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Nothing to reverse
+        Schema::dropIfExists('categorias');
     }
 };

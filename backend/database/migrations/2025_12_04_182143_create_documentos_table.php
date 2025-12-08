@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Moved to 2025_12_04_180100_create_candidatos_table.php
+        // Moved to 2025_12_04_181600_create_categorias_table.php
     }
 
     /**
