@@ -8,6 +8,9 @@ import BusquedaPage from "../pages/BusquedaPage";
 import DetallesOfertaPage from "../pages/DetallesOfertaPage";
 import MisAplicacionesPage from '../pages/MisAplicacionesPage';
 import MisFavoritosPage from '../pages/MisFavoritosPage';
+import DashboardEmpresaPage from '../pages/DashboardEmpresaPage';
+import MisOfertasPage from '../pages/MisOfertasPage';
+import MisEmpleadosPage from '../pages/MisEmpleadosPage';
 
 /**
  * Devuelve el enrutador con todas las rutas del proyecto, tanto públicas como privadas
@@ -30,8 +33,14 @@ function AppEnrutador() {
                     <Route path="/favoritos" element={<MisFavoritosPage />} />
                 </Route>
 
-                {/* Login */}
                 <Route path="/login" element={<LoginPage />} />
+
+                {/* Rutas Empresa */}
+                <Route path="/empresa" element={<DashboardEmpresaPage />}>
+                    <Route path="dashboard" element={<div className="p-4"><h3>Bienvenido al Panel de Empresa</h3><p>Selecciona una opción del menú.</p></div>} />
+                    <Route path="ofertas" element={<MisOfertasPage />} />
+                    <Route path="empleados" element={<MisEmpleadosPage />} />
+                </Route>
 
                 {/* Registro */}
                 <Route path="/register" element={<RegistroPage />} />

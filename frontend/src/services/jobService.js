@@ -20,5 +20,17 @@ export const jobService = {
 
     async getFavorites() {
         return await api.get('/favoritos');
+    },
+
+    async createJob(data) {
+        return await api.post('/trabajos', data);
+    },
+
+    async updateJob(id, data) {
+        return await api.put(`/trabajos/${id}`, data);
+    },
+
+    async deleteJob(id) {
+        return await api.delete(`/trabajos/${id}`);
     }
 };

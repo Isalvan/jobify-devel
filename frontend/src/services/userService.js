@@ -52,6 +52,14 @@ export const userService = {
         return await api.put(`/empleados/${id}`, data);
     },
 
+    async getEmpleados() {
+        return await api.get('/empleados');
+    },
+
+    async createEmpleado(data) {
+        return await api.post('/empleados', data);
+    },
+
     /**
      * Sube un CV para el perfil del candidato.
      * @param {number} candidatoId 
