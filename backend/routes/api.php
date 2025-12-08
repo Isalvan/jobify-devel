@@ -68,4 +68,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // --- Usuarios (Admin) ---
     Route::middleware('role:administrador')->apiResource('usuarios', UsuarioController::class);
+
+    // Favoritos
+    Route::get('/favoritos', [App\Http\Controllers\FavoritoController::class, 'index']);
+    Route::post('/favoritos/toggle', [App\Http\Controllers\FavoritoController::class, 'toggle']);
 });
