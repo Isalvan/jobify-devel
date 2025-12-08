@@ -31,10 +31,7 @@ async function request(endpoint, { method = "GET", body, token, headers = {} } =
     const data = await response.json();
 
     if (!response.ok) {
-        // Handle validation errors or general messages
         if (data.errors) {
-            // If it's a validation error object, maybe return the first one or the whole object.
-            // For simplicity, let's throw the first error message found or the general message.
             const firstError = Object.values(data.errors)[0][0];
             throw new Error(firstError || data.message || "Error en la petición");
         }

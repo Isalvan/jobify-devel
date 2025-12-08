@@ -12,7 +12,7 @@ class AplicacionPolicy
 
     public function viewAny(Usuario $user)
     {
-        return true; // Filtered in controller is safer pattern for extensive rules
+        return true;
     }
 
     public function view(Usuario $user, Aplicacion $aplicacion)
@@ -40,7 +40,7 @@ class AplicacionPolicy
     public function update(Usuario $user, Aplicacion $aplicacion)
     {
         // Only company can update status (accept/reject)? Or candidate cancel?
-        // Assuming update status is for company
+        // Update status logic
         if ($user->rol === 'ADMIN') return true;
 
         if ($user->empresa && $user->empresa->id === $aplicacion->trabajo->empresa_id) {
