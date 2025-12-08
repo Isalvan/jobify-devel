@@ -100,20 +100,13 @@ class AplicacionController extends Controller
         if ($request->hasFile('cv_file')) {
             $path = $request->file('cv_file')->store('cvs', 'public');
         } elseif ($request->boolean('use_profile_cv') && $candidato->url_cv) {
-            // Logic to reuse profile CV
-            // Check if it's a local storage URL and valid
-            // url_cv stored as: http://.../storage/cvs_perfil/filename
-            // We need to extract relative path: cvs_perfil/filename
-            
-            // Allow basic parsing
             $baseUrl = asset('storage/');
             if (str_starts_with($candidato->url_cv, $baseUrl)) {
                 $relativePath = str_replace($baseUrl, '', $candidato->url_cv);
-                // Copy to new location or reference? Copy is safer for archival.
                 if (\Illuminate\Support\Facades\Storage::disk('public')->exists($relativePath)) {
-                   $newPath = 'cvs/copy_' . time() . '_' . basename($relativePath);
-                   \Illuminate\Support\Facades\Storage::disk('public')->copy($relativePath, $newPath);
-                   $path = $newPath;
+                    $newPath = 'cvs/copy_' . time() . '_' . basename($relativePath);
+                    \Illuminate\Support\Facades\Storage::disk('public')->copy($relativePath, $newPath);
+                    $path = $newPath;
                 }
             }
         }

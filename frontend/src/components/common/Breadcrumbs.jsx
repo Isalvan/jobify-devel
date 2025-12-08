@@ -27,16 +27,15 @@ export default function Breadcrumbs() {
                         // Determinar nombre a mostrar
                         let displayName = routeNameMap[value] || value;
 
-                        // Si es un ID numérico y el padre es 'ofertas'
+                        // Si es un ID numérico y el padre es ofertas
                         if (!isNaN(value) && pathnames[index - 1] === 'ofertas') {
                             if (location.state?.oferta?.titulo) {
                                 displayName = location.state.oferta.titulo;
                             } else {
-                                displayName = `Oferta #${value}`; // Fallback visual
+                                displayName = `Oferta #${value}`;
                             }
                         }
 
-                        // Capitalizar si no está en mapa
                         if (!routeNameMap[value] && displayName === value) {
                             displayName = value.charAt(0).toUpperCase() + value.slice(1);
                         }

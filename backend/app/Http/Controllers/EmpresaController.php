@@ -40,10 +40,8 @@ class EmpresaController extends Controller
      */
     public function destacadas()
     {
-        // 1. Fetch random companies with remaining impressions
         $empresas = Empresa::with('usuario')->destacada()->inRandomOrder()->limit(6)->get();
 
-        // 2. Decrement impressions for each fetched company
         foreach ($empresas as $empresa) {
             $empresa->decrement('impresiones_restantes');
         }

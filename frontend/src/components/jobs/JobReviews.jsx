@@ -13,7 +13,6 @@ function JobReviews({ oferta, user, onReviewAdded }) {
     const [reviewsPage, setReviewsPage] = useState(1);
     const [loadingReviews, setLoadingReviews] = useState(false);
 
-    // Initial load and page change
     useEffect(() => {
         if (oferta?.id) {
             loadReviews(reviewsPage);
@@ -42,13 +41,11 @@ function JobReviews({ oferta, user, onReviewAdded }) {
             });
             setRatingFeedback({ type: 'success', message: '¡Valoración enviada!' });
 
-            // Refresh list
             loadReviews(1);
             setReviewsPage(1);
             setRating(0);
             setComment('');
 
-            // Notify parent to update average/count
             if (onReviewAdded) onReviewAdded();
 
         } catch (error) {

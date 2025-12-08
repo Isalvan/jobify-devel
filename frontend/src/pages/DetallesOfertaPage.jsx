@@ -22,7 +22,6 @@ function DetallesOfertaPage() {
     const [loading, setLoading] = useState(!oferta);
     const [error, setError] = useState(null);
 
-    // Application Modal State
     const [showModal, setShowModal] = useState(false);
     const [mensaje, setMensaje] = useState('');
     const [useProfileCv, setUseProfileCv] = useState(false);
@@ -35,7 +34,6 @@ function DetallesOfertaPage() {
         jobService.getJob(id)
             .then(data => {
                 setOferta(data.data);
-                // Note: Rating state is now handled inside JobReviews
                 setLoading(false);
             })
             .catch(err => {
@@ -104,7 +102,6 @@ function DetallesOfertaPage() {
     };
 
     const handleReviewAdded = async () => {
-        // Reload job to get updated stats
         const updatedJob = await jobService.getJob(oferta.id);
         setOferta(updatedJob.data);
     };

@@ -108,9 +108,6 @@ class CandidatoController extends Controller
 
         if ($request->hasFile('cv_file')) {
             $path = $request->file('cv_file')->store('cvs_perfil', 'public');
-            // Assuming storage link is set, url would be /storage/$path
-            // We store the relative path or full URL. Usually relative path in DB or full URL.
-            // Let's store full URL for consistency with 'url_cv' field name implication
             $data['url_cv'] = asset('storage/' . $path);
         }
 

@@ -11,7 +11,7 @@ import { AppContext } from '../../contexts/AppProvider';
  */
 function Header() {
   const { user, logout } = useContext(AppContext);
-  const sesion = !!user; // Si hay usuario, hay sesión
+  const sesion = !!user;
 
   return <>
     <header id="header" className="p-3 mb-3">

@@ -1,9 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 
-// Creación del contexto
 import { authService } from "../services/authService";
 
-// Creación del contexto
 const AppContext = createContext();
 
 function AppProvider({ children }) {
@@ -13,9 +11,6 @@ function AppProvider({ children }) {
 
     useEffect(() => {
         if (token) {
-            // Aquí podríamos validar el token con el backend si hubiera un endpoint /me
-            // Por ahora, asumimos que si hay token, intentamos persistir la sesión.
-            // Si tuvieramos usuario en localStorage también lo podríamos cargar.
             const storedUser = localStorage.getItem("user");
             if (storedUser) {
                 setUser(JSON.parse(storedUser));

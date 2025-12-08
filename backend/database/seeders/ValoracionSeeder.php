@@ -21,7 +21,6 @@ class ValoracionSeeder extends Seeder
             return;
         }
 
-        // Create some random validations
         foreach (range(1, 20) as $i) {
             Valoracion::factory()->create([
                 'trabajo_id' => $trabajos->random()->id,

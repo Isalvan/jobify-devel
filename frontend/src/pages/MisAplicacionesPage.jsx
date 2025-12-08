@@ -11,7 +11,6 @@ function MisAplicacionesPage() {
     useEffect(() => {
         applicationService.getMyApplications()
             .then(data => {
-                // data might be wrapped in { data: ... }
                 setAplicaciones(data.data || data);
                 setLoading(false);
             })

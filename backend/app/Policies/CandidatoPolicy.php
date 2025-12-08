@@ -17,7 +17,6 @@ class CandidatoPolicy
 
     public function view(Usuario $user, Candidato $candidato)
     {
-        // Companies and Admins can view candidates, also the candidate themselves
         if ($user->rol === 'EMPRESA' || $user->rol === 'ADMIN') {
             return true;
         }

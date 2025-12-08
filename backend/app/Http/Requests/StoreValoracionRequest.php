@@ -59,7 +59,6 @@ class StoreValoracionRequest extends FormRequest
     {
         return [
             'trabajo_id' => ['required', 'exists:trabajos,id'],
-            //'candidato_id' => ['required', 'exists:candidatos,id'], // Inferred from auth
             'puntuacion' => ['required', 'integer', 'min:1', 'max:5'],
             'comentario' => ['nullable', 'string'],
         ];

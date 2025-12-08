@@ -10,18 +10,13 @@ export const applicationService = {
      * @returns {Promise<Object>} Respuesta de la API
      */
     async applyToJob(trabajoId, mensaje = '', cvFile = null, useProfileCv = false) {
-        // Use FormData if file is present
         if (cvFile) {
             const formData = new FormData();
             formData.append('trabajo_id', parseInt(trabajoId));
             formData.append('mensaje', mensaje);
             formData.append('cv_file', cvFile);
-            // Ignore useProfileCv if file is provided, or send false explicitly
             return await api.post("/aplicaciones", formData);
         } else {
-            // If requesting to use profile CV, we can send JSON or FormData (easier JSON unless mixed?)
-            // Actually backend request allows mixed if we send JSON? No, backend expects 'hasFile' or boolean input.
-            // If we send JSON: { "use_profile_cv": true }
             const payload = {
                 trabajo_id: parseInt(trabajoId),
                 mensaje: mensaje,

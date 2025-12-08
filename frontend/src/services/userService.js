@@ -58,10 +58,6 @@ export const userService = {
      * @param {File} file 
      */
     async uploadCV(candidatoId, file) {
-        // TODO: Implementar endpoint específico si no se usa el update estándar con multipart
-        // De momento, el controlador de usuarios/candidatos espera JSON habitualmente, 
-        // pero podemos probar si soporta multipart o si necesitamos un endpoint a parte.
-        // Por ahora lo dejamos pendiente de implementación en backend.
         console.warn("Upload CV no implementado en backend para perfil aún.");
     }
 };

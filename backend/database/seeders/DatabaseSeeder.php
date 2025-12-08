@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents; // Remove if unused
 use App\Models\Usuario;
 use Illuminate\Database\Seeder;
 
@@ -13,7 +12,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Admin User
         if (!Usuario::where('email', 'admin@jobify.com')->exists()) {
             Usuario::factory()->admin()->create([
                 'nombre' => 'Admin Jobify',

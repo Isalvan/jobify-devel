@@ -43,7 +43,6 @@ class ValoracionController extends Controller
      */
     public function store(StoreValoracionRequest $request)
     {
-        // 1. Check if user is a Candidate
         $user = $request->user();
         if (!$user->candidato) {
             abort(403, 'Solo los candidatos pueden realizar valoraciones.');
@@ -51,8 +50,7 @@ class ValoracionController extends Controller
 
 
         $data = $request->validated();
-        
-        // Use updateOrCreate to allow modifying existing rating
+
         $valoracion = Valoracion::updateOrCreate(
             [
                 'trabajo_id' => $request->trabajo_id,

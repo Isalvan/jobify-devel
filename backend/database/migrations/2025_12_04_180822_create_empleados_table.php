@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('empleados', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id')->unique()->constrained(); // FK to users table
-            $table->foreignId('empresa_id')->constrained(); // FK to companies table
+            $table->foreignId('usuario_id')->unique()->constrained();
+            $table->foreignId('empresa_id')->constrained();
             $table->string('apellidos', 255);
             $table->string('puesto', 100);
             $table->date('fecha_nacimiento');

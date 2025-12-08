@@ -12,10 +12,6 @@ class EmpleadoSeeder extends Seeder
      */
     public function run(): void
     {
-        // Empleados rely on existing Empresas, but factory creates new one by default so we might want to override.
-        // For simplicity, let's just create 5 random employees which will create their own companies and users.
-        // Or better, attach to existing companies? Factory definition has 'empresa_id' => Empresa::factory().
-        // Let's allow creating new companies for them for diversity.
         Empleado::factory(5)->create();
     }
 }
