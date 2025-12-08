@@ -9,16 +9,10 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        // Moved to 2025_12_04_181600_create_categorias_table.php
-    }
+    public function up(): void {}
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
-        // Nothing to reverse
-    }
+    public function down(): void {}
 };

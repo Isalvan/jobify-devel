@@ -20,16 +20,12 @@ class CheckRole
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        // Si el usuario es administrador, siempre tiene acceso (opcional, pero recomendado)
-        // Comparación Case-Insensitive
         $userRole = strtoupper($request->user()->rol);
-        
-        // Si el usuario es administrador (ADMIN o ADMINISTRADOR), siempre tiene acceso
+
         if ($userRole === 'ADMIN' || $userRole === 'ADMINISTRADOR') {
             return $next($request);
         }
 
-        // Normalizar roles permitidos a mayúsculas
         $allowedRoles = array_map('strtoupper', $roles);
 
         if (!in_array($userRole, $allowedRoles)) {

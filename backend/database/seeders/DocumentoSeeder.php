@@ -20,7 +20,7 @@ class DocumentoSeeder extends Seeder
         }
 
         foreach ($aplicaciones as $aplicacion) {
-            if (rand(0, 1)) { // 50% chance of having a document
+            if (rand(0, 1)) {
                 Documento::factory()->create([
                     'aplicacion_id' => $aplicacion->id,
                 ]);

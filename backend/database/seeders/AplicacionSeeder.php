@@ -22,7 +22,6 @@ class AplicacionSeeder extends Seeder
         }
 
         foreach ($candidatos as $candidato) {
-            // Each candidate applies to 1-3 random jobs
             $randomJobs = $trabajos->random(rand(1, 3));
             foreach ($randomJobs as $trabajo) {
                 Aplicacion::factory()->create([

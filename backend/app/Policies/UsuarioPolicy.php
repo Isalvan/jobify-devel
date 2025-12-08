@@ -11,17 +11,16 @@ class UsuarioPolicy
 
     public function viewAny(Usuario $user)
     {
-        return $user->rol === 'ADMIN'; // Only admin can list all users
+        return $user->rol === 'ADMIN';
     }
 
     public function view(Usuario $user, Usuario $model)
     {
-        return true; // Any authenticated user can view profiles
+        return true;
     }
 
     public function create(Usuario $user)
     {
-        // Typically registration is public (via AuthController), but maybe admin creates users?
         return $user->rol === 'ADMIN';
     }
 
@@ -32,6 +31,6 @@ class UsuarioPolicy
 
     public function delete(Usuario $user, Usuario $model)
     {
-        return $user->rol === 'ADMIN' || $user->id === $model->id; // Allow self-delete?
+        return $user->rol === 'ADMIN' || $user->id === $model->id;
     }
 }

@@ -79,7 +79,6 @@ class UpdateUsuarioRequest extends FormRequest
         return [
             'nombre' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'email', 'max:255', Rule::unique('usuarios')->ignore($this->route('usuario') ? $this->route('usuario')->id : $this->user()->id)],
-            // Note: If updating another user (admin), checking route('usuario') is better. If self update, user()->id.
             'password' => ['sometimes', 'confirmed', Password::defaults()],
             'telefono' => ['nullable', 'string', 'max:20'],
             'foto_perfil' => ['nullable', 'string', 'max:255'],

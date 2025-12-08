@@ -21,7 +21,7 @@ function LoginPage() {
 
         try {
             await login(email, password);
-            navigate('/'); // Redirigir al home o dashboard
+            navigate('/');
         } catch (err) {
             setError(err.message || 'Error al iniciar sesión');
         } finally {

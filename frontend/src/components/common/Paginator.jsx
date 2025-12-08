@@ -1,10 +1,3 @@
-import React from 'react';
-
-// Expected props:
-// currentPage: number
-// lastPage: number
-// onPageChange: function(newPage: number)
-
 export default function Paginator({ currentPage, lastPage, onPageChange }) {
     if (!lastPage || lastPage <= 1) return null;
 

@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { jobService } from '../services/jobService';
-import Paginator from '../components/common/Paginator';
-import './css/MisAplicacionesPage.css'; // Reutilizamos estilos
+import './css/MisAplicacionesPage.css';
 
 function MisFavoritosPage() {
     const [favoritos, setFavoritos] = useState([]);
@@ -77,7 +76,7 @@ function MisFavoritosPage() {
                                         className="btn btn-sm btn-outline-danger z-index-front"
                                         onClick={() => handleRemove(job.id)}
                                         title="Quitar de favoritos"
-                                        style={{ zIndex: 2 }} // Ensure click doesn't trigger Link if overlaid
+                                        style={{ zIndex: 2 }} 
                                     >
                                         <span className="material-symbols-outlined align-middle fs-6">delete</span>
                                     </button>

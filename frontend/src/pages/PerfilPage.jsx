@@ -6,27 +6,20 @@ import { AppContext } from '../contexts/AppProvider';
 import './css/PerfilPage.css';
 
 function PerfilPage() {
-    const { id } = useParams(); // Obtener ID de URL si existe (perfil público)
+    const { id } = useParams();
     const { user } = useContext(AppContext);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Determines if viewing own profile
     const isOwnProfile = !id || (user && user.id === parseInt(id));
 
-    // Estado plano unificado.
-    // Campos comunes: id, role, nombre, email, telefono, fotoPerfil
-    // Campos Candidato/Empleado: apellidos, fechaNacimiento, descripcion (candidato), ubicacion
-    // Campos Empresa: descripcion, sector, tamanoEmpresa, web, ubicacion
-    // Campos Empleado: puesto
     const [userData, setUserData] = useState({});
     const [editData, setEditData] = useState({});
 
-    // Mapeo inicial
     useEffect(() => {
         loadProfile();
-    }, [id]); // Reload if ID changes
+    }, [id]);
 
     const loadProfile = async () => {
         setLoading(true);
@@ -38,10 +31,7 @@ function PerfilPage() {
                 response = await userService.getProfile();
             }
 
-            // Normalizar respuesta: si viene en { data: ... } (Resource) o directo
             const data = response.data || response;
-
-            // data es el objeto Usuario con relaciones cargadas: candidato, empresa, empleado
 
             const commonData = {
                 id: data.id,
@@ -79,8 +69,6 @@ function PerfilPage() {
                     apellidos: data.empleado.apellidos || '',
                     fechaNacimiento: data.empleado.fecha_nacimiento || '',
                     puesto: data.empleado.puesto || '',
-                    // El empleado no suele tener ubicación propia en este modelo, usa la de empresa?
-                    // Asumimos que no edita ubicación
                 };
             }
 
@@ -108,14 +96,12 @@ function PerfilPage() {
 
     const handleSave = async () => {
         try {
-            // 1. Actualizar Usuario
             const userPayload = {
                 nombre: editData.nombre,
                 telefono: editData.telefono,
             };
             await userService.updateUser(editData.id, userPayload);
 
-            // 2. Actualizar Entidad Específica
             if (editData.rol === 'CANDIDATO' && editData.relationId) {
                 let payload = {};
                 if (editData.cvFile) {
@@ -158,8 +144,7 @@ function PerfilPage() {
                 });
             }
 
-            // Refresh profile
-            loadProfile(); // Reload to get new CV URL
+            loadProfile();
             setIsEditing(false);
         } catch (err) {
             console.error(err);
@@ -255,7 +240,6 @@ function PerfilPage() {
                 <div className="row g-4">
                     <div className="col-12 col-lg-8">
 
-                        {/* 1. SECCIÓN DESCRIPCIÓN (Candidato/Empresa) */}
                         {(isCandidato || isEmpresa) && (
                             <div className="perfil-section bg-white rounded shadow-sm p-4 mb-4">
                                 <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
@@ -270,7 +254,6 @@ function PerfilPage() {
                             </div>
                         )}
 
-                        {/* 2. DATOS ESPECÍFICOS EMPRESA */}
                         {isEmpresa && (
                             <div className="perfil-section bg-white rounded shadow-sm p-4 mb-4">
                                 <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
@@ -305,28 +288,23 @@ function PerfilPage() {
                             </div>
                         )}
 
-
-                        {/* 3. INFORMACIÓN DE CONTACTO / BÁSICA (Todos) */}
                         <div className="perfil-section bg-white rounded shadow-sm p-4">
                             <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
                                 Información Personal
                             </h2>
                             <div className="info-grid">
 
-                                {/* EMAIL (Solo lectura) */}
                                 <div className="info-item">
                                     <label className="small text-muted mb-1 d-block">Email</label>
                                     <p className="mb-0 fw-medium">{userData.email}</p>
                                 </div>
 
-                                {/* NOMBRE (Usuario) */}
                                 <div className="info-item">
                                     <label className="small text-muted mb-1 d-block">Nombre</label>
                                     {!isEditing ? <p className="mb-0 fw-medium">{userData.nombre}</p>
                                         : <input type="text" className="form-control" value={editData.nombre} onChange={(e) => handleChange('nombre', e.target.value)} />}
                                 </div>
 
-                                {/* APELLIDOS (Candidato/Empleado) */}
                                 {!isEmpresa && (
                                     <div className="info-item">
                                         <label className="small text-muted mb-1 d-block">Apellidos</label>
@@ -335,14 +313,12 @@ function PerfilPage() {
                                     </div>
                                 )}
 
-                                {/* TELEFONO (Usuario) */}
                                 <div className="info-item">
                                     <label className="small text-muted mb-1 d-block">Teléfono</label>
                                     {!isEditing ? <p className="mb-0 fw-medium">{userData.telefono}</p>
                                         : <input type="tel" className="form-control" value={editData.telefono} onChange={(e) => handleChange('telefono', e.target.value)} />}
                                 </div>
 
-                                {/* LOCALIZACION (Candidato/Empresa) */}
                                 {(isCandidato || isEmpresa) && (
                                     <div className="info-item">
                                         <label className="small text-muted mb-1 d-block">Localización</label>
@@ -351,7 +327,6 @@ function PerfilPage() {
                                     </div>
                                 )}
 
-                                {/* PUESTO (Empleado) */}
                                 {isEmpleado && (
                                     <div className="info-item">
                                         <label className="small text-muted mb-1 d-block">Puesto</label>
@@ -360,7 +335,6 @@ function PerfilPage() {
                                     </div>
                                 )}
 
-                                {/* FECHA NACIMIENTO (Candidato/Empleado) */}
                                 {!isEmpresa && (
                                     <div className="info-item">
                                         <label className="small text-muted mb-1 d-block">Fecha de nacimiento</label>
@@ -378,7 +352,6 @@ function PerfilPage() {
                         </div>
                     </div>
 
-                    {/* SIDEBAR (Estadísticas placeholder) */}
                     <div className="col-12 col-lg-4">
                         <div className="perfil-section bg-white rounded shadow-sm p-4 mb-4">
                             <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">

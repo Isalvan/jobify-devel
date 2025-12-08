@@ -79,9 +79,7 @@ class Documento extends Model
      *
      * @var array<string, string>
      */
-    protected $casts = [
-        // 'tipo' => DocumentoTipoEnum::class, // Example if you define a PHP enum for 'tipo'
-    ];
+    protected $casts = [];
 
     /**
      * Get the application that owns the document file.

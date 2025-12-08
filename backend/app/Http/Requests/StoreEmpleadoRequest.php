@@ -45,7 +45,6 @@ class StoreEmpleadoRequest extends FormRequest
             'apellidos' => ['required', 'string', 'max:255'],
             'puesto' => ['required', 'string', 'max:255'],
             'fecha_nacimiento' => ['nullable', 'date'],
-            // 'usuario_id' might be needed if creating a user
         ];
     }
 }

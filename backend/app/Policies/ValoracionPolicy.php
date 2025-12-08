@@ -22,7 +22,6 @@ class ValoracionPolicy
 
     public function create(Usuario $user)
     {
-        // For now, allow authenticated users.
         return true;
     }
 

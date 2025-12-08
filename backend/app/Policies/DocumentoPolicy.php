@@ -28,12 +28,12 @@ class DocumentoPolicy
 
     public function create(Usuario $user)
     {
-        return true; // Authorized in controller logic more specifically for now
+        return true;
     }
 
     public function update(Usuario $user, Documento $documento)
     {
-        return false; // Documents usually immutable, delete and re-upload
+        return false;
     }
 
     public function delete(Usuario $user, Documento $documento)

@@ -22,7 +22,6 @@ class EmpresaPolicy
 
     public function create(Usuario $user)
     {
-        // Usually created on registration or profile completion
         return $user->rol === 'EMPRESA' && !$user->empresa;
     }
 

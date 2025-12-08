@@ -13,7 +13,6 @@ function InicioPage() {
     const [loadingValoradas, setLoadingValoradas] = useState(true);
 
     useEffect(() => {
-        // Load featured companies
         companyService.getFeaturedCompanies()
             .then(response => {
                 setEmpresasDestacadas(response.data);
@@ -24,7 +23,6 @@ function InicioPage() {
                 setLoadingDestacadas(false);
             });
 
-        // Load top rated jobs
         jobService.getTopRated()
             .then(response => {
                 setOfertasMejorValoradas(response.data);
@@ -35,34 +33,6 @@ function InicioPage() {
                 setLoadingValoradas(false);
             });
     }, []);
-
-    // Placeholder data removed
-
-
-    // const ofertasMejorValoradas = [
-    //     {
-    //         puesto: "Puesto Placeholder 1",
-    //         empresa: "Empresa Placeholder 1",
-    //         valoracion: "4.8",
-    //         descripcion: "Descripción breve de la oferta. Aquí irá el resumen del puesto.",
-    //         ubicacion: "Ciudad, País"
-    //     },
-    //     {
-    //         puesto: "Puesto Placeholder 2",
-    //         empresa: "Empresa Placeholder 2",
-    //         valoracion: "4.7",
-    //         descripcion: "Descripción breve de la oferta. Aquí irá el resumen del puesto.",
-    //         ubicacion: "Ciudad, País"
-    //     },
-    //     {
-    //         puesto: "Puesto Placeholder 3",
-    //         empresa: "Empresa Placeholder 3",
-    //         valoracion: "4.6",
-    //         descripcion: "Descripción breve de la oferta. Aquí irá el resumen del puesto.",
-    //         ubicacion: "Ciudad, País"
-    //     }
-    // ];
-
 
     return (
         <div className="d-flex flex-column">

@@ -19,7 +19,6 @@ async function request(endpoint, { method = "GET", body, token, headers = {} } =
 
     if (body) {
         if (body instanceof FormData) {
-            // Let browser set Content-Type for multipart/form-data
             delete config.headers["Content-Type"];
             config.body = body;
         } else {

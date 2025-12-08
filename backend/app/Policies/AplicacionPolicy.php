@@ -19,12 +19,10 @@ class AplicacionPolicy
     {
         if ($user->rol === 'ADMIN') return true;
 
-        // Owner candidate
         if ($user->candidato && $user->candidato->id === $aplicacion->candidato_id) {
             return true;
         }
 
-        // Owner company of the job
         if ($user->empresa && $user->empresa->id === $aplicacion->trabajo->empresa_id) {
             return true;
         }
@@ -39,8 +37,6 @@ class AplicacionPolicy
 
     public function update(Usuario $user, Aplicacion $aplicacion)
     {
-        // Only company can update status (accept/reject)? Or candidate cancel?
-        // Update status logic
         if ($user->rol === 'ADMIN') return true;
 
         if ($user->empresa && $user->empresa->id === $aplicacion->trabajo->empresa_id) {
