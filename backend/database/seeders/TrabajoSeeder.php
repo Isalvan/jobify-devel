@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Empresa;
+use App\Models\Trabajo;
 use Illuminate\Database\Seeder;
 
 class TrabajoSeeder extends Seeder
@@ -12,6 +13,11 @@ class TrabajoSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        // For each existing company, create some jobs
+        Empresa::all()->each(function (Empresa $empresa) {
+            Trabajo::factory(rand(1, 5))->create([
+                'empresa_id' => $empresa->id,
+            ]);
+        });
     }
 }

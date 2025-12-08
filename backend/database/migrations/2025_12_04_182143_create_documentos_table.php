@@ -11,12 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categorias', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre', 100);
-            $table->text('descripcion')->nullable();
-            $table->timestamps();
-        });
+        // Moved to 2025_12_04_181600_create_categorias_table.php
     }
 
     /**
@@ -24,6 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categorias');
+        // Nothing to reverse
     }
 };

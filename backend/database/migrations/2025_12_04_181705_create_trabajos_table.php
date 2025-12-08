@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('trabajos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('empresa_id')->constrained('usuarios')->onDelete('cascade');
+            $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
             $table->string('titulo', 255);
             $table->string('slug', 255)->unique();
             $table->longText('descripcion');
             $table->decimal('salario', 10, 2)->nullable();
             $table->string('ubicacion', 255);
             $table->enum('tipo_trabajo', ['PRESENCIAL', 'REMOTO', 'HIBRIDO']);
-            $table->enum('estado', ['ACTIVA', 'CERRADA', 'BORRADOR']);
+            $table->enum('estado', ['publicado', 'borrador', 'cerrado'])->default('borrador');
             $table->timestamps();
         });
     }

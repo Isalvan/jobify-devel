@@ -11,19 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('usuarios', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('foto_perfil', 2048)->nullable();
-            $table->string('telefono', 20)->nullable();
-            $table->enum('estado', ['ACTIVO', 'INACTIVO'])->default('ACTIVO');
-            $table->enum('rol', ['ADMIN', 'CANDIDATO', 'EMPRESA', 'EMPLEADO']);
-            $table->rememberToken();
-            $table->timestamps();
-        });
+        // This migration has been moved to 2025_12_04_180000_create_usuarios_table.php
+        // to ensure it runs before dependent tables.
     }
 
     /**
@@ -31,6 +20,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('usuarios');
+        // Nothing to reverse
     }
 };

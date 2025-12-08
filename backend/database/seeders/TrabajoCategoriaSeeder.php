@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Categoria;
+use App\Models\Trabajo;
 use Illuminate\Database\Seeder;
 
 class TrabajoCategoriaSeeder extends Seeder
@@ -12,6 +13,13 @@ class TrabajoCategoriaSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $categorias = Categoria::all();
+
+        // Attach random categories to each job
+        Trabajo::all()->each(function (Trabajo $trabajo) use ($categorias) {
+            $trabajo->categorias()->attach(
+                $categorias->random(rand(1, 3))->pluck('id')->toArray()
+            );
+        });
     }
 }

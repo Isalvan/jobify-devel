@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Aplicacion;
+use App\Models\Candidato;
+use App\Models\Trabajo;
 use Illuminate\Database\Seeder;
 
 class AplicacionSeeder extends Seeder
@@ -12,6 +14,22 @@ class AplicacionSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $candidatos = Candidato::all();
+        $trabajos = Trabajo::all();
+
+        if ($candidatos->count() === 0 || $trabajos->count() === 0) {
+            return;
+        }
+
+        foreach ($candidatos as $candidato) {
+            // Each candidate applies to 1-3 random jobs
+            $randomJobs = $trabajos->random(rand(1, 3));
+            foreach ($randomJobs as $trabajo) {
+                Aplicacion::factory()->create([
+                    'candidato_id' => $candidato->id,
+                    'trabajo_id' => $trabajo->id,
+                ]);
+            }
+        }
     }
 }

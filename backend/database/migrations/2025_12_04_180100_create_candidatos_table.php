@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('empresas', function (Blueprint $table) {
+        Schema::create('candidatos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('usuario_id')->unique()->constrained('usuarios')->onDelete('cascade');
-            $table->text('descripcion');
-            $table->string('sector', 100);
-            $table->enum('tamano_empresa', ['1-10', '11-50', '51-200', '201-500', '+500']);
+            $table->string('apellidos', 255);
+            $table->date('fecha_nacimiento');
+            $table->text('descripcion')->nullable();
             $table->string('ubicacion', 255);
-            $table->string('web', 255)->nullable();
+            $table->string('url_cv', 2048)->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('empresas');
+        Schema::dropIfExists('candidatos');
     }
 };
