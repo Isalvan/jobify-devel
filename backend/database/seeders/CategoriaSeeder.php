@@ -26,10 +26,10 @@ class CategoriaSeeder extends Seeder
         ];
 
         foreach ($categorias as $nombre) {
-            Categoria::factory()->create([
-                'nombre' => $nombre,
-                'slug' => \Illuminate\Support\Str::slug($nombre),
-            ]);
+            Categoria::firstOrCreate(
+                ['nombre' => $nombre],
+                ['slug' => \Illuminate\Support\Str::slug($nombre)]
+            );
         }
     }
 }

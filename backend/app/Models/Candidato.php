@@ -126,4 +126,14 @@ class Candidato extends Model
     {
         return $this->hasMany(Documento::class);
     }
+
+    public function favoritos()
+    {
+        return $this->hasMany(Favorito::class);
+    }
+
+    public function trabajosFavoritos()
+    {
+        return $this->belongsToMany(Trabajo::class, 'favoritos', 'candidato_id', 'trabajo_id')->withTimestamps();
+    }
 }

@@ -34,7 +34,7 @@ class AplicacionPolicy
 
     public function create(Usuario $user)
     {
-        return $user->rol === 'CANDIDATO' && $user->candidato; // Must satisfy having a candidate profile
+        return $user->rol === 'CANDIDATO';
     }
 
     public function update(Usuario $user, Aplicacion $aplicacion)

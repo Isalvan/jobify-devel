@@ -17,49 +17,9 @@ use OpenApi\Annotations as OA;
  */
 class RegisterRequest extends FormRequest
 {
-    /**
-     * @OA\Property(
-     *      title="Nombre",
-     *      description="Nombre completo del usuario",
-     *      example="Juan Perez"
-     * )
-     *
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @OA\Property(
-     *      title="Email",
-     *      description="Correo electrónico del usuario",
-     *      example="juan@example.com"
-     * )
-     *
-     * @var string
-     */
-    public $email;
-
-    /**
-     * @OA\Property(
-     *      title="Password",
-     *      description="Contraseña del usuario",
-     *      example="password123"
-     * )
-     *
-     * @var string
-     */
-    public $password;
-
-    /**
-     * @OA\Property(
-     *      title="Confirmación de Password",
-     *      description="Confirmación de la contraseña",
-     *      example="password123"
-     * )
-     *
-     * @var string
-     */
-    public $password_confirmation;
+    // Public properties removed to avoid shadowing request data.
+    // Annotations kept in DocBlocks if needed, but properties must be removed
+    // for $request->name to work correctly if not manually hydrated.
 
     /**
      * Determine if the user is authorized to make this request.
@@ -80,6 +40,11 @@ class RegisterRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:usuarios'],
             'password' => ['required', 'confirmed', Password::defaults()],
+            'apellidos' => ['required', 'string', 'max:255'],
+            'telefono' => ['nullable', 'string', 'max:20'],
+            'fecha_nacimiento' => ['required', 'date'],
+            'descripcion' => ['nullable', 'string'],
+            'ubicacion' => ['required', 'string', 'max:255'],
         ];
     }
 }

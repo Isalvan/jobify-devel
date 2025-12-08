@@ -32,7 +32,7 @@ class UsuarioFactory extends Factory
             'telefono' => fake()->phoneNumber(),
             'estado' => 'ACTIVO',
             'rol' => 'CANDIDATO', // Default role
-            'foto_perfil' => fake()->imageUrl(),
+            'foto_perfil' => null, // Will be set based on role/name later or overridden
         ];
     }
 
@@ -40,6 +40,8 @@ class UsuarioFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'rol' => 'EMPRESA',
+            'nombre' => fake()->company(),
+            'foto_perfil' => 'https://picsum.photos/seed/' . Str::slug($attributes['email']) . '/200/200',
         ]);
     }
 
@@ -47,6 +49,7 @@ class UsuarioFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'rol' => 'CANDIDATO',
+            'foto_perfil' => 'https://i.pravatar.cc/150?u=' . Str::random(5),
         ]);
     }
 
@@ -54,6 +57,7 @@ class UsuarioFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'rol' => 'ADMIN',
+            'foto_perfil' => 'https://ui-avatars.com/api/?name=Admin+Jobify&background=random',
         ]);
     }
 
@@ -61,6 +65,7 @@ class UsuarioFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'rol' => 'EMPLEADO',
+            'foto_perfil' => 'https://i.pravatar.cc/150?u=' . Str::random(5),
         ]);
     }
 }

@@ -16,7 +16,7 @@ class UsuarioPolicy
 
     public function view(Usuario $user, Usuario $model)
     {
-        return $user->id === $model->id || $user->rol === 'ADMIN';
+        return true; // Any authenticated user can view profiles
     }
 
     public function create(Usuario $user)

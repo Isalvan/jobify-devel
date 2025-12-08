@@ -66,7 +66,8 @@ class UpdateCandidatoRequest extends FormRequest
             'fecha_nacimiento' => ['sometimes', 'date'],
             'descripcion' => ['nullable', 'string'],
             'ubicacion' => ['nullable', 'string', 'max:255'],
-            'url_cv' => ['nullable', 'string', 'max:2048'], // Or 'url' validation if strict
+            'url_cv' => ['nullable', 'string', 'max:2048'], 
+            'cv_file' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120'], // 5MB max
         ];
     }
 }
