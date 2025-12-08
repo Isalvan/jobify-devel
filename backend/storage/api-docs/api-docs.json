@@ -1,0 +1,1791 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Jobify API",
+        "description": "Documentación de la API de Jobify",
+        "contact": {
+            "email": "soporte@jobify.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/api/aplicaciones": {
+            "get": {
+                "tags": [
+                    "Aplicaciones"
+                ],
+                "summary": "Listar aplicaciones",
+                "operationId": "a7e68a8cd95539545c8d4bdf302d0ab2",
+                "responses": {
+                    "200": {
+                        "description": "Lista de aplicaciones"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Aplicaciones"
+                ],
+                "summary": "Aplicar a una oferta",
+                "operationId": "1ed0992fb6c5a5f0dc68f6c1cf42d978",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreAplicacionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Aplicación creada"
+                    }
+                }
+            }
+        },
+        "/api/aplicaciones/{aplicacion}": {
+            "put": {
+                "tags": [
+                    "Aplicaciones"
+                ],
+                "summary": "Actualizar estado de aplicación",
+                "operationId": "463261645ebe1db7f2f2a48bb980edb4",
+                "parameters": [
+                    {
+                        "name": "aplicacion",
+                        "in": "path",
+                        "description": "ID de la aplicación",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAplicacionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Aplicación actualizada"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Iniciar sesión",
+                "operationId": "4d730c449df9d7cd37cc97b2daddf8ad",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login exitoso"
+                    },
+                    "422": {
+                        "description": "Credenciales inválidas"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Cerrar sesión",
+                "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
+                "responses": {
+                    "200": {
+                        "description": "Logout exitoso"
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Registrar nuevo usuario",
+                "operationId": "ee3fc9fe808bc810a35bd43d96dada63",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario registrado exitosamente"
+                    }
+                }
+            }
+        },
+        "/api/candidatos": {
+            "get": {
+                "tags": [
+                    "Candidatos"
+                ],
+                "summary": "Listar candidatos",
+                "operationId": "1879147fe9750cfb75f91712c8ce3557",
+                "responses": {
+                    "200": {
+                        "description": "Lista de candidatos"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Candidatos"
+                ],
+                "summary": "Crear perfil de candidato",
+                "operationId": "0a035d99352c84d4805769e3b7b9b5a7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCandidatoRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Candidato creado"
+                    }
+                }
+            }
+        },
+        "/api/candidatos/{candidato}": {
+            "get": {
+                "tags": [
+                    "Candidatos"
+                ],
+                "summary": "Ver candidato",
+                "operationId": "683a92e287219d50b79e96a779d902c1",
+                "parameters": [
+                    {
+                        "name": "candidato",
+                        "in": "path",
+                        "description": "ID del candidato",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles del candidato"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Candidatos"
+                ],
+                "summary": "Actualizar candidato",
+                "operationId": "71d7cd9d437ebde1ada5ff26646f115c",
+                "parameters": [
+                    {
+                        "name": "candidato",
+                        "in": "path",
+                        "description": "ID del candidato",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCandidatoRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Candidato actualizado"
+                    }
+                }
+            }
+        },
+        "/api/documentos": {
+            "post": {
+                "tags": [
+                    "Documentos"
+                ],
+                "summary": "Subir documento",
+                "operationId": "feea9dd8a9ce6d6b0d60d91979815e5b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "aplicacion_id": {
+                                        "description": "ID de la aplicación",
+                                        "type": "integer"
+                                    },
+                                    "archivo": {
+                                        "description": "Archivo a subir",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "tipo": {
+                                        "description": "Tipo de documento (ej. CV, Carta)",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Documento subido"
+                    }
+                }
+            }
+        },
+        "/api/documentos/{documento}": {
+            "get": {
+                "tags": [
+                    "Documentos"
+                ],
+                "summary": "Descargar documento",
+                "operationId": "a472ead878043facd1f266c417e88619",
+                "parameters": [
+                    {
+                        "name": "documento",
+                        "in": "path",
+                        "description": "ID del documento",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Archivo descargado"
+                    }
+                }
+            }
+        },
+        "/api/empleados": {
+            "get": {
+                "tags": [
+                    "Empleados"
+                ],
+                "summary": "Listar empleados",
+                "operationId": "01e9d10f171ec0d88e4010f4876a0b65",
+                "responses": {
+                    "200": {
+                        "description": "Lista de empleados"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Empleados"
+                ],
+                "summary": "Registrar empleado",
+                "operationId": "8dbd970d554ec6064a0527ac54baa93f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreEmpleadoRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Empleado creado"
+                    }
+                }
+            }
+        },
+        "/api/empleados/{empleado}": {
+            "delete": {
+                "tags": [
+                    "Empleados"
+                ],
+                "summary": "Eliminar empleado",
+                "operationId": "eb491c580a2fcb17f13977ce6f6bca87",
+                "responses": {
+                    "204": {
+                        "description": "Empleado eliminado"
+                    }
+                }
+            }
+        },
+        "/api/empresas": {
+            "get": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Listar empresas",
+                "operationId": "e5d40f6ab397a2e07d02f50d3eb395f3",
+                "responses": {
+                    "200": {
+                        "description": "Lista de empresas"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Crear empresa",
+                "operationId": "b400bda696995ef09cec01e24e345e39",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreEmpresaRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Empresa creada"
+                    }
+                }
+            }
+        },
+        "/api/empresas/{empresa}": {
+            "get": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Ver empresa",
+                "operationId": "1798271802178d7c340d77e9a6add0ad",
+                "parameters": [
+                    {
+                        "name": "empresa",
+                        "in": "path",
+                        "description": "ID de la empresa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles de la empresa"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Actualizar empresa",
+                "operationId": "3699d111db09488f0e6ba76c56aba430",
+                "parameters": [
+                    {
+                        "name": "empresa",
+                        "in": "path",
+                        "description": "ID de la empresa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEmpresaRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Empresa actualizada"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Empresas"
+                ],
+                "summary": "Eliminar empresa",
+                "operationId": "2c37f8d9d438057d8792b041f70b3feb",
+                "parameters": [
+                    {
+                        "name": "empresa",
+                        "in": "path",
+                        "description": "ID de la empresa",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Empresa eliminada"
+                    }
+                }
+            }
+        },
+        "/api/trabajos": {
+            "get": {
+                "tags": [
+                    "Trabajos"
+                ],
+                "summary": "Listar trabajos",
+                "operationId": "f78d574e9db22b5b7b313569f0dbbcb2",
+                "responses": {
+                    "200": {
+                        "description": "Lista de trabajos"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Trabajos"
+                ],
+                "summary": "Crear oferta de trabajo",
+                "operationId": "a3c785a1fa9a3e96887268da019eb0de",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreTrabajoRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Trabajo creado"
+                    }
+                }
+            }
+        },
+        "/api/trabajos/{trabajo}": {
+            "get": {
+                "tags": [
+                    "Trabajos"
+                ],
+                "summary": "Ver trabajo",
+                "operationId": "a132cfd0cbe857fa6e2f2185f2a24db8",
+                "parameters": [
+                    {
+                        "name": "trabajo",
+                        "in": "path",
+                        "description": "ID del trabajo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles del trabajo"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Trabajos"
+                ],
+                "summary": "Actualizar trabajo",
+                "operationId": "9665847b190ceaea6c280456e152e146",
+                "parameters": [
+                    {
+                        "name": "trabajo",
+                        "in": "path",
+                        "description": "ID del trabajo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateTrabajoRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Trabajo actualizado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Trabajos"
+                ],
+                "summary": "Eliminar trabajo",
+                "operationId": "ab6d2f832f03326ac8695e1811c54067",
+                "parameters": [
+                    {
+                        "name": "trabajo",
+                        "in": "path",
+                        "description": "ID del trabajo",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Trabajo eliminado"
+                    }
+                }
+            }
+        },
+        "/api/usuarios": {
+            "get": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Listar usuarios",
+                "operationId": "e9d4d8b419dbef04b5748fbf9ccf3881",
+                "responses": {
+                    "200": {
+                        "description": "Lista de usuarios"
+                    }
+                }
+            }
+        },
+        "/api/usuarios/{usuario}": {
+            "get": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Ver usuario",
+                "operationId": "0f23afcf09c72acc26c2106f9157305a",
+                "parameters": [
+                    {
+                        "name": "usuario",
+                        "in": "path",
+                        "description": "ID del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles del usuario"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Actualizar usuario",
+                "operationId": "48a7a61cdb54e8ec32735abde765a391",
+                "parameters": [
+                    {
+                        "name": "usuario",
+                        "in": "path",
+                        "description": "ID del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUsuarioRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuario actualizado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Eliminar usuario",
+                "operationId": "95db6ca3d328bb982f334f82835da6dd",
+                "parameters": [
+                    {
+                        "name": "usuario",
+                        "in": "path",
+                        "description": "ID del usuario",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Usuario eliminado"
+                    }
+                }
+            }
+        },
+        "/api/valoraciones": {
+            "get": {
+                "tags": [
+                    "Valoraciones"
+                ],
+                "summary": "Listar valoraciones",
+                "operationId": "c8b4cd7198a8f721d488ac7e7da104b0",
+                "responses": {
+                    "200": {
+                        "description": "Lista de valoraciones"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Valoraciones"
+                ],
+                "summary": "Crear valoración",
+                "operationId": "8e10ece8a38a95863a87e63774c480eb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreValoracionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Valoración creada"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "LoginRequest": {
+                "title": "Login Request",
+                "description": "Datos para iniciar sesión",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "title": "Email",
+                        "description": "Correo electrónico del usuario",
+                        "type": "string",
+                        "example": "admin@jobify.com"
+                    },
+                    "password": {
+                        "title": "Password",
+                        "description": "Contraseña del usuario",
+                        "type": "string",
+                        "example": "password"
+                    }
+                },
+                "type": "object"
+            },
+            "RegisterRequest": {
+                "title": "Register Request",
+                "description": "Datos para registrar un nuevo usuario",
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "title": "Nombre",
+                        "description": "Nombre completo del usuario",
+                        "type": "string",
+                        "example": "Juan Perez"
+                    },
+                    "email": {
+                        "title": "Email",
+                        "description": "Correo electrónico del usuario",
+                        "type": "string",
+                        "example": "juan@example.com"
+                    },
+                    "password": {
+                        "title": "Password",
+                        "description": "Contraseña del usuario",
+                        "type": "string",
+                        "example": "password123"
+                    },
+                    "password_confirmation": {
+                        "title": "Confirmación de Password",
+                        "description": "Confirmación de la contraseña",
+                        "type": "string",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreAplicacionRequest": {
+                "title": "Store Aplicacion Request",
+                "description": "Datos para crear una nueva aplicación",
+                "required": [
+                    "trabajo_id"
+                ],
+                "properties": {
+                    "trabajo_id": {
+                        "description": "ID del trabajo al que se aplica",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "mensaje": {
+                        "description": "Mensaje opcional para la aplicación",
+                        "type": "string",
+                        "example": "Estoy muy interesado en este puesto."
+                    }
+                },
+                "type": "object"
+            },
+            "StoreEmpleadoRequest": {
+                "title": "Store Empleado Request",
+                "description": "Datos para crear un nuevo empleado",
+                "required": [
+                    "apellidos",
+                    "puesto"
+                ],
+                "properties": {
+                    "apellidos": {
+                        "description": "Apellidos del empleado",
+                        "type": "string",
+                        "example": "Pérez"
+                    },
+                    "puesto": {
+                        "description": "Puesto del empleado",
+                        "type": "string",
+                        "example": "Gerente de Ventas"
+                    },
+                    "fecha_nacimiento": {
+                        "description": "Fecha de nacimiento",
+                        "type": "string",
+                        "format": "date",
+                        "example": "1985-06-15"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreEmpresaRequest": {
+                "title": "Store Empresa Request",
+                "description": "Datos para registrar una nueva empresa",
+                "required": [
+                    "descripcion",
+                    "sector",
+                    "ubicacion"
+                ],
+                "properties": {
+                    "descripcion": {
+                        "description": "Descripción de la empresa",
+                        "type": "string",
+                        "example": "Empresa líder en desarrollo de software"
+                    },
+                    "sector": {
+                        "description": "Sector de la empresa",
+                        "type": "string",
+                        "example": "Tecnología"
+                    },
+                    "tamano_empresa": {
+                        "description": "Tamaño de la empresa",
+                        "type": "string",
+                        "example": "50-100 empleados"
+                    },
+                    "ubicacion": {
+                        "description": "Ubicación de la sede principal",
+                        "type": "string",
+                        "example": "Madrid, España"
+                    },
+                    "web": {
+                        "description": "Sitio web de la empresa",
+                        "type": "string",
+                        "format": "url",
+                        "example": "https://techsolutions.com"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreTrabajoRequest": {
+                "title": "Store Trabajo Request",
+                "description": "Datos para crear un nuevo trabajo",
+                "required": [
+                    "titulo",
+                    "descripcion",
+                    "ubicacion",
+                    "tipo_trabajo"
+                ],
+                "properties": {
+                    "titulo": {
+                        "description": "Título del trabajo",
+                        "type": "string",
+                        "example": "Desarrollador Full Stack"
+                    },
+                    "descripcion": {
+                        "description": "Descripción del trabajo",
+                        "type": "string",
+                        "example": "Buscamos experto en Laravel."
+                    },
+                    "salario": {
+                        "description": "Salario ofrecido",
+                        "type": "number",
+                        "example": 3000
+                    },
+                    "ubicacion": {
+                        "description": "Ubicación del trabajo",
+                        "type": "string",
+                        "example": "Remoto"
+                    },
+                    "tipo_trabajo": {
+                        "type": "string",
+                        "enum": [
+                            "Tiempo Completo",
+                            "Medio Tiempo",
+                            "Freelance",
+                            "Temporal"
+                        ],
+                        "example": "Tiempo Completo"
+                    },
+                    "estado": {
+                        "type": "string",
+                        "enum": [
+                            "publicado",
+                            "borrador",
+                            "archivado"
+                        ],
+                        "example": "publicado"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreValoracionRequest": {
+                "title": "Store Valoracion Request",
+                "description": "Datos para crear una nueva valoración",
+                "required": [
+                    "trabajo_id",
+                    "candidato_id",
+                    "puntuacion"
+                ],
+                "properties": {
+                    "trabajo_id": {
+                        "description": "ID del trabajo a valorar",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "candidato_id": {
+                        "description": "ID del candidato evaluado",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "puntuacion": {
+                        "description": "Puntuación (1-5)",
+                        "type": "integer",
+                        "maximum": 5,
+                        "minimum": 1,
+                        "example": 5
+                    },
+                    "comentario": {
+                        "description": "Comentario sobre la valoración",
+                        "type": "string",
+                        "example": "Excelente desempeño."
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateAplicacionRequest": {
+                "title": "Update Aplicacion Request",
+                "description": "Datos para actualizar el estado de una aplicación",
+                "required": [
+                    "estado"
+                ],
+                "properties": {
+                    "estado": {
+                        "description": "Nuevo estado de la aplicación",
+                        "type": "string",
+                        "enum": [
+                            "pendiente",
+                            "aceptado",
+                            "rechazado"
+                        ],
+                        "example": "aceptado"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateCandidatoRequest": {
+                "title": "Update Candidato Request",
+                "description": "Datos para actualizar el perfil del candidato",
+                "properties": {
+                    "apellidos": {
+                        "description": "Apellidos del candidato",
+                        "type": "string",
+                        "example": "Doe Smith"
+                    },
+                    "fecha_nacimiento": {
+                        "description": "Fecha de nacimiento",
+                        "type": "string",
+                        "format": "date",
+                        "example": "1990-01-01"
+                    },
+                    "descripcion": {
+                        "description": "Breve descripción profesional",
+                        "type": "string",
+                        "example": "Desarrollador apasionado..."
+                    },
+                    "ubicacion": {
+                        "description": "Ubicación actual",
+                        "type": "string",
+                        "example": "Barcelona"
+                    },
+                    "url_cv": {
+                        "description": "URL al CV (PDF, LinkedIn, etc)",
+                        "type": "string",
+                        "example": "https://linkedin.com/in/johndoe"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateEmpresaRequest": {
+                "title": "Update Empresa Request",
+                "description": "Datos para actualizar el perfil de una empresa",
+                "properties": {
+                    "descripcion": {
+                        "description": "Descripción de la empresa",
+                        "type": "string",
+                        "example": "Empresa líder en desarrollo de software"
+                    },
+                    "sector": {
+                        "description": "Sector de la empresa",
+                        "type": "string",
+                        "example": "Tecnología"
+                    },
+                    "tamano_empresa": {
+                        "description": "Tamaño de la empresa",
+                        "type": "string",
+                        "example": "50-100 empleados"
+                    },
+                    "ubicacion": {
+                        "description": "Ubicación de la sede principal",
+                        "type": "string",
+                        "example": "Madrid, España"
+                    },
+                    "web": {
+                        "description": "Sitio web de la empresa",
+                        "type": "string",
+                        "format": "url",
+                        "example": "https://techsolutions.com"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateTrabajoRequest": {
+                "title": "Update Trabajo Request",
+                "description": "Datos para actualizar un trabajo existente",
+                "properties": {
+                    "titulo": {
+                        "description": "Título del trabajo",
+                        "type": "string",
+                        "example": "Desarrollador Senior"
+                    },
+                    "descripcion": {
+                        "description": "Descripción del trabajo",
+                        "type": "string",
+                        "example": "Liderazgo de equipo técnico."
+                    },
+                    "salario": {
+                        "description": "Salario ofrecido",
+                        "type": "number",
+                        "example": 5000
+                    },
+                    "ubicacion": {
+                        "description": "Ubicación del trabajo",
+                        "type": "string",
+                        "example": "Madrid, España"
+                    },
+                    "tipo_trabajo": {
+                        "type": "string",
+                        "enum": [
+                            "Tiempo Completo",
+                            "Medio Tiempo",
+                            "Freelance",
+                            "Temporal"
+                        ],
+                        "example": "Tiempo Completo"
+                    },
+                    "estado": {
+                        "type": "string",
+                        "enum": [
+                            "publicado",
+                            "borrador",
+                            "archivado"
+                        ],
+                        "example": "publicado"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUsuarioRequest": {
+                "title": "Update Usuario Request",
+                "description": "Datos para actualizar un usuario",
+                "properties": {
+                    "nombre": {
+                        "description": "Nombre completo",
+                        "type": "string",
+                        "example": "Jane Doe"
+                    },
+                    "email": {
+                        "description": "Correo electrónico",
+                        "type": "string",
+                        "format": "email",
+                        "example": "jane@example.com"
+                    },
+                    "password": {
+                        "description": "Nueva contraseña",
+                        "type": "string",
+                        "format": "password",
+                        "example": "NewSecretPass123!"
+                    },
+                    "password_confirmation": {
+                        "description": "Confirmación de la nueva contraseña",
+                        "type": "string",
+                        "format": "password"
+                    },
+                    "telefono": {
+                        "description": "Número de teléfono",
+                        "type": "string",
+                        "example": "+123456789"
+                    },
+                    "foto_perfil": {
+                        "description": "URL de la foto de perfil",
+                        "type": "string",
+                        "example": "https://example.com/photo.jpg"
+                    },
+                    "estado": {
+                        "description": "Estado de la cuenta",
+                        "type": "string",
+                        "enum": [
+                            "activo",
+                            "inactivo",
+                            "pendiente"
+                        ]
+                    }
+                },
+                "type": "object"
+            },
+            "Aplicacion": {
+                "title": "Aplicacion",
+                "description": "Aplicacion model",
+                "properties": {
+                    "id": {
+                        "description": "ID de la aplicación",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "trabajo_id": {
+                        "description": "ID del trabajo al que se aplica",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "candidato_id": {
+                        "description": "ID del candidato que aplica",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "mensaje": {
+                        "description": "Mensaje del candidato al aplicar",
+                        "type": "string"
+                    },
+                    "estado": {
+                        "description": "Estado de la aplicación (ej. 'pendiente', 'aceptado', 'rechazado')",
+                        "type": "string"
+                    },
+                    "fecha_aplicacion": {
+                        "description": "Fecha y hora de la aplicación",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_at": {
+                        "description": "Marca de tiempo de creación",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Marca de tiempo de la última actualización",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Candidato": {
+                "title": "Candidato",
+                "description": "Candidato model",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID del candidato",
+                        "type": "integer",
+                        "format": "int64",
+                        "readOnly": true,
+                        "example": 1
+                    },
+                    "usuario_id": {
+                        "title": "Usuario ID",
+                        "description": "ID del usuario asociado al candidato",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "apellidos": {
+                        "title": "Apellidos",
+                        "description": "Apellidos del candidato",
+                        "type": "string",
+                        "example": "Pérez García"
+                    },
+                    "fecha_nacimiento": {
+                        "title": "Fecha de Nacimiento",
+                        "description": "Fecha de nacimiento del candidato",
+                        "type": "string",
+                        "format": "date",
+                        "example": "1990-01-01"
+                    },
+                    "descripcion": {
+                        "title": "Descripción",
+                        "description": "Descripción o perfil del candidato",
+                        "type": "string",
+                        "example": "Desarrollador web con 5 años de experiencia en Laravel y Vue.js.",
+                        "nullable": true
+                    },
+                    "ubicacion": {
+                        "title": "Ubicación",
+                        "description": "Ubicación del candidato",
+                        "type": "string",
+                        "example": "Madrid, España",
+                        "nullable": true
+                    },
+                    "url_cv": {
+                        "title": "URL CV",
+                        "description": "URL al currículum vitae del candidato",
+                        "type": "string",
+                        "format": "url",
+                        "example": "https://example.com/cv/juan_perez.pdf",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "title": "Created At",
+                        "description": "Timestamp de creación",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "example": "2023-01-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "title": "Updated At",
+                        "description": "Timestamp de la última actualización",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "example": "2023-01-01T12:00:00Z"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Candidato"
+                }
+            },
+            "Categoria": {
+                "title": "Categoria",
+                "description": "Modelo de Categoria",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "readOnly": true
+                    },
+                    "nombre": {
+                        "type": "string"
+                    },
+                    "descripcion": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Categoria"
+                }
+            },
+            "Documento": {
+                "title": "DocumentoArchivos",
+                "description": "DocumentoArchivos model",
+                "properties": {
+                    "id": {
+                        "description": "ID of the document file",
+                        "type": "integer",
+                        "format": "int64",
+                        "readOnly": true
+                    },
+                    "aplicacion_id": {
+                        "description": "Foreign key to the application",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "tipo": {
+                        "description": "Type of the document file (e.g., 'pdf', 'image', 'word')",
+                        "type": "string"
+                    },
+                    "ruta_archivo": {
+                        "description": "Path to the document file",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the document file was created",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the document file was last updated",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "DocumentoArchivos"
+                }
+            },
+            "Empleado": {
+                "title": "Empleado",
+                "description": "Modelo de Empleado",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID del empleado",
+                        "format": "int64",
+                        "readOnly": true,
+                        "example": 1
+                    },
+                    "usuario_id": {
+                        "title": "Usuario ID",
+                        "description": "ID del usuario asociado",
+                        "format": "int64",
+                        "example": 101
+                    },
+                    "empresa_id": {
+                        "title": "Empresa ID",
+                        "description": "ID de la empresa asociada",
+                        "format": "int64",
+                        "example": 201
+                    },
+                    "apellidos": {
+                        "title": "Apellidos",
+                        "description": "Apellidos del empleado",
+                        "example": "García Pérez"
+                    },
+                    "puesto": {
+                        "title": "Puesto",
+                        "description": "Puesto de trabajo del empleado",
+                        "example": "Desarrollador Senior"
+                    },
+                    "fecha_nacimiento": {
+                        "title": "Fecha de Nacimiento",
+                        "description": "Fecha de nacimiento del empleado",
+                        "format": "date",
+                        "example": "1990-05-15"
+                    },
+                    "created_at": {
+                        "title": "Fecha de Creación",
+                        "description": "Fecha y hora de creación del registro",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "example": "2023-01-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "title": "Fecha de Actualización",
+                        "description": "Fecha y hora de la última actualización del registro",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "example": "2023-01-01T13:00:00Z"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Empleado"
+                }
+            },
+            "Empresa": {
+                "title": "Empresa",
+                "description": "Empresa model",
+                "properties": {
+                    "id": {
+                        "description": "ID de la empresa",
+                        "type": "integer",
+                        "format": "int64",
+                        "readOnly": "true"
+                    },
+                    "usuario_id": {
+                        "description": "ID del usuario asociado a la empresa",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "descripcion": {
+                        "description": "Descripción de la empresa",
+                        "type": "string"
+                    },
+                    "sector": {
+                        "description": "Sector de la empresa",
+                        "type": "string"
+                    },
+                    "tamano_empresa": {
+                        "description": "Tamaño de la empresa (e.g., 'Pequeña', 'Mediana', 'Grande')",
+                        "type": "string"
+                    },
+                    "ubicacion": {
+                        "description": "Ubicación de la empresa",
+                        "type": "string"
+                    },
+                    "web": {
+                        "description": "Sitio web de la empresa",
+                        "type": "string",
+                        "format": "url"
+                    },
+                    "created_at": {
+                        "description": "Fecha de creación",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    },
+                    "updated_at": {
+                        "description": "Fecha de última actualización",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": "true"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Empresa"
+                }
+            },
+            "Trabajo": {
+                "title": "Trabajo",
+                "description": "Modelo de Trabajo",
+                "properties": {
+                    "id": {
+                        "title": "ID",
+                        "description": "ID del trabajo",
+                        "format": "int64",
+                        "readOnly": true,
+                        "example": 1
+                    },
+                    "empresa_id": {
+                        "title": "Empresa ID",
+                        "description": "ID de la empresa a la que pertenece el trabajo",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "titulo": {
+                        "title": "Título",
+                        "description": "Título del trabajo",
+                        "example": "Desarrollador Full Stack"
+                    },
+                    "slug": {
+                        "title": "Slug",
+                        "description": "Slug único para el trabajo",
+                        "example": "desarrollador-full-stack"
+                    },
+                    "descripcion": {
+                        "title": "Descripción",
+                        "description": "Descripción detallada del trabajo",
+                        "example": "Buscamos un desarrollador con experiencia en Laravel y Vue.js."
+                    },
+                    "salario": {
+                        "title": "Salario",
+                        "description": "Salario ofrecido para el trabajo",
+                        "format": "float",
+                        "example": 3000.5
+                    },
+                    "ubicacion": {
+                        "title": "Ubicación",
+                        "description": "Ubicación del trabajo",
+                        "example": "Remoto"
+                    },
+                    "tipo_trabajo": {
+                        "title": "Tipo de Trabajo",
+                        "description": "Tipo de trabajo (e.g., tiempo completo, medio tiempo)",
+                        "enum": [
+                            "Tiempo Completo",
+                            "Medio Tiempo",
+                            "Freelance",
+                            "Temporal"
+                        ],
+                        "example": "Tiempo Completo"
+                    },
+                    "estado": {
+                        "title": "Estado",
+                        "description": "Estado del trabajo (e.g., publicado, borrador, archivado)",
+                        "enum": [
+                            "publicado",
+                            "borrador",
+                            "archivado"
+                        ],
+                        "example": "publicado"
+                    },
+                    "created_at": {
+                        "title": "Created At",
+                        "description": "Fecha de creación",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "title": "Updated At",
+                        "description": "Fecha de actualización",
+                        "format": "date-time",
+                        "readOnly": true
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Trabajo"
+                }
+            },
+            "Trabajo_Categoria": {
+                "title": "Trabajo_Categoria",
+                "description": "Pivot model for many-to-many relationship between Trabajo and Categoria",
+                "properties": {
+                    "trabajo_id": {
+                        "description": "ID of the Trabajo",
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "categoria_id": {
+                        "description": "ID of the Categoria",
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                },
+                "type": "object"
+            },
+            "Usuario": {
+                "title": "Usuario",
+                "description": "Modelo de usuario",
+                "required": [
+                    "nombre",
+                    "email",
+                    "password",
+                    "rol"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID único del usuario",
+                        "type": "integer",
+                        "format": "int64",
+                        "readOnly": true,
+                        "example": 1
+                    },
+                    "nombre": {
+                        "description": "Nombre completo del usuario",
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "description": "Dirección de correo electrónico del usuario",
+                        "type": "string",
+                        "format": "email",
+                        "example": "john.doe@example.com"
+                    },
+                    "password": {
+                        "description": "Contraseña del usuario",
+                        "type": "string",
+                        "format": "password",
+                        "writeOnly": true,
+                        "example": "secretpassword"
+                    },
+                    "foto_perfil": {
+                        "description": "URL o path de la foto de perfil del usuario",
+                        "type": "string",
+                        "example": "http://example.com/profiles/john.jpg",
+                        "nullable": true
+                    },
+                    "telefono": {
+                        "description": "Número de teléfono del usuario",
+                        "type": "string",
+                        "example": "+1234567890",
+                        "nullable": true
+                    },
+                    "estado": {
+                        "description": "Estado de la cuenta del usuario",
+                        "type": "string",
+                        "default": "pendiente",
+                        "enum": [
+                            "activo",
+                            "inactivo",
+                            "pendiente"
+                        ],
+                        "example": "activo"
+                    },
+                    "rol": {
+                        "description": "Rol del usuario en el sistema",
+                        "type": "string",
+                        "default": "usuario",
+                        "enum": [
+                            "administrador",
+                            "gerente",
+                            "usuario"
+                        ],
+                        "example": "usuario"
+                    },
+                    "email_verified_at": {
+                        "description": "Marca de tiempo de verificación del correo electrónico",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "example": "2023-01-01T12:00:00Z",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Marca de tiempo de creación del registro",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "example": "2023-01-01T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "description": "Marca de tiempo de la última actualización del registro",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "example": "2023-01-01T12:00:00Z"
+                    },
+                    "gestion": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/UsuarioGestion"
+                            }
+                        ],
+                        "nullable": true,
+                        "description": "Información de gestión asociada al usuario"
+                    }
+                },
+                "type": "object"
+            },
+            "UsuarioGestion": {
+                "title": "UsuarioGestion",
+                "description": "UsuarioGestion model",
+                "properties": {
+                    "": {
+                        "$ref": "#/components/schemas/Usuario"
+                    },
+                    "id": {
+                        "title": "ID",
+                        "description": "ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "readOnly": true,
+                        "example": 1
+                    },
+                    "usuario_id": {
+                        "title": "Usuario ID",
+                        "description": "Foreign key to the Usuario model",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "rol_gestion": {
+                        "title": "Rol de Gestión",
+                        "description": "Role of management for the user",
+                        "type": "string",
+                        "example": "admin"
+                    },
+                    "created_at": {
+                        "title": "Created at",
+                        "description": "Timestamp when the record was created",
+                        "type": "string",
+                        "format": "datetime",
+                        "readOnly": true,
+                        "example": "2023-01-01T00:00:00Z"
+                    },
+                    "updated_at": {
+                        "title": "Updated at",
+                        "description": "Timestamp when the record was last updated",
+                        "type": "string",
+                        "format": "datetime",
+                        "readOnly": true,
+                        "example": "2023-01-01T00:00:00Z"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "UsuarioGestion"
+                }
+            },
+            "Valoracion": {
+                "title": "Valoracion",
+                "description": "Valoracion model",
+                "properties": {
+                    "id": {
+                        "description": "ID de la valoración",
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "trabajo_id": {
+                        "description": "ID del trabajo al que pertenece la valoración",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "candidato_id": {
+                        "description": "ID del candidato que recibió la valoración",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "puntuacion": {
+                        "description": "Puntuación de la valoración (ej. 1-5)",
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "comentario": {
+                        "description": "Comentario adicional sobre la valoración",
+                        "type": "string",
+                        "example": "Buen desempeño y actitud proactiva."
+                    },
+                    "created_at": {
+                        "description": "Fecha y hora de creación",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "description": "Última fecha y hora de actualización",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            },
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Aplicaciones",
+            "description": "Aplicaciones"
+        },
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Candidatos",
+            "description": "Candidatos"
+        },
+        {
+            "name": "Documentos",
+            "description": "Documentos"
+        },
+        {
+            "name": "Empleados",
+            "description": "Empleados"
+        },
+        {
+            "name": "Empresas",
+            "description": "Empresas"
+        },
+        {
+            "name": "Trabajos",
+            "description": "Trabajos"
+        },
+        {
+            "name": "Usuarios",
+            "description": "Usuarios"
+        },
+        {
+            "name": "Valoraciones",
+            "description": "Valoraciones"
+        }
+    ]
+}
