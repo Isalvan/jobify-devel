@@ -55,10 +55,31 @@ class EmpleadoController extends Controller
     public function store(StoreEmpleadoRequest $request)
     {
         $this->authorize('create', Empleado::class);
-
+        
         $empresa = $request->user()->empresa;
 
-        return response()->json(['message' => 'Funcionalidad de crear empleado requiere lógica de usuario.'], 501);
+        // Validated data
+        $data = $request->validated();
+
+        // 1. Create User
+        $usuario = \App\Models\Usuario::create([
+            'nombre' => $data['nombre'],
+            'email' => $data['email'],
+            'password' => \Illuminate\Support\Facades\Hash::make($data['password']),
+            'rol' => 'EMPLEADO',
+            'telefono' => '', // Optional
+        ]);
+
+        // 2. Create Empleado linked to User and Empresa
+        $empleado = Empleado::create([
+            'usuario_id' => $usuario->id,
+            'empresa_id' => $empresa->id,
+            'apellidos' => $data['apellidos'],
+            'puesto' => $data['puesto'],
+            'fecha_nacimiento' => $data['fecha_nacimiento'] ?? null,
+        ]);
+
+        return new EmpleadoResource($empleado);
     }
 
     /**

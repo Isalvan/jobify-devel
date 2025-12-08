@@ -42,10 +42,12 @@ class StoreEmpleadoRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'nombre' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuarios'],
+            'password' => ['required', 'string', 'min:8'],
             'apellidos' => ['required', 'string', 'max:255'],
             'puesto' => ['required', 'string', 'max:255'],
             'fecha_nacimiento' => ['nullable', 'date'],
-            // 'usuario_id' might be needed if creating a user
         ];
     }
 }
