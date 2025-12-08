@@ -125,25 +125,8 @@ function PerfilPage() {
                     payload.append('ubicacion', editData.localizacion);
                     payload.append('descripcion', editData.descripcion);
                     payload.append('cv_file', editData.cvFile);
-                    // Append optional url_cv if you want to explicitly clear it or something? No need.
-                    // Important: Request method PUT with FormData sometimes tricky in Laravel/PHP (method spoofing).
-                    // api.put handles this? Standard fetch PUT with body FormData should work in modern PHP/Laravel if configured?
-                    // Usually safer to use POST with _method=PUT.
-                    // Let's rely on api.js logic. If it fails, we switch to POST + _method.
-                    // For now, let's assume standard PUT works or api.js handles it. 
-                    // Wait, PHP often struggles with PUT + Multipart.
-                    // Common fix: payload.append('_method', 'PUT'); and use POST.
+                    payload.append('cv_file', editData.cvFile);
                     payload.append('_method', 'PUT');
-                    // We need to call a POST endpoint effectively. But userService.updateCandidato calls PUT.
-                    // I might need to change calls slightly -> api.post(..., payload).
-                    // But userService defines the method.
-                    // Let's use a workaround: call api.post directly here or modify userService?
-                    // Safest: Modify userService.updateCandidato to handle this edge case or just use POST with spoofing here.
-                    // But userService.updateCandidato calls api.put.
-
-                    // QUICK FIX: For this specific case, use api.post with _method if file is present.
-                    // Or catch the error.
-                    // Let's try standard approach. If it fails (backend doesn't see file), we fix.
                 } else {
                     payload = {
                         apellidos: editData.apellidos,
@@ -153,7 +136,6 @@ function PerfilPage() {
                     };
                 }
 
-                // If payload is FormData, we MUST use POST request with _method=PUT for Laravel to parse files correctly on updates.
                 if (payload instanceof FormData) {
                     await api.post(`/candidatos/${editData.relationId}`, payload);
                 } else {
