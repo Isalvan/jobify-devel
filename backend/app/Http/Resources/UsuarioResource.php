@@ -24,7 +24,9 @@ class UsuarioResource extends JsonResource
             'rol' => $this->rol,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            // Add relationships when loaded if needed
+            'candidato' => new CandidatoResource($this->whenLoaded('candidato')),
+            'empresa' => new EmpresaResource($this->whenLoaded('empresa')),
+            'empleado' => new EmpleadoResource($this->whenLoaded('empleado')),
         ];
     }
 }

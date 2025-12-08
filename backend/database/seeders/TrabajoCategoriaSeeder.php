@@ -17,7 +17,7 @@ class TrabajoCategoriaSeeder extends Seeder
 
         // Attach random categories to each job
         Trabajo::all()->each(function (Trabajo $trabajo) use ($categorias) {
-            $trabajo->categorias()->attach(
+            $trabajo->categorias()->sync(
                 $categorias->random(rand(1, 3))->pluck('id')->toArray()
             );
         });

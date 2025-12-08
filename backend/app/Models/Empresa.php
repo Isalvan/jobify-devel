@@ -85,6 +85,7 @@ class Empresa extends Model
         'tamano_empresa',
         'ubicacion',
         'web',
+        'impresiones_restantes',
     ];
 
     /**
@@ -94,6 +95,7 @@ class Empresa extends Model
      */
     protected $casts = [
         'tamano_empresa' => 'string',
+        'impresiones_restantes' => 'integer',
     ];
 
     public function usuario()
@@ -109,5 +111,13 @@ class Empresa extends Model
     public function empleados()
     {
         return $this->hasMany(Empleado::class);
+    }
+
+    /**
+     * Scope a query to only include featured companies.
+     */
+    public function scopeDestacada($query)
+    {
+        return $query->where('impresiones_restantes', '>', 0);
     }
 }

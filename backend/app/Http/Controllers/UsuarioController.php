@@ -48,7 +48,8 @@ class UsuarioController extends Controller
      */
     public function show(Usuario $usuario)
     {
-        $this->authorize('view', $usuario);
+        // $this->authorize('view', $usuario); // Public access allowed for everyone
+        $usuario->load(['candidato', 'empresa', 'empleado']);
         return new UsuarioResource($usuario);
     }
 

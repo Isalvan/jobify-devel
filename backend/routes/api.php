@@ -22,18 +22,21 @@ Route::get('/login', function () {
     return response()->json(['message' => 'Unauthorized. Please login.'], 401);
 })->name('login');
 
+// --- Trabajos (Acceso Público) ---
+Route::get('/trabajos', [TrabajoController::class, 'index']);
+Route::get('/trabajos/mejores-valorados', [TrabajoController::class, 'topRated']);
+Route::get('/trabajos/{trabajo}/valoraciones', [TrabajoController::class, 'getReviews']);
+Route::get('/trabajos/{trabajo}', [TrabajoController::class, 'show']);
+Route::get('/usuarios/{usuario}', [UsuarioController::class, 'show']);
+
 // Rutas Protegidas
 Route::middleware('auth:sanctum')->group(function () {
     // Autenticación
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return $request->user()->load(['candidato', 'empresa', 'empleado']);
     });
 
-    // --- Trabajos ---
-    // Ver: Público (o autenticado general)
-    Route::get('/trabajos', [TrabajoController::class, 'index']);
-    Route::get('/trabajos/{trabajo}', [TrabajoController::class, 'show']);
 
     // Crear/Editar/Eliminar: Solo Empresas y Administradores
     Route::middleware('role:empresa,administrador')->group(function () {
@@ -56,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/aplicaciones/{aplicacion}', [AplicacionController::class, 'update'])->middleware('role:empresa,administrador');
 
     // --- Empresas ---
+    Route::get('/empresas/destacadas', [EmpresaController::class, 'destacadas'])->withoutMiddleware('auth:sanctum');
     Route::apiResource('empresas', EmpresaController::class);
 
     // --- Candidatos ---
@@ -66,6 +70,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('valoraciones', ValoracionController::class);
     Route::apiResource('empleados', EmpleadoController::class);
 
-    // --- Usuarios (Admin) ---
-    Route::middleware('role:administrador')->apiResource('usuarios', UsuarioController::class);
+    // --- Usuarios ---
+    // Policies handle authorization (view own, update own, or Admin)
+    Route::apiResource('usuarios', UsuarioController::class)->except(['store', 'destroy', 'index', 'show']);
+    
+    Route::middleware('role:administrador')->group(function () {
+        Route::get('/usuarios', [UsuarioController::class, 'index']);
+        Route::delete('/usuarios/{usuario}', [UsuarioController::class, 'destroy']);
+    });
+
 });
