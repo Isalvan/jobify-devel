@@ -1,51 +1,54 @@
+
 import './css/BusquedaPage.css'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+
+import { useState, useEffect, useContext } from 'react'
+import { useNavigate, useSearchParams, Link, useLocation } from 'react-router-dom'
+import { jobService } from '../services/jobService'
+import Paginator from '../components/common/Paginator'
+import { AppContext } from '../contexts/AppProvider'
 
 export default function PaginaBusqueda() {
     const navegar = useNavigate()
+    const location = useLocation()
+    const { user } = useContext(AppContext)
 
-    const empleosEjemplo = [
-        {
-            id: 1,
-            titulo: 'Oferta 1',
-            empresa: 'Empresa 1',
-            ubicacion: 'Ciudad, País',
-            salario: 30,
-            tipo: 'Remoto',
-            categoria: 'Tecnología',
-            descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-            etiquetas: ['Tecnología'],
-            imagen: 'https://placehold.co/100x100',
-            dias: 2
-        },
-        {
-            id: 2,
-            titulo: 'Oferta 2',
-            empresa: 'Empresa 2',
-            ubicacion: 'Ciudad, País',
-            salario: 40,
-            tipo: 'Presencial',
-            categoria: 'Marketing',
-            descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-            etiquetas: ['Marketing', 'Ventas'],
-            imagen: 'https://placehold.co/100x100',
-            dias: 1
-        },
-        {
-            id: 3,
-            titulo: 'Oferta 3',
-            empresa: 'Empresa 3',
-            ubicacion: 'Ciudad, País',
-            salario: 35,
-            tipo: 'Híbrido',
-            categoria: 'Diseño',
-            descripcion: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-            etiquetas: ['Diseño'],
-            imagen: 'https://placehold.co/100x100',
-            dias: 0
+    const [searchParams, setSearchParams] = useSearchParams()
+    const page = parseInt(searchParams.get('page')) || 1
+
+    const [jobs, setJobs] = useState([])
+    const [meta, setMeta] = useState({})
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        const fetchJobs = async () => {
+            setLoading(true)
+            try {
+                const currentFilters = {}
+                searchParams.forEach((value, key) => {
+                    currentFilters[key] = value
+                })
+
+                const data = await jobService.getJobs(page, currentFilters)
+                setJobs(data.data)
+                setMeta(data.meta)
+            } catch (error) {
+                console.error("Error fetching jobs:", error)
+            } finally {
+                setLoading(false)
+            }
         }
-    ]
+
+        fetchJobs()
+    }, [page, searchParams])
+
+    const handlePageChange = (newPage) => {
+        if (newPage < 1 || newPage > meta.last_page) return
+
+        const newParams = new URLSearchParams(searchParams)
+        newParams.set('page', newPage)
+        setSearchParams(newParams)
+        window.scrollTo(0, 0)
+    }
 
     const categorias = [
         'Tecnología',
@@ -54,7 +57,6 @@ export default function PaginaBusqueda() {
         'Ventas'
     ]
 
-    // Estados de filtros
     const [ubicacion, setUbicacion] = useState('')
     const [salarioMin, setSalarioMin] = useState('')
     const [salarioMax, setSalarioMax] = useState('')
@@ -79,20 +81,30 @@ export default function PaginaBusqueda() {
         setCategoriaSeleccionada('')
     }
 
-    function formatearDias(dias) {
-        if (dias === 0) return 'Publicado hoy'
-        if (dias === 1) return 'Publicado ayer'
-        return `Publicado hace ${dias} días`
-    }
+    const handleToggleFavorite = async (jobId) => {
+        if (!user) {
+            navegar('/login', { state: { returnUrl: location.pathname } });
+            return;
+        }
+
+        try {
+            const response = await jobService.toggleFavorite(jobId);
+            setJobs(prevJobs => prevJobs.map(job =>
+                job.id === jobId
+                    ? { ...job, is_favorito: response.is_favorito }
+                    : job
+            ));
+        } catch (error) {
+            console.error("Error toggling favorite:", error);
+        }
+    };
 
     return (
         <div className="busqueda-page">
-            {/* Filtros */}
             <aside className="bp-filters">
                 <div className="filter-card">
                     <h5 className="mb-3">Filtros</h5>
 
-                    {/* Ubicación */}
                     <div className="filter-section">
                         <div className="filter-title">Ubicación</div>
                         <input
@@ -104,7 +116,6 @@ export default function PaginaBusqueda() {
                         />
                     </div>
 
-                    {/* Salario */}
                     <div className="filter-section">
                         <div className="filter-title">Rango salarial</div>
                         <div className="d-flex gap-2">
@@ -125,7 +136,6 @@ export default function PaginaBusqueda() {
                         </div>
                     </div>
 
-                    {/* Tipo de jornada */}
                     <div className="filter-section">
                         <div className="filter-title">Tipo de jornada</div>
                         <label className="checkbox d-block">
@@ -139,7 +149,6 @@ export default function PaginaBusqueda() {
                         </label>
                     </div>
 
-                    {/* Categoría */}
                     <div className="filter-section">
                         <div className="filter-title">Categoría</div>
                         <select className="form-select" value={categoriaSeleccionada} onChange={e => setCategoriaSeleccionada(e.target.value)}>
@@ -157,51 +166,80 @@ export default function PaginaBusqueda() {
                 </div>
             </aside>
 
-            {/* Resultados */}
             <main className="bp-results">
                 <header className="results-header mb-3">
-                    <h2 className="h4">Mostrando <strong>{empleosEjemplo.length}</strong> ofertas de empleo</h2>
+                    <h2 className="h4">Mostrando <strong>{meta.total || 0}</strong> ofertas de empleo</h2>
                 </header>
 
-                <section className="results-list">
-                    {empleosEjemplo.map(empleo => (
-                        <article className="job-card mb-3" key={empleo.id}>
-                            <div className="job-left me-3">
-                                <img src={empleo.imagen} alt="logo" />
-                            </div>
-                            <div className="job-main">
-                                <div className="job-header d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h4 className="job-title mb-1">{empleo.titulo}</h4>
-                                        <div className="company text-muted small">{empleo.empresa} - <span className="location">{empleo.ubicacion}</span></div>
-                                    </div>
+                {loading ? (
+                    <div className="text-center py-5">
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        <section className="results-list">
+                            {jobs.map(empleo => {
+                                return (
+                                    <article className="job-card mb-3" key={empleo.id}>
+                                        <div className="job-left me-3">
+                                            <img src={empleo.empresa?.logo || 'https://placehold.co/100x100'} alt="logo" width="60" />
+                                        </div>
+                                        <div className="job-main">
+                                            <div className="job-header d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h4 className="job-title mb-1">
+                                                        <Link to={`/ofertas/${empleo.id}`} state={{ oferta: empleo }} className="text-decoration-none text-dark">
+                                                            {empleo.titulo}
+                                                        </Link>
+                                                    </h4>
+                                                    <div className="company text-muted small">{empleo.empresa?.nombre || 'Empresa Confidencial'} - <span className="location">{empleo.ubicacion}</span></div>
+                                                </div>
 
-                                    <div className="d-flex align-items-center gap-2">
-                                        <div className="date text-muted small">{formatearDias(empleo.dias)}</div>
-                                        <button className="bookmark material-symbols-outlined">bookmark</button>
-                                    </div>
-                                </div>
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <div className="date text-muted small">{new Date(empleo.created_at).toLocaleDateString()}</div>
+                                                    <button
+                                                        className="btn btn-link p-0 text-decoration-none"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleToggleFavorite(empleo.id);
+                                                        }}
+                                                        title={empleo.is_favorito ? "Quitar de favoritos" : "Guardar en favoritos"}
+                                                    >
+                                                        <span
+                                                            className={`material-symbols-outlined ${empleo.is_favorito ? 'text-warning' : 'text-secondary'}`}
+                                                            style={{ color: empleo.is_favorito ? '#ffc107' : '' }}
+                                                        >
+                                                            {empleo.is_favorito ? 'turned_in' : 'turned_in_not'}
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
 
-                                <p className="desc mt-2">{empleo.descripcion}</p>
+                                            <p className="desc mt-2 text-truncate" style={{ maxWidth: '700px' }}>{empleo.descripcion}</p>
 
-                                <div className="tags mt-2">
-                                    {empleo.etiquetas.map((t, i) => (<span className="tag me-2" key={i}>{t}</span>))}
-                                </div>
-                            </div>
-                        </article>
-                    ))}
-                </section>
+                                            <div className="d-flex justify-content-between align-items-center mt-2">
+                                                <div className="tags">
+                                                    <span className="tag me-2 badge bg-light text-dark border">{empleo.tipo_jornada || 'Jornada completa'}</span>
+                                                    {empleo.modalidad && <span className="tag me-2 badge bg-light text-dark border">{empleo.modalidad}</span>}
+                                                    {empleo.salario_min && <span className="tag me-2 badge bg-success-subtle text-success-emphasis border border-success-subtle">{empleo.salario_min} - {empleo.salario_max} €</span>}
+                                                </div>
+                                                <Link to={`/ofertas/${empleo.id}`} state={{ oferta: empleo }} className="btn btn-primary btn-sm">Ver oferta</Link>
+                                            </div>
+                                        </div>
+                                    </article>
+                                )
+                            })}
+                        </section>
 
-                {/* Paginación */}
-                <footer className="pagination mt-4 d-flex justify-content-center align-items-center gap-2">
-                    <button className="btn btn-sm btn-outline-secondary">‹</button>
-                    <button className="btn btn-sm btn-primary">1</button>
-                    <button className="btn btn-sm btn-outline-secondary">2</button>
-                    <button className="btn btn-sm btn-outline-secondary">3</button>
-                    <span className="text-muted">…</span>
-                    <button className="btn btn-sm btn-outline-secondary">10</button>
-                    <button className="btn btn-sm btn-outline-secondary">›</button>
-                </footer>
+                        <Paginator
+                            currentPage={meta.current_page}
+                            lastPage={meta.last_page}
+                            onPageChange={handlePageChange}
+                        />
+                    </>
+                )}
             </main>
         </div>
     )
