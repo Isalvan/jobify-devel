@@ -13,7 +13,7 @@ return [
                  * Route for accessing api documentation interface
                 */
                 'api' => 'api/documentation',
-                
+
                 /*
                  * Route for accessing parsed swagger annotations
                 */
@@ -61,12 +61,47 @@ return [
                  * Absolute path to directories that should be excluded from scanning
                 */
                 'excludes' => [],
+
+                /*
+                 * Absolute path to directory where to export docs
+                */
+                'docs' => storage_path('api-docs'),
+
+                /*
+                 * Generate always when uri is requested
+                */
+                'generate_always' => env('L5_SWAGGER_GENERATE_ALWAYS', false),
             ],
+
+            /*
+             * Generate always when uri is requested
+             */
+            'generate_always' => env('L5_SWAGGER_GENERATE_ALWAYS', false),
+
+            /*
+             * Generate a copy of documentation in yaml format
+             */
+            'generate_yaml_copy' => env('L5_SWAGGER_GENERATE_YAML_COPY', false),
 
             /*
              * Persist authorization data
             */
             'persist_authorization' => env('L5_SWAGGER_UI_PERSIST_AUTHORIZATION', false),
+
+            /*
+             * Swagger UI configuration parameters
+            */
+            'swagger_ui_settings' => [],
+
+            /*
+             * Additional configuration for swagger UI
+            */
+            'additional_config_url' => null,
+
+            /*
+             * Validator URL
+            */
+            'validator_url' => null,
         ],
     ],
     'defaults' => [
@@ -119,6 +154,11 @@ return [
              * @see https://github.com/zircote/swagger-php/blob/master/docs/scanning.md#common-options
             */
             'excludes' => [],
+
+            /*
+             * Generate always when uri is requested
+            */
+            'generate_always' => env('L5_SWAGGER_GENERATE_ALWAYS', false),
         ],
 
         'scanOptions' => [
@@ -167,18 +207,17 @@ return [
          * API security definitions. Will be generated in the documentation file.
         */
         'securityDefinitions' => [
-            'sanctum' => [ // Unique name of security
-                'type' => 'apiKey', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
-                'description' => 'Enter token in format (Bearer <token>)',
-                'name' => 'Authorization', // The name of the header or query parameter to be used.
-                'in' => 'header', // The location of the API key. Valid values are "query" or "header".
+            'securitySchemes' => [
+                'sanctum' => [
+                    'type' => 'apiKey',
+                    'description' => 'Enter token in format (Bearer <token>)',
+                    'name' => 'Authorization',
+                    'in' => 'header',
+                ],
             ],
         ],
-        
+
         'security' => [
-            /*
-             * Examples of Security schemes
-            */
             [
                 'sanctum' => []
             ],
@@ -233,10 +272,23 @@ return [
         ],
 
         /*
+         * Uncomment to pass the validatorUrl parameter to SwaggerUi init on the JS
+         * side.  A null value here disables validation.
+         */
+        'validator_url' => null,
+
+        /*
+         * Uncomment to add request interceptor middleware to request for swagger ui index and resource
+         */
+        'interceptor' => null,
+
+        'swagger_ui_settings' => [],
+
+        /*
          * Constants which can be used in annotations
          */
         'constants' => [
-            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://localhost'),
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://127.0.0.1:8000'),
         ],
 
         /*
