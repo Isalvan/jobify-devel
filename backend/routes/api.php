@@ -79,4 +79,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/usuarios/{usuario}', [UsuarioController::class, 'destroy']);
     });
 
+    // Favoritos
+    Route::get('/favoritos', [App\Http\Controllers\FavoritoController::class, 'index']);
+    Route::post('/favoritos/toggle', [App\Http\Controllers\FavoritoController::class, 'toggle']);
 });
