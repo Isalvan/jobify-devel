@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../contexts/AppProvider';
 import './css/LoginPage.css';
 
 function LoginPage() {
@@ -9,13 +11,17 @@ function LoginPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
+    const { login } = useContext(AppContext);
+    const navigate = useNavigate();
+
     const handleSubmit = async function (e) {
         e.preventDefault();
         setError('');
         setLoading(true);
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 3000));
+            await login(email, password);
+            navigate('/'); // Redirigir al home o dashboard
         } catch (err) {
             setError(err.message || 'Error al iniciar sesión');
         } finally {
