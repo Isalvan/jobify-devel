@@ -81,7 +81,7 @@ function DetallesOfertaPage() {
                 setApplyFeedback({ type: 'warning', message: 'Ya has aplicado anteriormente a esta oferta.' });
                 setOferta(prev => ({ ...prev, mi_aplicacion: true }));
             } else {
-                setApplyFeedback({ type: 'danger', message: 'Ocurrió un error al aplicar. Inténtalo de nuevo.' });
+                setApplyFeedback({ type: 'danger', message: error.message || 'Ocurrió un error al aplicar. Inténtalo de nuevo.' });
             }
         } finally {
             setApplying(false);

@@ -27,7 +27,21 @@ async function request(endpoint, { method = "GET", body, token, headers = {} } =
     }
 
     const response = await fetch(`${API_URL}${endpoint}`, config);
-    const data = await response.json();
+
+    if (response.status === 413) {
+        throw new Error("El archivo es demasiado grande. Por favor, sube un archivo más pequeño.");
+    }
+
+    let data;
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+    } else {
+        if (!response.ok) {
+            throw new Error(response.statusText || "Error en la petición (Respuesta no legible)");
+        }
+        data = {}; 
+    }
 
     if (!response.ok) {
         if (data.errors) {
