@@ -12,6 +12,21 @@ class EmpresaSeeder extends Seeder
      */
     public function run(): void
     {
-        Empresa::factory(10)->create();
+        if (!\App\Models\Usuario::where('email', 'empresa@jobify.com')->exists()) {
+            $usuario = \App\Models\Usuario::factory()->create([
+                'email' => 'empresa@jobify.com',
+                'rol' => 'EMPRESA',
+                'nombre' => 'Empresa Test',
+                'password' => bcrypt('password'),
+            ]);
+
+            Empresa::factory()->create([
+                'usuario_id' => $usuario->id,
+                'descripcion' => 'Una empresa de prueba para validar la creación de ofertas.',
+                'sector' => 'Tecnología',
+            ]);
+        }
+
+        Empresa::factory(150)->create();
     }
 }

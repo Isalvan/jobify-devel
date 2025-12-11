@@ -21,11 +21,18 @@ class ValoracionSeeder extends Seeder
             return;
         }
 
-        foreach (range(1, 20) as $i) {
-            Valoracion::factory()->create([
-                'trabajo_id' => $trabajos->random()->id,
-                'candidato_id' => $candidatos->random()->id,
-            ]);
-        }
+        $trabajos->each(function ($trabajo) use ($candidatos) {
+
+            $numValoraciones = rand(10, 100);
+
+            $candidatosRandom = $candidatos->random(min($numValoraciones, $candidatos->count()));
+
+            foreach ($candidatosRandom as $candidato) {
+                Valoracion::factory()->create([
+                    'trabajo_id' => $trabajo->id,
+                    'candidato_id' => $candidato->id,
+                ]);
+            }
+        });
     }
 }
