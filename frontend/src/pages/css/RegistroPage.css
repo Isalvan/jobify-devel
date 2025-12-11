@@ -12,7 +12,6 @@
     background: var(--surface-light);
     min-height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
     font-family: 'Work Sans', system-ui, sans-serif;
     color: var(--text-primary);
@@ -28,9 +27,9 @@
     max-width: 64rem;
     width: 100%;
     position: relative;
-    /* Permitir scroll en dispositivos pequeños */
-    max-height: 95vh;
-    overflow-y: auto;
+    width: 100%;
+    position: relative;
+    /* Removed max-height/overflow to allow proper page scrolling */
 }
 
 @media (max-height: 800px) {
@@ -38,9 +37,6 @@
         align-items: flex-start;
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
-    }
-    .registro-container {
-        max-height: 95vh;
     }
 }
 
