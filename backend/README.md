@@ -32,9 +32,6 @@ cp .env.example .env
 php artisan key:generate
 
 # Configurar base de datos en .env (DB_DATABASE, DB_USERNAME, etc.)
-
-# Crear enlace simbólico para imágenes
-php artisan storage:link
 ```
 
 ### 3. Base de Datos
@@ -44,8 +41,6 @@ Correr migraciones y seeders para tener datos de prueba (Usuarios, Ofertas, Cate
 ```bash
 php artisan migrate --seed
 ```
-
-php artisan storage:link
 
 ### 4. Servidor de Desarrollo
 
