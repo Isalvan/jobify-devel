@@ -35,9 +35,6 @@ php artisan key:generate
 
 # Crear enlace simbólico para imágenes
 php artisan storage:link
-
-# Crear enlace simbólico para imágenes
-php artisan storage:link
 ```
 
 ### 3. Base de Datos
