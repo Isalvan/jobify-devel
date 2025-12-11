@@ -32,6 +32,12 @@ cp .env.example .env
 php artisan key:generate
 
 # Configurar base de datos en .env (DB_DATABASE, DB_USERNAME, etc.)
+
+# Crear enlace simbólico para imágenes
+php artisan storage:link
+
+# Crear enlace simbólico para imágenes
+php artisan storage:link
 ```
 
 ### 3. Base de Datos
