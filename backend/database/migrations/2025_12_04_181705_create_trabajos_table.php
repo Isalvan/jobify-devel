@@ -19,7 +19,8 @@ return new class extends Migration
             $table->longText('descripcion');
             $table->decimal('salario', 10, 2)->nullable();
             $table->string('ubicacion', 255);
-            $table->enum('tipo_trabajo', ['PRESENCIAL', 'REMOTO', 'HIBRIDO']);
+            $table->enum('tipo_trabajo', ['Tiempo Completo', 'Medio Tiempo', 'Freelance', 'Temporal']);
+            $table->enum('modalidad', ['PRESENCIAL', 'REMOTO', 'HIBRIDO'])->default('PRESENCIAL');
             $table->enum('estado', ['publicado', 'borrador', 'cerrado'])->default('borrador');
             $table->timestamps();
         });

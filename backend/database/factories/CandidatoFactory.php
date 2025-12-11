@@ -16,9 +16,11 @@ class CandidatoFactory extends Factory
             'usuario_id' => Usuario::factory()->candidato(),
             'apellidos' => fake()->lastName(),
             'fecha_nacimiento' => fake()->date(),
-            'descripcion' => fake()->text(),
+            'descripcion' => fake()->realText(300),
             'ubicacion' => fake()->city(),
             'url_cv' => fake()->url(),
+            'created_at' => fake()->dateTimeBetween('-2 years', 'now'),
+            'updated_at' => fake()->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }

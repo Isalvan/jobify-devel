@@ -16,9 +16,11 @@ class AplicacionFactory extends Factory
         return [
             'trabajo_id' => Trabajo::factory(),
             'candidato_id' => Candidato::factory(),
-            'mensaje' => fake()->paragraph(),
+            'mensaje' => fake()->realText(200),
             'estado' => fake()->randomElement(['PENDIENTE', 'ACEPTADA', 'RECHAZADA', 'EN_PROCESO']),
-            'fecha_aplicacion' => now(),
+            'fecha_aplicacion' => fake()->dateTimeBetween('-6 months', 'now'),
+            'created_at' => fake()->dateTimeBetween('-6 months', 'now'),
+            'updated_at' => fake()->dateTimeBetween('-3 months', 'now'),
         ];
     }
 }

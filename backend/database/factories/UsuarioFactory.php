@@ -33,6 +33,8 @@ class UsuarioFactory extends Factory
             'estado' => 'ACTIVO',
             'rol' => 'CANDIDATO', // Default role
             'foto_perfil' => null, // Will be set based on role/name later or overridden
+            'created_at' => fake()->dateTimeBetween('-2 years', 'now'),
+            'updated_at' => fake()->dateTimeBetween('-1 year', 'now'),
         ];
     }
 
@@ -41,7 +43,6 @@ class UsuarioFactory extends Factory
         return $this->state(fn(array $attributes) => [
             'rol' => 'EMPRESA',
             'nombre' => fake()->company(),
-            'foto_perfil' => 'https://picsum.photos/seed/' . Str::slug($attributes['email']) . '/200/200',
         ]);
     }
 
@@ -49,7 +50,6 @@ class UsuarioFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'rol' => 'CANDIDATO',
-            'foto_perfil' => 'https://i.pravatar.cc/150?u=' . Str::random(5),
         ]);
     }
 
@@ -65,7 +65,6 @@ class UsuarioFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'rol' => 'EMPLEADO',
-            'foto_perfil' => 'https://i.pravatar.cc/150?u=' . Str::random(5),
         ]);
     }
 }

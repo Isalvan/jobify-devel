@@ -14,7 +14,7 @@ class TrabajoSeeder extends Seeder
     public function run(): void
     {
         Empresa::all()->each(function (Empresa $empresa) {
-            Trabajo::factory(rand(1, 5))->create([
+            Trabajo::factory(rand(2, 8))->create([
                 'empresa_id' => $empresa->id,
             ]);
         });
