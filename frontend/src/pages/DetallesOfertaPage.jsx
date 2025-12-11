@@ -10,7 +10,7 @@ import JobSidebar from '../components/jobs/JobSidebar';
 import JobReviews from '../components/jobs/JobReviews';
 import ApplicationModal from '../components/jobs/ApplicationModal';
 
-import './css/DetallesOfertaPage.css';
+
 
 function DetallesOfertaPage() {
     const { id } = useParams();
@@ -63,12 +63,12 @@ function DetallesOfertaPage() {
     const confirmApply = async () => {
         setApplying(true);
         try {
-            await applicationService.applyToJob(oferta.id, mensaje, applicationCvFile, useProfileCv);
+            const response = await applicationService.applyToJob(oferta.id, mensaje, applicationCvFile, useProfileCv);
             setApplyFeedback({ type: 'success', message: '¡Has aplicado correctamente a esta oferta!' });
 
             setOferta(prev => ({
                 ...prev,
-                mi_aplicacion: true
+                mi_aplicacion: response.data || response // Store full object, fallback if not wrapped
             }));
 
             setTimeout(() => {
@@ -79,12 +79,44 @@ function DetallesOfertaPage() {
             console.error(error);
             if (error.response && error.response.status === 409) {
                 setApplyFeedback({ type: 'warning', message: 'Ya has aplicado anteriormente a esta oferta.' });
-                setOferta(prev => ({ ...prev, mi_aplicacion: true }));
+                // We don't have the application ID here easily unless we fetch it, but let's assume valid state
+                // If 409, we might want to fetch the job again to get the application ID?
+                // For now, let's just set it to true which might be partial
+                // Ideally reload the job:
+                 const updatedJob = await jobService.getJob(oferta.id);
+                 setOferta(updatedJob.data);
             } else {
                 setApplyFeedback({ type: 'danger', message: error.message || 'Ocurrió un error al aplicar. Inténtalo de nuevo.' });
             }
         } finally {
             setApplying(false);
+        }
+    };
+
+    const handleWithdraw = async () => {
+        if (!oferta.mi_aplicacion) return;
+        
+        // Handle edge case where mi_aplicacion might be just "true" (legacy/error state)
+        // ideally we need the ID.
+        // If it's a boolean true, we can't delete without ID.
+        // But since we updated confirmApply to set data, and initial load gets data, we should be good.
+        // Fallback: reload page if ID missing?
+        const applicationId = oferta.mi_aplicacion?.id || oferta.mi_aplicacion; // fallback if it was just ID
+        
+        if (typeof applicationId !== 'number' && typeof applicationId !== 'string') {
+            console.error("Cannot withdraw: Missing application ID");
+            alert("Error: No se pudo identificar la candidatura para retirar. Por favor recarga la página.");
+            return;
+        }
+
+        if (window.confirm('¿Estás seguro de que quieres eliminar tu candidatura de esta oferta?')) {
+             try {
+                 await applicationService.deleteApplication(applicationId);
+                 setOferta(prev => ({ ...prev, mi_aplicacion: null }));
+             } catch (error) {
+                 console.error(error);
+                 alert('Error al retirar la candidatura.');
+             }
         }
     };
 
@@ -122,24 +154,32 @@ function DetallesOfertaPage() {
     );
 
     return (
-        <div className="detalles-container">
-            <div className="detalles-main">
-                <JobHeader
-                    oferta={oferta}
-                    onToggleFavorite={handleToggleFavorite}
-                    onApply={handleApplyClick}
-                />
+        <div className="container py-5">
+            <div className="row g-4">
+                <div className="col-12 col-lg-8">
+                    <JobHeader
+                        oferta={oferta}
+                        user={user}
+                        onToggleFavorite={handleToggleFavorite}
+                        onApply={handleApplyClick}
+                        onWithdraw={handleWithdraw}
+                    />
 
-                <JobDetails oferta={oferta} />
+                    <JobDetails oferta={oferta} />
 
-                <JobReviews
-                    oferta={oferta}
-                    user={user}
-                    onReviewAdded={handleReviewAdded}
-                />
+                    <JobReviews
+                        oferta={oferta}
+                        user={user}
+                        onReviewAdded={handleReviewAdded}
+                    />
+                </div>
+
+                <div className="col-12 col-lg-4">
+                    <div className="sticky-top" style={{ top: '6rem', zIndex: 100 }}>
+                        <JobSidebar oferta={oferta} />
+                    </div>
+                </div>
             </div>
-
-            <JobSidebar oferta={oferta} />
 
             <ApplicationModal
                 show={showModal}

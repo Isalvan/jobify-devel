@@ -12,5 +12,9 @@ export const ratingService = {
 
     async getJobRatings(jobId, page = 1) {
         return await api.get(`/trabajos/${jobId}/valoraciones?page=${page}`);
+    },
+
+    async deleteRating(id) {
+        return await api.delete(`/valoraciones/${id}`);
     }
 };

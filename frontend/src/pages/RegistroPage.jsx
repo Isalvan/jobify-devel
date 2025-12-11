@@ -61,238 +61,197 @@ function RegistroPage() {
     };
 
     return (
-        <div className="registro-page d-flex align-items-center justify-content-center">
-            <div className="registro-container">
-                <a href="/" className="volver btn btn-link top-0 start-0 m-3 text-decoration-none">
-                    <span className="material-symbols-outlined text-primary">arrow_back</span> Volver al inicio
+        <div className="registro-page d-flex align-items-center justify-content-center bg-light py-5" style={{minHeight: '100vh'}}>
+            <div className="registro-container card-premium p-5 shadow-lg" style={{maxWidth: '900px', width: '100%'}}>
+                <a href="/" className="d-flex align-items-center mb-4 text-decoration-none text-muted small hover-primary">
+                    <span className="material-symbols-outlined me-1" style={{fontSize: '18px'}}>arrow_back</span> Volver al inicio
                 </a>
 
-                <div className="texto-bienvenida text-center mb-5">
-                    <h1 className="display-5 fw-bold mb-2">Jobify</h1>
-                    <p className="lead text-muted">Regístrate y crea tu perfil en Jobify</p>
+                <div className="text-center mb-5">
+                    <h1 className="fw-bold mb-2 text-gradient display-6">Crea tu cuenta</h1>
+                    <p className="text-muted">Únete a Jobify y encuentra tu próximo empleo</p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    <div className="row gx-3">
+                    <div className="row g-4">
                         <div className="col-12 col-md-6">
-                            <div className="mb-4">
-                                <label htmlFor="nombre" className="form-label fw-medium">Nombre <span className="text-danger ms-1" aria-hidden="true">*</span></label>
-                                <div className="input-group input-group-lg">
-                                    <span className="input-group-text material-symbols-outlined bg-light">person</span>
-                                    <input
-                                        type="text"
-                                        id="nombre"
-                                        name="nombre"
-                                        className="form-control form-control-lg"
-                                        placeholder="Tu nombre"
-                                        value={nombre}
-                                        onChange={(e) => setNombre(e.target.value)}
-                                        disabled={loading}
-                                        required
-                                    />
-                                </div>
+                            <label className="form-label fw-medium small text-muted">Nombre <span className="text-danger">*</span></label>
+                            <div className="input-group-premium">
+                                <span className="material-symbols-outlined text-primary ms-2">person</span>
+                                <input
+                                    type="text"
+                                    placeholder="Tu nombre"
+                                    value={nombre}
+                                    onChange={(e) => setNombre(e.target.value)}
+                                    disabled={loading}
+                                    required
+                                />
                             </div>
                         </div>
 
                         <div className="col-12 col-md-6">
-                            <div className="mb-4">
-                                <label htmlFor="apellidos" className="form-label fw-medium">Apellidos <span className="text-danger ms-1" aria-hidden="true">*</span></label>
-                                <div className="input-group input-group-lg">
-                                    <span className="input-group-text material-symbols-outlined bg-light">badge</span>
-                                    <input
-                                        type="text"
-                                        id="apellidos"
-                                        name="apellidos"
-                                        className="form-control form-control-lg"
-                                        placeholder="Tus apellidos"
-                                        value={apellidos}
-                                        onChange={(e) => setApellidos(e.target.value)}
-                                        disabled={loading}
-                                        required
-                                    />
-                                </div>
+                            <label className="form-label fw-medium small text-muted">Apellidos <span className="text-danger">*</span></label>
+                            <div className="input-group-premium">
+                                <span className="material-symbols-outlined text-primary ms-2">badge</span>
+                                <input
+                                    type="text"
+                                    placeholder="Tus apellidos"
+                                    value={apellidos}
+                                    onChange={(e) => setApellidos(e.target.value)}
+                                    disabled={loading}
+                                    required
+                                />
                             </div>
                         </div>
 
                         <div className="col-12 col-md-6">
-                            <div className="mb-4">
-                                <label htmlFor="email" className="form-label fw-medium">Correo Electrónico <span className="text-danger ms-1" aria-hidden="true">*</span></label>
-                                <div className="input-group input-group-lg">
-                                    <span className="input-group-text material-symbols-outlined bg-light">mail</span>
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        name="email"
-                                        className="form-control form-control-lg"
-                                        placeholder="tu@email.com"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        disabled={loading}
-                                        required
-                                    />
-                                </div>
+                            <label className="form-label fw-medium small text-muted">Email <span className="text-danger">*</span></label>
+                            <div className="input-group-premium">
+                                <span className="material-symbols-outlined text-primary ms-2">mail</span>
+                                <input
+                                    type="email"
+                                    placeholder="tu@email.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                    title="Introduce un email válido (ej: usuario@dominio.com)"
+                                    disabled={loading}
+                                    required
+                                />
                             </div>
                         </div>
 
                         <div className="col-12 col-md-6">
-                            <div className="mb-4">
-                                <label htmlFor="fechaNacimiento" className="form-label fw-medium">Fecha de Nacimiento <span className="text-danger ms-1" aria-hidden="true">*</span></label>
-                                <div className="input-group input-group-lg">
-                                    <span className="input-group-text material-symbols-outlined bg-light">calendar_month</span>
-                                    <input
-                                        type="date"
-                                        id="fechaNacimiento"
-                                        name="fechaNacimiento"
-                                        className="form-control form-control-lg"
-                                        value={fechaNacimiento}
-                                        onChange={(e) => setFechaNacimiento(e.target.value)}
-                                        disabled={loading}
-                                        required
-                                    />
-                                </div>
+                            <label className="form-label fw-medium small text-muted">Fecha de Nacimiento <span className="text-danger">*</span></label>
+                            <div className="input-group-premium">
+                                <span className="material-symbols-outlined text-primary ms-2">calendar_month</span>
+                                <input
+                                    type="date"
+                                    value={fechaNacimiento}
+                                    onChange={(e) => setFechaNacimiento(e.target.value)}
+                                    disabled={loading}
+                                    required
+                                />
                             </div>
                         </div>
 
                         <div className="col-12 col-md-6">
-                            <div className="mb-4">
-                                <label htmlFor="password" className="form-label fw-medium">Contraseña <span className="text-danger ms-1" aria-hidden="true">*</span></label>
-                                <div className="input-group input-group-lg position-relative">
-                                    <span className="input-group-text material-symbols-outlined bg-light">lock</span>
-                                    <input
-                                        type={showPassword ? 'text' : 'password'}
-                                        id="password"
-                                        name="password"
-                                        className="form-control form-control-lg"
-                                        placeholder="Tu contraseña"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        disabled={loading}
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        className="btn btn-outline-secondary"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        aria-pressed={showPassword}
-                                        aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                                    >
-                                        <span className="material-symbols-outlined">
-                                            {showPassword ? 'visibility_off' : 'visibility'}
-                                        </span>
-                                    </button>
-                                </div>
+                            <label className="form-label fw-medium small text-muted">Contraseña <span className="text-danger">*</span></label>
+                            <div className="input-group-premium">
+                                <span className="material-symbols-outlined text-primary ms-2">lock</span>
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    placeholder="Tu contraseña"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    disabled={loading}
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    className="btn btn-link text-decoration-none text-muted p-0 me-2"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    <span className="material-symbols-outlined" style={{fontSize: '20px'}}>
+                                        {showPassword ? 'visibility_off' : 'visibility'}
+                                    </span>
+                                </button>
                             </div>
                         </div>
 
                         <div className="col-12 col-md-6">
-                            <div className="mb-4">
-                                <label htmlFor="confirmPassword" className="form-label fw-medium">Repetir Contraseña <span className="text-danger ms-1" aria-hidden="true">*</span></label>
-                                <div className="input-group input-group-lg position-relative">
-                                    <span className="input-group-text material-symbols-outlined bg-light">lock</span>
-                                    <input
-                                        type={showConfirmPassword ? 'text' : 'password'}
-                                        id="confirmPassword"
-                                        name="confirmPassword"
-                                        className="form-control form-control-lg"
-                                        placeholder="Repite tu contraseña"
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        disabled={loading}
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        className="btn btn-outline-secondary"
-                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                        aria-pressed={showConfirmPassword}
-                                        aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                                    >
-                                        <span className="material-symbols-outlined">
-                                            {showConfirmPassword ? 'visibility_off' : 'visibility'}
-                                        </span>
-                                    </button>
-                                </div>
+                            <label className="form-label fw-medium small text-muted">Repetir Contraseña <span className="text-danger">*</span></label>
+                            <div className="input-group-premium">
+                                <span className="material-symbols-outlined text-primary ms-2">lock</span>
+                                <input
+                                    type={showConfirmPassword ? 'text' : 'password'}
+                                    placeholder="Repite tu contraseña"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    disabled={loading}
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    className="btn btn-link text-decoration-none text-muted p-0 me-2"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                >
+                                    <span className="material-symbols-outlined" style={{fontSize: '20px'}}>
+                                        {showConfirmPassword ? 'visibility_off' : 'visibility'}
+                                    </span>
+                                </button>
                             </div>
                         </div>
 
                         <div className="col-12 col-md-6">
-                            <div className="mb-4">
-                                <label htmlFor="telefono" className="form-label fw-medium">Teléfono</label>
-                                <div className="input-group input-group-lg">
-                                    <span className="input-group-text material-symbols-outlined bg-light">phone</span>
-                                    <input
-                                        type="tel"
-                                        id="telefono"
-                                        name="telefono"
-                                        className="form-control form-control-lg"
-                                        placeholder="Tu teléfono"
-                                        value={telefono}
-                                        onChange={(e) => setTelefono(e.target.value)}
-                                        disabled={loading}
-                                    />
-                                </div>
+                            <label className="form-label fw-medium small text-muted">Teléfono</label>
+                            <div className="input-group-premium">
+                                <span className="material-symbols-outlined text-primary ms-2">phone</span>
+                                <input
+                                    type="tel"
+                                    placeholder="Tu teléfono"
+                                    value={telefono}
+                                    onChange={(e) => setTelefono(e.target.value)}
+                                    disabled={loading}
+                                />
                             </div>
                         </div>
 
                         <div className="col-12 col-md-6">
-                            <div className="mb-4">
-                                <label htmlFor="localizacion" className="form-label fw-medium">Localización <span className="text-danger ms-1" aria-hidden="true">*</span></label>
-                                <div className="input-group input-group-lg">
-                                    <span className="input-group-text material-symbols-outlined bg-light">place</span>
-                                    <input
-                                        type="text"
-                                        id="localizacion"
-                                        name="localizacion"
-                                        className="form-control form-control-lg"
-                                        placeholder="Tu ciudad"
-                                        value={localizacion}
-                                        onChange={(e) => setLocalizacion(e.target.value)}
-                                        disabled={loading}
-                                        required
-                                    />
-                                </div>
+                            <label className="form-label fw-medium small text-muted">Localización <span className="text-danger">*</span></label>
+                            <div className="input-group-premium">
+                                <span className="material-symbols-outlined text-primary ms-2">place</span>
+                                <input
+                                    type="text"
+                                    placeholder="Tu ciudad"
+                                    value={localizacion}
+                                    onChange={(e) => setLocalizacion(e.target.value)}
+                                    disabled={loading}
+                                    required
+                                />
                             </div>
                         </div>
 
                         <div className="col-12">
-                            <div className="mb-4">
-                                <label htmlFor="descripcion" className="form-label fw-medium">Descripción</label>
-                                <div>
-                                    <textarea
-                                        id="descripcion"
-                                        name="descripcion"
-                                        className="form-control form-control-lg"
-                                        placeholder="Cuéntanos algo sobre ti"
-                                        rows={3}
-                                        value={descripcion}
-                                        onChange={(e) => setDescripcion(e.target.value)}
-                                        disabled={loading}
-                                    />
-                                </div>
+                            <label className="form-label fw-medium small text-muted">Descripción</label>
+                            <div className="input-group-premium align-items-start">
+                                <span className="material-symbols-outlined text-primary ms-2 mt-2">description</span>
+                                <textarea
+                                    className="form-control border-0 shadow-none"
+                                    placeholder="Cuéntanos algo sobre ti"
+                                    rows={3}
+                                    value={descripcion}
+                                    onChange={(e) => setDescripcion(e.target.value)}
+                                    disabled={loading}
+                                    style={{resize: 'none', background: 'transparent'}}
+                                />
                             </div>
                         </div>
                     </div>
 
                     {error && (
-                        <div className="alert alert-danger" role="alert">{error}</div>
+                        <div className="alert alert-danger mt-4" role="alert">{error}</div>
                     )}
                     {success && (
-                        <div className="alert alert-success" role="alert">{success}</div>
+                        <div className="alert alert-success mt-4" role="alert">{success}</div>
                     )}
 
-                    <button
-                        type="submit"
-                        className="btn btn-primary btn-lg w-100 fw-bold mb-3"
-                        disabled={loading}
-                    >
-                        {loading && (
-                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        )}
-                        {loading ? 'Creando cuenta...' : 'Crear cuenta'}
-                    </button>
+                    <div className="mt-4">
+                        <button
+                            type="submit"
+                            className="btn-premium w-100 justify-content-center py-3"
+                            disabled={loading}
+                        >
+                            {loading && (
+                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            )}
+                            {loading ? 'Creando cuenta...' : 'Crear cuenta'}
+                        </button>
+                    </div>
 
-                    <div className="text-center small">
-                        ¿Ya tienes cuenta? <a href="/login" className="text-primary text-decoration-none fw-medium">Inicia sesión</a>
+                    <div className="text-center mt-4">
+                        <span className="text-muted">¿Ya tienes cuenta? </span>
+                        <a href="/login" className="text-primary text-decoration-none fw-bold">Inicia sesión</a>
                     </div>
                 </form>
             </div>
