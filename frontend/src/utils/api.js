@@ -1,4 +1,4 @@
-const API_URL = "http://92.190.194.223/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 async function request(endpoint, { method = "GET", body, token, headers = {} } = {}) {
     const config = {
