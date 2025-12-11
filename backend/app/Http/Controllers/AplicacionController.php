@@ -47,11 +47,14 @@ class AplicacionController extends Controller
         }
 
         if ($user->empresa) {
-            return AplicacionResource::collection(
-                Aplicacion::porEmpresa($user->empresa->id)
-                    ->with(['candidato', 'trabajo'])
-                    ->get()
-            );
+            $query = Aplicacion::porEmpresa($user->empresa->id)
+                ->with(['candidato.usuario', 'trabajo', 'documentos']);
+
+            if ($request->has('trabajo_id')) {
+                $query->where('trabajo_id', $request->input('trabajo_id'));
+            }
+
+            return AplicacionResource::collection($query->get());
         }
 
         return response()->json([], 200);
@@ -100,14 +103,12 @@ class AplicacionController extends Controller
         if ($request->hasFile('cv_file')) {
             $path = $request->file('cv_file')->store('cvs', 'public');
         } elseif ($request->boolean('use_profile_cv') && $candidato->url_cv) {
-            $baseUrl = asset('storage/');
-            if (str_starts_with($candidato->url_cv, $baseUrl)) {
-                $relativePath = str_replace($baseUrl, '', $candidato->url_cv);
-                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($relativePath)) {
-                    $newPath = 'cvs/copy_' . time() . '_' . basename($relativePath);
-                    \Illuminate\Support\Facades\Storage::disk('public')->copy($relativePath, $newPath);
-                    $path = $newPath;
-                }
+            // Assuming url_cv is a relative path in public disk (e.g. cvs_perfil/file.pdf)
+            // Check if it exists in public disk
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($candidato->url_cv)) {
+                $newPath = 'cvs/copy_' . time() . '_' . basename($candidato->url_cv);
+                \Illuminate\Support\Facades\Storage::disk('public')->copy($candidato->url_cv, $newPath);
+                $path = $newPath;
             }
         }
 
@@ -151,5 +152,31 @@ class AplicacionController extends Controller
         $aplicacion->update($request->validated());
 
         return new AplicacionResource($aplicacion);
+    }
+    /**
+     * @OA\Delete(
+     *     path="/api/aplicaciones/{aplicacion}",
+     *     summary="Eliminar una aplicación",
+     *     tags={"Aplicaciones"},
+     *     @OA\Parameter(
+     *         name="aplicacion",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la aplicación",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Aplicación eliminada"
+     *     )
+     * )
+     */
+    public function destroy(Aplicacion $aplicacion)
+    {
+        $this->authorize('delete', $aplicacion);
+
+        $aplicacion->delete();
+
+        return response()->json(null, 204);
     }
 }

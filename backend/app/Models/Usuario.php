@@ -116,6 +116,19 @@ class Usuario extends Authenticatable
 
     protected $table = 'usuarios';
 
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (Usuario $usuario) {
+            if (empty($usuario->foto_perfil)) {
+                $name = urlencode($usuario->nombre);
+                $usuario->foto_perfil = "https://ui-avatars.com/api/?name={$name}&background=random";
+            }
+        });
+    }
+
     protected $fillable = [
         'nombre',
         'email',

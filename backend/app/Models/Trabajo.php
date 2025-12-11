@@ -102,6 +102,7 @@ class Trabajo extends Model
         'salario',
         'ubicacion',
         'tipo_trabajo',
+        'modalidad',
         'estado',
     ];
 

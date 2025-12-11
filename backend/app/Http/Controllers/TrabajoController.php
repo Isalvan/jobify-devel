@@ -26,27 +26,76 @@ class TrabajoController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Trabajo::activa()->with('empresa');
+        $query = Trabajo::query()->with(['empresa.usuario']);
 
-        // Filter by company if requested. 'me' alias resolves to authenticated user's company.
+        $isOwnerView = false;
+
         if ($request->has('empresa_id')) {
             $empresaId = $request->empresa_id;
-            if ($empresaId === 'me' && $request->user()) {
-                 $empresaId = $request->user()->empresa?->id;
+
+            // Resolve 'me' to the actual company ID if user is authenticated
+            $user = $request->user('sanctum');
+
+            if ($empresaId === 'me' && $user) {
+                if ($user->empresa) {
+                    $empresaId = $user->empresa->id;
+                } elseif ($user->empleado) {
+                    $empresaId = $user->empleado->empresa_id;
+                }
             }
             if ($empresaId) {
                 $query->porEmpresa($empresaId);
+
+                // If the user belongs to the requested company, allow viewing non-public jobs
+                if ($user && (($user->empresa && $user->empresa->id == $empresaId) || ($user->empleado && $user->empleado->empresa_id == $empresaId))) {
+                    $isOwnerView = true;
+                }
             }
+        }
+
+        // Admins can view everything
+        if ($request->user('sanctum')?->esAdministrador()) {
+            $isOwnerView = true;
+        }
+
+        // Only filter by active/published if NOT the owner viewing their own jobs
+        if (!$isOwnerView) {
+            $query->activa();
         }
 
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('titulo', 'like', "%{$search}%")
-                  ->orWhere('descripcion', 'like', "%{$search}%")
-                  ->orWhereHas('empresa', function($q) use ($search) {
-                      $q->where('nombre', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('empresa.usuario', function ($q) use ($search) {
+                        $q->where('nombre', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if ($request->filled('location')) {
+            $query->where('ubicacion', 'like', '%' . $request->location . '%');
+        }
+
+        if ($request->filled('salary_min')) {
+            $query->where('salario', '>=', $request->salary_min);
+        }
+
+        if ($request->filled('salary_max')) {
+            $query->where('salario', '<=', $request->salary_max);
+        }
+
+        if ($request->filled('job_type')) {
+            $query->where('tipo_trabajo', $request->job_type);
+        }
+
+        if ($request->filled('modalidad')) {
+            $query->where('modalidad', $request->modalidad);
+        }
+
+        if ($request->filled('category_id')) {
+            $query->whereHas('categorias', function ($q) use ($request) {
+                $q->where('categorias.id', $request->category_id);
             });
         }
 
@@ -67,13 +116,35 @@ class TrabajoController extends Controller
     public function topRated()
     {
         $trabajos = Trabajo::activa()
-            ->with('empresa')
+            ->with(['empresa.usuario'])
             ->withAvg('valoraciones', 'puntuacion')
             ->orderByDesc('valoraciones_avg_puntuacion')
             ->limit(6)
             ->get();
 
         return TrabajoResource::collection($trabajos);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/ubicaciones",
+     *     summary="Listar ubicaciones disponibles",
+     *     tags={"Trabajos"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de ubicaciones únicas"
+     *     )
+     * )
+     */
+    public function locations()
+    {
+        $locations = Trabajo::activa()
+            ->select('ubicacion')
+            ->distinct()
+            ->orderBy('ubicacion')
+            ->pluck('ubicacion');
+
+        return response()->json($locations);
     }
 
     /**
@@ -123,11 +194,19 @@ class TrabajoController extends Controller
     {
         $this->authorize('create', Trabajo::class);
 
-        $empresa = $request->user()->empresa;
-        // Policy ensures $empresa exists if role is EMPRESA
+        $empresaId = null;
+        if ($request->user()->empresa) {
+            $empresaId = $request->user()->empresa->id;
+        } elseif ($request->user()->empleado) {
+            $empresaId = $request->user()->empleado->empresa_id;
+        }
+
+        if (!$empresaId) {
+            abort(403, 'No tienes una empresa asociada.');
+        }
 
         $data = $request->validated();
-        $data['empresa_id'] = $empresa->id;
+        $data['empresa_id'] = $empresaId;
 
         $trabajo = Trabajo::create($data);
 
@@ -154,7 +233,7 @@ class TrabajoController extends Controller
      */
     public function show(Trabajo $trabajo)
     {
-        $trabajo->load(['empresa'])
+        $trabajo->load(['empresa.usuario'])
             ->loadCount('valoraciones')
             ->loadAggregate('valoraciones', 'puntuacion', 'avg');
 

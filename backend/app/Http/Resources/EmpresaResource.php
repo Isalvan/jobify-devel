@@ -18,6 +18,8 @@ class EmpresaResource extends JsonResource
         return [
             'id' => $this->id,
             'usuario_id' => $this->usuario_id,
+            'nombre' => $this->whenLoaded('usuario', fn() => $this->usuario->nombre),
+            'logo' => $this->whenLoaded('usuario', fn() => $this->usuario->foto_perfil),
             'descripcion' => $this->descripcion,
             'sector' => $this->sector,
             'tamano_empresa' => $this->tamano_empresa,

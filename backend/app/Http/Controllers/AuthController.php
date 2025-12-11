@@ -44,7 +44,9 @@ class AuthController extends Controller
             ]);
         }
 
+        /** @var \App\Models\Usuario $user */
         $user = Auth::user();
+        $user->load(['candidato', 'empresa', 'empleado']);
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -113,6 +115,7 @@ class AuthController extends Controller
             ]);
 
             $token = $user->createToken('auth_token')->plainTextToken;
+            $user->load(['candidato']);
 
             return response()->json([
                 'message' => 'Usuario registrado exitosamente',

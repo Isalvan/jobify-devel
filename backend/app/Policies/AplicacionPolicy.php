@@ -27,6 +27,10 @@ class AplicacionPolicy
             return true;
         }
 
+        if ($user->empleado && $user->empleado->empresa_id === $aplicacion->trabajo->empresa_id) {
+            return true;
+        }
+
         return false;
     }
 
@@ -43,11 +47,23 @@ class AplicacionPolicy
             return true;
         }
 
+        if ($user->empleado && $user->empleado->empresa_id === $aplicacion->trabajo->empresa_id) {
+            return true;
+        }
+
         return false;
     }
 
     public function delete(Usuario $user, Aplicacion $aplicacion)
     {
-        return $user->rol === 'ADMIN';
+        if ($user->rol === 'ADMIN') {
+            return true;
+        }
+
+        if ($user->candidato && $user->candidato->id === $aplicacion->candidato_id) {
+            return true;
+        }
+
+        return false;
     }
 }

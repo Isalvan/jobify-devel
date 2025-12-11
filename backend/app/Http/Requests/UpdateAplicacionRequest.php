@@ -16,7 +16,7 @@ use OpenApi\Annotations as OA;
  *         property="estado",
  *         type="string",
  *         description="Nuevo estado de la aplicación",
- *         enum={"pendiente", "aceptado", "rechazado"},
+ *         enum={"PENDIENTE", "VISTO", "EN_PROCESO", "FINALISTA", "ACEPTADO", "RECHAZADO"},
  *         example="aceptado"
  *     )
  * )
@@ -39,7 +39,7 @@ class UpdateAplicacionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'estado' => ['required', 'in:pendiente,aceptado,rechazado'],
+            'estado' => ['required', 'in:PENDIENTE,VISTO,EN_PROCESO,FINALISTA,ACEPTADO,RECHAZADO,ACEPTADA,RECHAZADA,pendiente,aceptado,rechazado'],
         ];
     }
 }

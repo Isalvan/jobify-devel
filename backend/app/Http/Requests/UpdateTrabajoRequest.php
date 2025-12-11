@@ -73,7 +73,7 @@ class UpdateTrabajoRequest extends FormRequest
             'salario' => ['nullable', 'numeric', 'min:0'],
             'ubicacion' => ['sometimes', 'string', 'max:255'],
             'tipo_trabajo' => ['sometimes', 'in:Tiempo Completo,Medio Tiempo,Freelance,Temporal'],
-            'estado' => ['sometimes', 'in:publicado,borrador,archivado'],
+            'estado' => ['sometimes', 'in:publicado,borrador,cerrado'],
         ];
     }
 }

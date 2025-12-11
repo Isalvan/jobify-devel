@@ -108,7 +108,7 @@ class CandidatoController extends Controller
 
         if ($request->hasFile('cv_file')) {
             $path = $request->file('cv_file')->store('cvs_perfil', 'public');
-            $data['url_cv'] = asset('storage/' . $path);
+            $data['url_cv'] = $path;
         }
 
         $candidato->update($data);

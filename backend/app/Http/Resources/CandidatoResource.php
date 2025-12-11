@@ -22,7 +22,7 @@ class CandidatoResource extends JsonResource
             'fecha_nacimiento' => $this->fecha_nacimiento,
             'descripcion' => $this->descripcion,
             'ubicacion' => $this->ubicacion,
-            'url_cv' => $this->url_cv,
+            'url_cv' => $this->url_cv ? 'storage/' . $this->url_cv : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'usuario' => new UsuarioResource($this->whenLoaded('usuario')),

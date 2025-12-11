@@ -29,7 +29,9 @@ class EmpleadoPolicy
 
     public function update(Usuario $user, Empleado $empleado)
     {
-        return ($user->empresa && $user->empresa->id === $empleado->empresa_id) || $user->rol === 'ADMIN';
+        return ($user->empresa && $user->empresa->id === $empleado->empresa_id)
+            || $user->id === $empleado->usuario_id
+            || $user->rol === 'ADMIN';
     }
 
     public function delete(Usuario $user, Empleado $empleado)
