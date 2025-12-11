@@ -39,8 +39,12 @@ export const userService = {
      * @param {number} id 
      * @param {Object} data 
      */
-    async updateEmpresa(id, data) {
+    updateEmpresa: async (id, data) => {
         return await api.put(`/empresas/${id}`, data);
+    },
+
+    addCredits: async (empresaId, amount) => {
+        return await api.post(`/empresas/${empresaId}/creditos`, { amount });
     },
 
     /**
@@ -59,5 +63,20 @@ export const userService = {
      */
     async uploadCV(candidatoId, file) {
         console.warn("Upload CV no implementado en backend para perfil aún.");
+    },
+
+    /**
+     * Obtiene lista de usuarios (Admin only).
+     */
+    async getUsers() {
+        return await api.get('/usuarios');
+    },
+
+    /**
+     * Elimina un usuario (Admin only).
+     * @param {number} id 
+     */
+    async deleteUser(id) {
+        return await api.delete(`/usuarios/${id}`);
     }
 };

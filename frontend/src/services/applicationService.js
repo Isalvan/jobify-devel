@@ -32,5 +32,32 @@ export const applicationService = {
      */
     async getMyApplications() {
         return await api.get("/aplicaciones");
+    },
+
+    /**
+     * Obtiene las aplicaciones para una oferta específica (empresa).
+     * @param {number|string} trabajoId - ID del trabajo
+     * @returns {Promise<Object>} Lista de aplicaciones
+     */
+    async getJobApplications(trabajoId) {
+        return await api.get(`/aplicaciones?trabajo_id=${trabajoId}`);
+    },
+
+    /**
+     * Actualiza el estado de una aplicación (empresa).
+     * @param {number|string} id - ID de la aplicación
+     * @param {string} estado - Nuevo estado (ACEPTADO, RECHAZADO, etc.)
+     * @returns {Promise<Object>} Respuesta de la API
+     */
+    async updateStatus(id, estado) {
+        return await api.put(`/aplicaciones/${id}`, { estado });
+    },
+
+    /**
+     * Elimina una aplicación (Admin only).
+     * @param {number} id 
+     */
+    async deleteApplication(id) {
+        return await api.delete(`/aplicaciones/${id}`);
     }
 };
