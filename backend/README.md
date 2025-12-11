@@ -45,8 +45,6 @@ Correr migraciones y seeders para tener datos de prueba (Usuarios, Ofertas, Cate
 php artisan migrate --seed
 ```
 
-php artisan storage:link
-
 ### 4. Servidor de Desarrollo
 
 ```bash
