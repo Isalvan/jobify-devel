@@ -64,4 +64,28 @@ class ValoracionController extends Controller
 
         return new ValoracionResource($valoracion);
     }
+    /**
+     * @OA\Delete(
+     *     path="/api/valoraciones/{valoracion}",
+     *     summary="Eliminar valoración",
+     *     tags={"Valoraciones"},
+     *     @OA\Parameter(
+     *         name="valoracion",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la valoración",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Valoración eliminada"
+     *     )
+     * )
+     */
+    public function destroy(Valoracion $valoracion)
+    {
+        $this->authorize('delete', $valoracion);
+        $valoracion->delete();
+        return response()->noContent();
+    }
 }

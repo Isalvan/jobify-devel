@@ -81,7 +81,7 @@ class UpdateUsuarioRequest extends FormRequest
             'email' => ['sometimes', 'email', 'max:255', Rule::unique('usuarios')->ignore($this->route('usuario') ? $this->route('usuario')->id : $this->user()->id)],
             'password' => ['sometimes', 'confirmed', Password::defaults()],
             'telefono' => ['nullable', 'string', 'max:20'],
-            'foto_perfil' => ['nullable', 'string', 'max:255'],
+            'foto_perfil' => ['nullable'], // Allow string or file, validation handled in controller for file
             'estado' => ['sometimes', 'in:activo,inactivo,pendiente'],
         ];
     }

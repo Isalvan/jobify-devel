@@ -48,7 +48,6 @@ class UsuarioController extends Controller
      */
     public function show(Usuario $usuario)
     {
-        // $this->authorize('view', $usuario); // Public access allowed for everyone
         $usuario->load(['candidato', 'empresa', 'empleado']);
         return new UsuarioResource($usuario);
     }
@@ -83,6 +82,11 @@ class UsuarioController extends Controller
 
         if (isset($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
+        }
+
+        if ($request->hasFile('foto_perfil')) {
+            $path = $request->file('foto_perfil')->store('perfiles', 'public');
+            $validated['foto_perfil'] = $path;
         }
 
         $usuario->update($validated);

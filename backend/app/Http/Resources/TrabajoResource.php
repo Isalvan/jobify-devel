@@ -17,12 +17,14 @@ class TrabajoResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'empresa_id' => $this->empresa_id,
             'titulo' => $this->titulo,
             'slug' => $this->slug,
             'descripcion' => $this->descripcion,
             'salario' => $this->salario,
             'ubicacion' => $this->ubicacion,
             'tipo_trabajo' => $this->tipo_trabajo,
+            'modalidad' => $this->modalidad,
             'estado' => $this->estado,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -32,8 +34,8 @@ class TrabajoResource extends JsonResource
             'valoraciones_count' => $this->whenCounted('valoraciones'),
             'valoraciones_avg' => $this->whenAggregated('valoraciones', 'puntuacion', 'avg'),
             'mi_valoracion' => $this->when(
-                $request->user('sanctum') && $request->user('sanctum')->candidato, 
-                function() use ($request) {
+                $request->user('sanctum') && $request->user('sanctum')->candidato,
+                function () use ($request) {
                     return $this->resource->valoraciones()
                         ->where('candidato_id', $request->user('sanctum')->candidato->id)
                         ->first();
@@ -41,7 +43,7 @@ class TrabajoResource extends JsonResource
             ),
             'mi_aplicacion' => $this->when(
                 $request->user('sanctum') && $request->user('sanctum')->candidato,
-                function() use ($request) {
+                function () use ($request) {
                     return $this->resource->aplicaciones()
                         ->where('candidato_id', $request->user('sanctum')->candidato->id)
                         ->first();
@@ -49,7 +51,7 @@ class TrabajoResource extends JsonResource
             ),
             'is_favorito' => $this->when(
                 $request->user('sanctum') && $request->user('sanctum')->candidato,
-                function() use ($request) {
+                function () use ($request) {
                     return \App\Models\Favorito::where('candidato_id', $request->user('sanctum')->candidato->id)
                         ->where('trabajo_id', $this->resource->id)
                         ->exists();

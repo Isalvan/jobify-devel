@@ -27,6 +27,10 @@ class AplicacionResource extends JsonResource
             'updated_at' => $this->updated_at,
             'trabajo' => new TrabajoResource($this->whenLoaded('trabajo')),
             'candidato' => new CandidatoResource($this->whenLoaded('candidato')),
+            'cv' => $this->whenLoaded('documentos', function () {
+                $path = $this->documentos->where('tipo', 'cv')->first()?->ruta_archivo;
+                return $path ? 'storage/' . $path : null;
+            }),
         ];
     }
 }

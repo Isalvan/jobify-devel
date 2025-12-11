@@ -155,4 +155,44 @@ class EmpresaController extends Controller
         $empresa->delete();
         return response()->noContent();
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/empresas/{empresa}/creditos",
+     *     summary="Añadir créditos (impresiones) a una empresa",
+     *     tags={"Empresas"},
+     *     @OA\Parameter(
+     *         name="empresa",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la empresa",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="amount", type="integer", example=100)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Créditos añadidos"
+     *     )
+     * )
+     */
+    public function addCredits(Request $request, Empresa $empresa)
+    {
+        $this->authorize('update', $empresa); // Reusing update policy
+
+        $request->validate([
+            'amount' => 'required|integer|min:1'
+        ]);
+
+        $empresa->increment('impresiones_restantes', $request->amount);
+
+        return response()->json([
+            'message' => 'Créditos añadidos correctamente',
+            'impresiones_restantes' => $empresa->impresiones_restantes
+        ]);
+    }
 }

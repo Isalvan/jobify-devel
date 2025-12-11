@@ -27,11 +27,13 @@ class ValoracionPolicy
 
     public function update(Usuario $user, Valoracion $valoracion)
     {
-        return $user->id === $valoracion->candidato_id || $user->rol === 'ADMIN';
+        $candidatoId = \App\Models\Candidato::where('usuario_id', $user->id)->value('id');
+        return ($candidatoId && (int)$candidatoId === (int)$valoracion->candidato_id) || $user->esAdministrador();
     }
 
     public function delete(Usuario $user, Valoracion $valoracion)
     {
-        return $user->id === $valoracion->candidato_id || $user->rol === 'ADMIN';
+        $candidatoId = \App\Models\Candidato::where('usuario_id', $user->id)->value('id');
+        return ($candidatoId && (int)$candidatoId === (int)$valoracion->candidato_id) || $user->esAdministrador();
     }
 }

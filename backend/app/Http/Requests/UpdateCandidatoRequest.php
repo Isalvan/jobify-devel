@@ -66,8 +66,21 @@ class UpdateCandidatoRequest extends FormRequest
             'fecha_nacimiento' => ['sometimes', 'date'],
             'descripcion' => ['nullable', 'string'],
             'ubicacion' => ['nullable', 'string', 'max:255'],
-            'url_cv' => ['nullable', 'string', 'max:2048'], 
-            'cv_file' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120'], // 5MB max
+            'url_cv' => ['nullable', 'string', 'max:2048'],
+            'cv_file' => ['nullable', 'file', 'mimes:pdf', 'max:5120'], // 5MB max, PDF only
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'apellidos.string' => 'Los apellidos deben ser texto.',
+            'fecha_nacimiento.date' => 'La fecha de nacimiento no es válida.',
+            'ubicacion.string' => 'La ubicación debe ser texto.',
+            'url_cv.max' => 'La URL del CV es demasiado larga.',
+            'cv_file.file' => 'El CV debe ser un archivo.',
+            'cv_file.mimes' => 'El archivo debe ser un PDF válido.',
+            'cv_file.max' => 'El archivo no puede pesar más de 5MB.',
         ];
     }
 }

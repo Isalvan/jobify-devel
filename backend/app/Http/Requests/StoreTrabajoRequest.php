@@ -73,6 +73,7 @@ class StoreTrabajoRequest extends FormRequest
             'salario' => ['nullable', 'numeric', 'min:0'],
             'ubicacion' => ['required', 'string', 'max:255'],
             'tipo_trabajo' => ['required', 'in:Tiempo Completo,Medio Tiempo,Freelance,Temporal'],
+            'modalidad' => ['required', 'in:PRESENCIAL,REMOTO,HIBRIDO'],
             'estado' => ['nullable', 'in:publicado,borrador,archivado'],
         ];
     }

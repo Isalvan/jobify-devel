@@ -84,6 +84,11 @@ class Aplicacion extends Model
         return $this->belongsTo(Candidato::class);
     }
 
+    public function documentos()
+    {
+        return $this->hasMany(DocumentoArchivo::class);
+    }
+
     public function scopePorCandidato($query, $candidatoId)
     {
         return $query->where('candidato_id', $candidatoId);
