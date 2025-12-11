@@ -88,6 +88,17 @@ jobify-devel/
     npm run dev
     ```
 
+## 🔑 Credenciales de Prueba (Seeders)
+
+El sistema se inicializa con usuarios de prueba para cada rol:
+
+| Rol           | Email                 | Contraseña |
+| ------------- | --------------------- | ---------- |
+| **Admin**     | `admin@jobify.com`    | `password` |
+| **Candidato** | `usuario@jobify.com`  | `password` |
+| **Empresa**   | `empresa@jobify.com`  | `password` |
+| **Empleado**  | `empleado@jobify.com` | `password` |
+
 ## 🤝 Contribución
 
 1.  Crear una rama para tu feature: `git checkout -b feature/mi-nueva-feature`
