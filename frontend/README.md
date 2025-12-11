@@ -1,16 +1,66 @@
-# React + Vite
+# Jobify Frontend Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación Single Page Application (SPA) desarrollada en React que sirve como interfaz de usuario para Jobify.
 
-Currently, two official plugins are available:
+## 🛠 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Framework:** React 18
+- **Build Tool:** Vite
+- **Estilos:** CSS Modules / Vanilla CSS moderno.
+- **Routing:** React Router DOM
+- **Estado & Data:** Context API + Custom Hooks.
+- **HTTP Client:** Fetch API (wrapper personalizado en `utils/api.js`).
 
-## React Compiler
+## 🚀 Instalación y Configuración
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. Requisitos Previos
 
-## Expanding the ESLint configuration
+- Node.js 18+
+- NPM
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 2. Instalación de Dependencias
+
+```bash
+npm install
+```
+
+### 3. Variables de Entorno
+
+Copiar el archivo de ejemplo y configurar la URL del backend.
+
+```bash
+cp .env.example .env
+```
+
+Asegúrate de que `VITE_API_URL` apunte a tu servidor backend (ej. `http://localhost:8000/api`).
+
+### 4. Servidor de Desarrollo
+
+```bash
+npm run dev
+```
+
+La aplicación estará disponible en `http://localhost:3000` (o el puerto que asigne Vite).
+
+## 📦 Scripts Disponibles
+
+- `npm run dev`: Inicia el servidor de desarrollo.
+- `npm run build`: Compila la aplicación para producción.
+- `npm run preview`: Vista previa de la build de producción.
+- `npm run lint`: Ejecuta el linter (ESLint).
+
+## 📂 Estructura Clave
+
+- `src/components`: Componentes reutilizables (Botones, Tablas, Modales).
+- `src/pages`: Componentes de página (Vistas completas).
+- `src/layouts`: Componentes de estructura (Header, Sidebar).
+- `src/services`: Funciones para realizar peticiones a la API.
+- `src/contexts`: Estado global de la aplicación (Auth, UI).
+- `src/utils`: Utilidades generales y configuración de API.
+
+## ✨ Características Principales
+
+- **Diseño Responsivo**: Adaptado a móviles y escritorio.
+- **Gestión de Estado**: Manejo centralizado de sesión de usuario y preferencias.
+- **Rutas Protegidas**: Control de acceso a páginas según autenticación y rol.
+- **Componentes Modulares**: Arquitectura basada en componentes reutilizables.

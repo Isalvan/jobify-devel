@@ -1,0 +1,86 @@
+/* LoginPage.css */
+:root {
+    --primary: #0A66C2;
+    --bg-light: #ffffff;
+    --surface-light: #f3f4f6;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --card-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.login-page {
+    background: var(--surface-light);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Work Sans', system-ui, sans-serif;
+    color: var(--text-primary);
+}
+
+.login-container {
+    background: var(--bg-light);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    max-width: 64rem;
+    width: 100%;
+    position: relative;
+}
+
+@media (max-height: 800px) {
+    .login-page {
+        align-items: flex-start;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+    .login-container {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+}
+
+.login-container h1,
+.login-container p {
+    color: var(--text-primary);
+}
+
+.input-group-text {
+    background: var(--bg-light);
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    color: var(--text-secondary);
+}
+
+.form-control {
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    padding-left: 2.5rem;
+    color: var(--text-primary);
+}
+
+.btn-primary {
+    background: var(--primary);
+    border: none;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    opacity: 0.95;
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+.material-symbols-outlined {
+    color: var(--text-secondary);
+}
+
+.login-container .volver {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+}
+
+.texto-bienvenida {
+    margin-top: 2rem;
+}

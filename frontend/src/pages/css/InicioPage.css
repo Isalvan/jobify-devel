@@ -1,0 +1,320 @@
+/* InicioPage.css
+   Enhanced styles to approximate the Tailwind-based design from the
+   provided mockup. This file includes color variables, typography
+   imports and component-level helpers used by InicioPage.
+*/
+
+/* Fonts (Work Sans) and Material Symbols - imported here as fallback */
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
+
+:root {
+    --primary: #0A66C2;
+    --bg-light: #ffffff;
+    --bg-muted: #f8fafc;
+    --surface-light: #f3f4f6;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --muted-border: rgba(15, 23, 42, 0.06);
+    --card-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.group\/design-root,
+.InicioPageRoot,
+body {
+    font-family: 'Work Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    color: var(--text-primary);
+}
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-family: 'Material Symbols Outlined', sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 1.125rem;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+    color: var(--text-secondary);
+}
+
+.size-6 {
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--primary);
+}
+
+.container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.bg-background-light {
+    background: var(--bg-light);
+}
+
+.bg-surface-light {
+    background: var(--surface-light);
+}
+
+.bg-background-dark {
+    background: #0b1220;
+}
+
+.text-text-primary-light {
+    color: var(--text-primary);
+}
+
+.text-text-secondary-light {
+    color: var(--text-secondary);
+}
+
+section.py-20 {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+
+@media (min-width: 768px) {
+    section.md\:py-28 {
+        padding-top: 7rem;
+        padding-bottom: 7rem;
+    }
+}
+
+.container .text-4xl {
+    font-size: 2.25rem;
+}
+
+@media (min-width: 768px) {
+    .container .md\:text-6xl {
+        font-size: 3.75rem;
+    }
+}
+
+.font-black {
+    font-weight: 900;
+}
+
+.tracking-tighter {
+    letter-spacing: -0.02em;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.mb-10 {
+    margin-bottom: 2.5rem;
+}
+
+.max-w-2xl {
+    max-width: 42rem;
+}
+
+.max-w-3xl {
+    max-width: 64rem;
+}
+
+.search-card,
+.max-w-3xl.mx-auto.p-4 {
+    background: var(--bg-light);
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    padding: 1rem;
+}
+
+.form-input {
+    display: block;
+    width: 100%;
+    height: 3.5rem;
+    padding: 0.5rem 0.75rem;
+    padding-left: 3rem;
+    /* leave room for icon */
+    border-radius: 0.75rem;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    background: #fff;
+    color: var(--text-primary);
+    box-sizing: border-box;
+}
+
+.relative {
+    position: relative;
+}
+
+.relative .material-symbols-outlined {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-grow {
+    flex: 1 1 auto;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+.rounded-xl {
+    border-radius: 0.75rem;
+}
+
+.shadow-lg {
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.bg-primary {
+    background: var(--primary);
+}
+
+.text-white {
+    color: white;
+}
+
+.px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.h-14 {
+    height: 3.5rem;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.search-button {
+    background: var(--primary);
+    color: #fff;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    border: none;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    opacity: 0.95;
+}
+
+section.bg-surface-light {
+    background: var(--surface-light);
+}
+
+.grid {
+    display: grid;
+}
+
+.grid.grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 768px) {
+    .grid.md\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid.lg\:grid-cols-6 {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+.grid>div {
+    background: var(--bg-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+}
+
+.grid img {
+    max-height: 3rem;
+    margin-bottom: 0.75rem;
+}
+
+.h-12 {
+    height: 3rem;
+}
+
+.mb-3 {
+    margin-bottom: 0.75rem;
+}
+
+.border {
+    border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.rounded-xl {
+    border-radius: 0.75rem;
+}
+
+.p-6 {
+    padding: 1.5rem;
+}
+
+.hover\:shadow-lg:hover {
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+    transform: translateY(-4px);
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.text-primary {
+    color: var(--primary);
+}
+
+[class*="bg-primary/10"] {
+    background-color: rgba(10, 102, 194, 0.1);
+}
+
+.mt-auto {
+    margin-top: auto;
+}
+
+@media (max-width: 767px) {
+    .grid.lg\:grid-cols-6 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .container .md\:text-6xl {
+        font-size: 2.5rem;
+    }
+}
+
+.text-center {
+    text-align: center;
+}
+
+.py-15 {
+    padding-top: 2rem;
+    padding-bottom: 3.75rem;
+}
