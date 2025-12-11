@@ -61,7 +61,7 @@ function RegistroPage() {
     };
 
     return (
-        <div className="registro-page d-flex justify-content-center bg-light py-5" style={{minHeight: '100vh'}}>
+        <div className="registro-page d-flex bg-light py-5" style={{minHeight: '100vh'}}>
             <div className="registro-container card-premium p-5 shadow-lg" style={{maxWidth: '900px', width: '100%'}}>
                 <a href="/" className="d-flex align-items-center mb-4 text-decoration-none text-muted small hover-primary">
                     <span className="material-symbols-outlined me-1" style={{fontSize: '18px'}}>arrow_back</span> Volver al inicio

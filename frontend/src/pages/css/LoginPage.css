@@ -12,13 +12,14 @@
     background: var(--surface-light);
     min-height: 100vh;
     display: flex;
-    justify-content: center;
+    /* justify-content removed to let margin: auto work safely */
     font-family: 'Work Sans', system-ui, sans-serif;
     color: var(--text-primary);
 }
 
 .login-container {
     background: var(--bg-light);
+    margin: auto; /* Safe vertical centering */
     padding: 2rem;
     border-radius: 12px;
     box-shadow: var(--card-shadow);
