@@ -23,15 +23,21 @@ class ValoracionSeeder extends Seeder
 
         $trabajos->each(function ($trabajo) use ($candidatos) {
 
-            $numValoraciones = rand(10, 100);
+            $numValoraciones = rand(1, 5);
 
             $candidatosRandom = $candidatos->random(min($numValoraciones, $candidatos->count()));
 
             foreach ($candidatosRandom as $candidato) {
-                Valoracion::factory()->create([
+                $valoracion = Valoracion::factory()->create([
                     'trabajo_id' => $trabajo->id,
                     'candidato_id' => $candidato->id,
                 ]);
+
+                // Notify the company
+                $empresaUsuario = $trabajo->empresa->usuario;
+                if ($empresaUsuario) {
+                    $empresaUsuario->notify(new \App\Notifications\NewJobReview($valoracion));
+                }
             }
         });
     }

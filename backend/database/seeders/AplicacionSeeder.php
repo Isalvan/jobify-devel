@@ -24,10 +24,24 @@ class AplicacionSeeder extends Seeder
         foreach ($candidatos as $candidato) {
             $randomJobs = $trabajos->random(rand(1, 3));
             foreach ($randomJobs as $trabajo) {
-                Aplicacion::factory()->create([
+                $aplicacion = Aplicacion::factory()->create([
                     'candidato_id' => $candidato->id,
                     'trabajo_id' => $trabajo->id,
                 ]);
+
+                // Notify the company
+                $empresaUsuario = $trabajo->empresa->usuario;
+                if ($empresaUsuario) {
+                    $empresaUsuario->notify(new \App\Notifications\JobApplied($aplicacion));
+                }
+
+                // If not pending, notify the candidate about the status
+                if ($aplicacion->estado !== 'PENDIENTE') {
+                    $candidatoUsuario = $candidato->usuario;
+                    if ($candidatoUsuario) {
+                        $candidatoUsuario->notify(new \App\Notifications\ApplicationStatusChanged($aplicacion));
+                    }
+                }
             }
         }
     }

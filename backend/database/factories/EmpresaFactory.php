@@ -41,7 +41,7 @@ class EmpresaFactory extends Factory
             'tamano_empresa' => fake()->randomElement(['1-10', '11-50', '51-200', '201-500', '+500']),
             'ubicacion' => fake()->address(),
             'web' => fake()->url(),
-            'impresiones_restantes' => fake()->numberBetween(0, 1000),
+            'impresiones_restantes' => 0,
             'created_at' => fake()->dateTimeBetween('-2 years', 'now'),
             'updated_at' => fake()->dateTimeBetween('-1 year', 'now'),
         ];
