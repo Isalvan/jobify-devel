@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
-import { applicationService } from '../../services/applicationService';
+import { jobService } from '../../services/jobService';
 import { Link } from 'react-router-dom';
-import ApplicationDetailModal from './ApplicationDetailModal';
-import ApplicationEditModal from './ApplicationEditModal';
 import CommonPagination from './CommonPagination';
 
-function AdminApplicationsTable() {
-    const [applications, setApplications] = useState([]);
+/**
+ * CompanyJobsTable - A dedicated table for companies to manage their own jobs.
+ * 
+ * @param {string} empresaId - The ID of the company to filter by.
+ */
+function CompanyJobsTable({ empresaId }) {
+    const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [pagination, setPagination] = useState(null);
     const [error, setError] = useState(null);
-    const [selectedApplication, setSelectedApplication] = useState(null);
-    const [editingApplication, setEditingApplication] = useState(null);
-    const [showEditModal, setShowEditModal] = useState(false);
 
     // Search & Pagination state
     const [searchTerm, setSearchTerm] = useState('');
@@ -29,60 +29,56 @@ function AdminApplicationsTable() {
     }, [searchTerm]);
 
     useEffect(() => {
-        loadApplications();
-    }, [debouncedSearch, page]);
+        if (empresaId) loadJobs();
+    }, [empresaId, debouncedSearch, page]);
 
-    const loadApplications = async () => {
+    const loadJobs = async () => {
         try {
             setLoading(true);
-            const response = await applicationService.getMyApplications({
+            const response = await jobService.getJobs({
+                empresa_id: empresaId,
                 search: debouncedSearch,
                 page: page,
-                per_page: 20
+                per_page: 10
             });
 
             if (response.meta) {
-                setApplications(response.data || []);
+                setJobs(response.data || []);
                 setPagination(response.meta);
             } else {
-                setApplications(response.data || response || []);
+                setJobs(response.data || response || []);
                 setPagination(null);
             }
         } catch (err) {
             console.error(err);
-            setError('Error al cargar aplicaciones');
+            setError('Error al cargar tus ofertas');
         } finally {
             setLoading(false);
         }
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('¿Seguro que deseas eliminar esta aplicación?')) return;
+        if (!window.confirm('¿Seguro que deseas eliminar esta oferta?')) return;
 
         try {
-            await applicationService.deleteApplication(id);
-            loadApplications();
+            await jobService.deleteJob(id);
+            loadJobs();
         } catch (err) {
             console.error(err);
-            alert('Error al eliminar aplicación');
+            alert('Error al eliminar oferta');
         }
-    };
-
-    const handleEdit = (app) => {
-        setEditingApplication(app);
-        setShowEditModal(true);
     };
 
     return (
         <div>
             {/* Search Bar */}
             <div className="mb-4">
-                <div className="input-group-premium p-1 pe-3">
+                <div className="input-group-premium p-1 pe-3 border shadow-sm bg-white rounded-4">
                     <span className="material-symbols-outlined ms-3 text-muted">search</span>
                     <input
                         type="text"
                         className="form-control"
-                        placeholder="Buscar por candidato u oferta..."
+                        placeholder="Buscar por título..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -94,7 +90,7 @@ function AdminApplicationsTable() {
                 </div>
             </div>
 
-            {loading && !applications.length ? (
+            {loading && !jobs.length ? (
                 <div className="text-center py-5"><div className="spinner-border text-primary"></div></div>
             ) : error ? (
                 <div className="alert alert-danger border-0 shadow-sm rounded-4">{error}</div>
@@ -105,56 +101,61 @@ function AdminApplicationsTable() {
                             <thead className="table-light">
                                 <tr className="text-muted small text-uppercase">
                                     <th className="ps-4 py-3">ID</th>
-                                    <th>Candidato</th>
-                                    <th>Oferta</th>
-                                    <th>Estado</th>
-                                    <th>Fecha</th>
+                                    <th>Título</th>
+                                    <th>Postulantes</th>
+                                    <th>Estado / Visibilidad</th>
+                                    <th>Fecha de Publicación</th>
                                     <th className="text-end pe-4">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {applications.length > 0 ? (
-                                    applications.map(app => (
-                                        <tr key={app.id}>
-                                            <td className="ps-4 fw-bold text-muted">#{app.id}</td>
+                                {jobs.length > 0 ? (
+                                    jobs.map(job => (
+                                        <tr key={job.id}>
+                                            <td className="ps-4 fw-bold text-muted">#{job.id}</td>
                                             <td>
-                                                <div className="fw-bold text-dark">{app.candidato?.usuario?.nombre || 'N/A'}</div>
-                                            </td>
-                                            <td>
-                                                <Link to={`/ofertas/${app.trabajo?.id}`} className="text-decoration-none text-primary fw-medium">
-                                                    {app.trabajo?.titulo || 'N/A'}
+                                                <Link to={`/ofertas/${job.id}`} className="text-decoration-none fw-bold text-primary">
+                                                    {job.titulo}
                                                 </Link>
                                             </td>
                                             <td>
-                                                <span className={`badge px-3 py-2 rounded-pill ${app.estado === 'ACEPTADO' ? 'bg-success-subtle text-success border border-success-subtle' :
-                                                    app.estado === 'RECHAZADO' ? 'bg-danger-subtle text-danger border border-danger-subtle' :
-                                                        app.estado === 'EN_PROCESO' ? 'bg-primary-subtle text-primary border border-primary-subtle' :
-                                                            'bg-warning-subtle text-warning border border-warning-subtle'
+                                                <div className="d-flex align-items-center">
+                                                    <span className="badge bg-light text-primary border px-3 py-2 rounded-pill fw-bold">
+                                                        {job.aplicaciones_count || 0}
+                                                    </span>
+                                                    <Link to={`/ofertas/${job.id}/aplicaciones`} className="btn btn-link btn-sm ms-1 text-decoration-none small">
+                                                        Ver todos
+                                                    </Link>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span className={`badge px-3 py-2 rounded-pill ${job.estado === 'publicado' ? 'bg-success-subtle text-success border border-success-subtle' :
+                                                    job.estado === 'cerrado' ? 'bg-danger-subtle text-danger border border-danger-subtle' :
+                                                        'bg-secondary-subtle text-secondary border border-secondary-subtle'
                                                     }`}>
-                                                    {app.estado}
+                                                    {job.estado}
                                                 </span>
                                             </td>
-                                            <td className="text-muted small">{new Date(app.created_at).toLocaleDateString()}</td>
+                                            <td className="text-muted small">{new Date(job.created_at).toLocaleDateString()}</td>
                                             <td className="pe-4 text-end">
                                                 <div className="d-flex gap-2 justify-content-end">
-                                                    <button
+                                                    <Link
+                                                        to={`/ofertas/${job.id}`}
                                                         className="btn btn-sm btn-light border-0 text-primary"
-                                                        onClick={() => setSelectedApplication(app)}
                                                         title="Ver detalles"
                                                     >
                                                         <span className="material-symbols-outlined fs-5">visibility</span>
-                                                    </button>
-                                                    <button
-                                                        type="button"
+                                                    </Link>
+                                                    <Link
+                                                        to={`/ofertas/${job.id}/editar`}
                                                         className="btn btn-sm btn-light border-0"
-                                                        onClick={() => handleEdit(app)}
                                                         title="Editar"
                                                     >
                                                         <span className="material-symbols-outlined fs-5">edit</span>
-                                                    </button>
+                                                    </Link>
                                                     <button
                                                         className="btn btn-sm btn-light text-danger border-0"
-                                                        onClick={() => handleDelete(app.id)}
+                                                        onClick={() => handleDelete(job.id)}
                                                         title="Eliminar"
                                                     >
                                                         <span className="material-symbols-outlined fs-5">delete</span>
@@ -165,7 +166,7 @@ function AdminApplicationsTable() {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="6" className="text-center py-5 text-muted">No se encontraron aplicaciones.</td>
+                                        <td colSpan="6" className="text-center py-5 text-muted">Aún no has publicado ninguna oferta.</td>
                                     </tr>
                                 )}
                             </tbody>
@@ -178,22 +179,8 @@ function AdminApplicationsTable() {
                     />
                 </>
             )}
-
-            {selectedApplication && (
-                <ApplicationDetailModal
-                    application={selectedApplication}
-                    onClose={() => setSelectedApplication(null)}
-                />
-            )}
-
-            <ApplicationEditModal
-                show={showEditModal}
-                onHide={() => setShowEditModal(false)}
-                application={editingApplication}
-                onUpdate={loadApplications}
-            />
         </div>
     );
 }
 
-export default AdminApplicationsTable;
+export default CompanyJobsTable;
