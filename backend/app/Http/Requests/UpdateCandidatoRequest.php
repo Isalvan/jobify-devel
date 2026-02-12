@@ -67,6 +67,9 @@ class UpdateCandidatoRequest extends FormRequest
             'descripcion' => ['nullable', 'string'],
             'ubicacion' => ['nullable', 'string', 'max:255'],
             'url_cv' => ['nullable', 'string', 'max:2048'],
+            'experiencia' => ['nullable', 'string'],
+            'educacion' => ['nullable', 'string'],
+            'habilidades' => ['nullable', 'string'],
             'cv_file' => ['nullable', 'file', 'mimes:pdf', 'max:5120'], // 5MB max, PDF only
         ];
     }

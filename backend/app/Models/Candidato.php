@@ -105,6 +105,9 @@ class Candidato extends Model
         'descripcion',
         'ubicacion',
         'url_cv',
+        'experiencia',
+        'educacion',
+        'habilidades',
     ];
 
     public function usuario()
