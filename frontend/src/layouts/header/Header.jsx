@@ -4,6 +4,8 @@ import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../../contexts/AppProvider';
 import { api } from '../../utils/api';
+import NotificationDropdown from '../../components/notifications/NotificationDropdown';
+import { useChat } from '../../contexts/ChatContext';
 
 /**
  * Devuelve el componente Header
@@ -12,12 +14,13 @@ import { api } from '../../utils/api';
  */
 function Header() {
   const { user, logout } = useContext(AppContext);
+  const { unreadCount } = useChat();
   const navigate = useNavigate();
   const sesion = !!user;
 
   const handleLogout = async () => {
-      await logout();
-      navigate('/');
+    await logout();
+    navigate('/');
   };
 
   return <>
@@ -34,94 +37,100 @@ function Header() {
             {/* Buscador */}
             {/* Enlace Descubrir - Ahora como enlace de texto simple para diferenciar */}
             <Link to="/ofertas" className="text-decoration-none text-muted fw-bold me-4 hover-primary transition-colors">Descubrir</Link>
-            
+
             {/* Cuenta */}
             {sesion ? (
-              <div className="dropdown">
-                <a
-                  href="#"
-                  className="d-flex align-items-center text-decoration-none dropdown-toggle-custom"
-                  id="dropdownUser1"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  style={{ color: 'inherit' }}
-                >
-                  <div className="d-flex align-items-center gap-2 p-1 pe-3 rounded-pill hover-bg-light transition-all">
-                    {user.foto_perfil ? (
+              <div className="d-flex align-items-center">
+                <NotificationDropdown />
+
+                {/* Chat Icon with Badge */}
+                <Link to="/chat" className="btn btn-link position-relative p-2 text-decoration-none me-3 text-muted hover-primary transition-all">
+                  <span className="material-symbols-outlined fs-4">forum</span>
+                  {unreadCount > 0 && (
+                    <span className="position-absolute translate-middle badge rounded-pill bg-primary shadow-sm" style={{ left: '75%', top: '25%', fontSize: '0.65rem', padding: '0.25em 0.5em' }}>
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </Link>
+
+                <div className="dropdown">
+                  <a
+                    href="#"
+                    className="d-flex align-items-center text-decoration-none dropdown-toggle-custom"
+                    id="dropdownUser1"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    style={{ color: 'inherit' }}
+                  >
+                    <div className="d-flex align-items-center gap-2 p-1 pe-3 rounded-pill hover-bg-light transition-all">
+                      {user.foto_perfil ? (
                         <img src={api.getFileUrl(user.foto_perfil)} alt="avatar" width="40" height="40" className="rounded-circle border border-2 border-white shadow-sm" />
-                    ) : (
-                        <div className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-sm" style={{width: '40px', height: '40px'}}>
-                            {user.nombre.charAt(0).toUpperCase()}
+                      ) : (
+                        <div className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-sm" style={{ width: '40px', height: '40px' }}>
+                          {user.nombre.charAt(0).toUpperCase()}
                         </div>
-                    )}
-                    <div className="d-none d-md-block text-start">
+                      )}
+                      <div className="d-none d-md-block text-start">
                         <p className="mb-0 fw-bold small text-dark lh-1">{user.nombre}</p>
-                        <p className="mb-0 small text-muted lh-1" style={{fontSize: '0.75rem'}}>{user.rol}</p>
+                        <p className="mb-0 small text-muted lh-1" style={{ fontSize: '0.75rem' }}>{user.rol}</p>
+                      </div>
+                      <span className="material-symbols-outlined text-muted fs-5">expand_more</span>
                     </div>
-                    <span className="material-symbols-outlined text-muted fs-5">expand_more</span>
-                  </div>
-                </a>
-                
-                <ul className="dropdown-menu dropdown-menu-end dropdown-menu-premium" aria-labelledby="dropdownUser1">
-                  <li>
-                    <Link className="dropdown-item-premium" to="/perfil">
+                  </a>
+
+                  <ul className="dropdown-menu dropdown-menu-end dropdown-menu-premium" aria-labelledby="dropdownUser1">
+                    <li>
+                      <Link className="dropdown-item-premium" to="/perfil">
                         <span className="material-symbols-outlined fs-5">person</span>
                         Tu Perfil
-                    </Link>
-                  </li>
-                  
-                  {user.rol === 'CANDIDATO' && (
-                    <li>
+                      </Link>
+                    </li>
+
+                    {user.rol === 'CANDIDATO' && (
+                      <li>
                         <Link className="dropdown-item-premium" to="/mis-aplicaciones">
-                            <span className="material-symbols-outlined fs-5">folder_shared</span>
-                            Mis Candidaturas
+                          <span className="material-symbols-outlined fs-5">folder_shared</span>
+                          Mis Candidaturas
                         </Link>
-                    </li>
-                  )}
-                  
-                  {(user.rol === 'EMPRESA' || user.rol === 'EMPLEADO') && (
-                    <>
+                      </li>
+                    )}
+
+                    {(user.rol === 'EMPRESA' || user.rol === 'EMPLEADO') && (
+                      <>
                         <li>
-                            <Link className="dropdown-item-premium" to="/crear-oferta">
-                                <span className="material-symbols-outlined fs-5">add_circle</span>
-                                Publicar oferta
-                            </Link>
+                          <Link className="dropdown-item-premium" to="/crear-oferta">
+                            <span className="material-symbols-outlined fs-5">add_circle</span>
+                            Publicar oferta
+                          </Link>
                         </li>
                         <li>
-                            <Link className="dropdown-item-premium" to={`/ofertas?empresa_id=${user.empresa?.id || user.empleado?.empresa_id}`}>
-                                <span className="material-symbols-outlined fs-5">list_alt</span>
-                                Mis Ofertas
-                            </Link>
+                          <Link className="dropdown-item-premium" to="/mis-ofertas">
+                            <span className="material-symbols-outlined fs-5">list_alt</span>
+                            Mis Ofertas
+                          </Link>
                         </li>
-                    </>
-                  )}
-                  
-                  {user.rol === 'CANDIDATO' && (
-                    <li>
+                      </>
+                    )}
+
+                    {user.rol === 'CANDIDATO' && (
+                      <li>
                         <Link className="dropdown-item-premium" to="/favoritos">
-                            <span className="material-symbols-outlined fs-5">favorite</span>
-                            Favoritos
+                          <span className="material-symbols-outlined fs-5">favorite</span>
+                          Favoritos
                         </Link>
-                    </li>
-                  )}
-                  
-                  {user.rol === 'ADMIN' && (
+                      </li>
+                    )}
+
+
+                    <li><hr className="dropdown-divider" /></li>
                     <li>
-                        <Link className="dropdown-item-premium" to="/admin">
-                            <span className="material-symbols-outlined fs-5">admin_panel_settings</span>
-                            Panel Admin
-                        </Link>
-                    </li>
-                  )}
-                  
-                  <li><hr className="dropdown-divider" /></li>
-                  <li>
-                    <button className="dropdown-item-premium text-danger w-100 text-start" onClick={handleLogout}>
+                      <button className="dropdown-item-premium text-danger w-100 text-start" onClick={handleLogout}>
                         <span className="material-symbols-outlined fs-5">logout</span>
                         Cerrar sesión
-                    </button>
-                  </li>
-                </ul>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
               </div>
             ) : (
               <>

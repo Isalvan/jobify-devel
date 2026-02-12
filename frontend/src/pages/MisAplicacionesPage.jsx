@@ -13,6 +13,19 @@ function MisAplicacionesPage() {
             .then(data => {
                 setAplicaciones(data.data || data);
                 setLoading(false);
+
+                // If there's a hash (e.g. #app-123), scroll to it after loading
+                const hash = window.location.hash;
+                if (hash && hash.startsWith('#app-')) {
+                    setTimeout(() => {
+                        const element = document.getElementById(hash.substring(1));
+                        if (element) {
+                            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            element.classList.add('highlight-notification');
+                            setTimeout(() => element.classList.remove('highlight-notification'), 3000);
+                        }
+                    }, 500);
+                }
             })
             .catch(err => {
                 console.error(err);
@@ -68,9 +81,10 @@ function MisAplicacionesPage() {
                         return (
                             <div
                                 key={app.id}
+                                id={`app-${app.id}`}
                                 className="card-premium p-4 d-flex align-items-center gap-3 transition-transform hover-translate-y position-relative"
                             >
-                                <div className="bg-light rounded p-2 d-flex align-items-center justify-content-center" style={{width: '64px', height: '64px'}}>
+                                <div className="bg-light rounded p-2 d-flex align-items-center justify-content-center" style={{ width: '64px', height: '64px' }}>
                                     <img
                                         src={empresaUsuario?.foto_perfil || 'https://placehold.co/60x60'}
                                         alt="Logo"
@@ -98,7 +112,7 @@ function MisAplicacionesPage() {
                                 </div>
 
                                 <div className="z-2 position-relative d-flex align-items-center gap-2">
-                                     <button 
+                                    <button
                                         onClick={() => handleDelete(app.id)}
                                         className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1 bg-white"
                                         title="Retirar candidatura"
@@ -106,7 +120,7 @@ function MisAplicacionesPage() {
                                         <span className="material-symbols-outlined fs-6">delete</span>
                                         <span className="d-none d-md-inline">Retirar</span>
                                     </button>
-                                     <span className="material-symbols-outlined text-muted opacity-50">chevron_right</span>
+                                    <span className="material-symbols-outlined text-muted opacity-50">chevron_right</span>
                                 </div>
                             </div>
                         );

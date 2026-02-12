@@ -7,5 +7,10 @@ export const companyService = {
      */
     async getFeaturedCompanies() {
         return await api.get('/empresas/destacadas');
+    },
+
+    async getCompanies(params) {
+        const query = params ? new URLSearchParams(params).toString() : '';
+        return await api.get(`/empresas?${query}`);
     }
 };

@@ -11,7 +11,7 @@ export default function Breadcrumbs() {
     const location = useLocation();
     const pathnames = location.pathname.split('/').filter(x => x);
 
-    if (pathnames.length === 0) return null;
+    if (pathnames.length === 0 || location.pathname.includes('/chat')) return null;
 
     return (
         <div className="container mt-3">

@@ -12,6 +12,8 @@ use App\Http\Controllers\ValoracionController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\StorageController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ChatController;
 
 
 // Rutas Públicas de Autenticación
@@ -68,6 +70,26 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/usuarios/{usuario}', [UsuarioController::class, 'destroy']);
     });
 
+    Route::get('/gastos/stats', [App\Http\Controllers\GastoController::class, 'stats'])->middleware('role:administrador,empresa');
+    Route::get('/gastos', [App\Http\Controllers\GastoController::class, 'index'])->middleware('role:administrador,empresa');
+    Route::middleware('role:administrador')->group(function () {
+        Route::post('/gastos', [App\Http\Controllers\GastoController::class, 'store']);
+        Route::put('/gastos/{gasto}', [App\Http\Controllers\GastoController::class, 'update']);
+        Route::delete('/gastos/{gasto}', [App\Http\Controllers\GastoController::class, 'destroy']);
+    });
+
     Route::get('/favoritos', [App\Http\Controllers\FavoritoController::class, 'index']);
     Route::post('/favoritos/toggle', [App\Http\Controllers\FavoritoController::class, 'toggle']);
+
+    // Notifications
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::put('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::put('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
+
+    // Chat
+    Route::get('/chat', [ChatController::class, 'index']);
+    Route::get('/chat/unread-count', [ChatController::class, 'unreadCount']);
+    Route::get('/chat/{id}', [ChatController::class, 'show']);
+    Route::post('/chat', [ChatController::class, 'store']);
 });

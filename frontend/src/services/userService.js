@@ -68,8 +68,9 @@ export const userService = {
     /**
      * Obtiene lista de usuarios (Admin only).
      */
-    async getUsers() {
-        return await api.get('/usuarios');
+    async getUsers(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return await api.get(`/usuarios?${query}`);
     },
 
     /**
