@@ -22,9 +22,15 @@ class EmpresaController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
-        return EmpresaResource::collection(Empresa::paginate(15));
+        $query = Empresa::with('usuario');
+
+        if ($request->has('all')) {
+            return EmpresaResource::collection($query->get());
+        }
+
+        return EmpresaResource::collection($query->paginate($request->get('per_page', 15)));
     }
 
     /**
@@ -189,6 +195,16 @@ class EmpresaController extends Controller
         ]);
 
         $empresa->increment('impresiones_restantes', $request->amount);
+
+        // Registro automático en la tabla de gastos para historial
+        \App\Models\Gasto::create([
+            'empresa_id' => $empresa->id,
+            'concepto' => 'Compra de Créditos (Impresiones)',
+            'cantidad' => $request->amount, // Usamos la cantidad de créditos como "cantidad"
+            'fecha' => now()->toDateString(),
+            'estado' => 'PAGADO',
+            'notas' => 'Añadido desde el Panel Admin o Perfil'
+        ]);
 
         return response()->json([
             'message' => 'Créditos añadidos correctamente',

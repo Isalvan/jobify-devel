@@ -32,8 +32,21 @@ class AplicacionController extends Controller
         $user = $request->user();
 
         if ($user->esAdministrador()) {
+            $query = Aplicacion::with(['candidato.usuario', 'trabajo.empresa.usuario']);
+
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('candidato.usuario', function ($sq) use ($search) {
+                        $sq->where('nombre', 'like', "%{$search}%");
+                    })->orWhereHas('trabajo', function ($sq) use ($search) {
+                        $sq->where('titulo', 'like', "%{$search}%");
+                    });
+                });
+            }
+
             return AplicacionResource::collection(
-                Aplicacion::with(['candidato', 'trabajo.empresa'])->paginate(20)
+                $query->paginate($request->input('per_page', 20))
             );
         }
 
@@ -120,6 +133,16 @@ class AplicacionController extends Controller
             ]);
         }
 
+        // Notify the company
+        try {
+            $empresaUsuario = $aplicacion->trabajo->empresa->usuario;
+            if ($empresaUsuario) {
+                $empresaUsuario->notify(new \App\Notifications\JobApplied($aplicacion));
+            }
+        } catch (\Exception $e) {
+            \Log::error("Failed to notify company: " . $e->getMessage());
+        }
+
         return new AplicacionResource($aplicacion);
     }
 
@@ -149,7 +172,20 @@ class AplicacionController extends Controller
     {
         $this->authorize('update', $aplicacion);
 
+        $oldStatus = $aplicacion->estado;
         $aplicacion->update($request->validated());
+
+        if ($oldStatus !== $aplicacion->estado) {
+            // Notify the candidate
+            try {
+                $candidatoUsuario = $aplicacion->candidato->usuario;
+                if ($candidatoUsuario) {
+                    $candidatoUsuario->notify(new \App\Notifications\ApplicationStatusChanged($aplicacion));
+                }
+            } catch (\Exception $e) {
+                \Log::error("Failed to notify candidate: " . $e->getMessage());
+            }
+        }
 
         return new AplicacionResource($aplicacion);
     }

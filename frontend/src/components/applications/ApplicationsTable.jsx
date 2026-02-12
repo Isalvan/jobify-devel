@@ -75,68 +75,77 @@ function ApplicationsTable({ applications, onUpdateStatus }) {
                 <td className="pe-4 py-3 text-end">
                   <div className="d-flex justify-content-end align-items-center gap-2">
                     <Link to={`/perfil/${app.candidato.usuario?.id}`} className="btn btn-sm btn-outline-primary rounded-pill px-3" title="Ver Perfil">
-                       Ver Perfil
+                      Ver Perfil
                     </Link>
 
                     {app.cv && (
-                        <a 
-                            href={api.getFileUrl(app.cv)} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="btn btn-sm btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center p-0"
-                            style={{width: '32px', height: '32px'}}
-                            title="Descargar CV"
-                        >
-                            <span className="material-symbols-outlined fs-6">description</span>
-                        </a>
+                      <a
+                        href={api.getFileUrl(app.cv)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-sm btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center p-0"
+                        style={{ width: '32px', height: '32px' }}
+                        title="Descargar CV"
+                      >
+                        <span className="material-symbols-outlined fs-6">description</span>
+                      </a>
                     )}
-                    
+
+                    <Link
+                      to={`/chat?user_id=${app.candidato.usuario?.id}`}
+                      className="btn btn-sm btn-outline-info rounded-circle d-flex align-items-center justify-content-center p-0"
+                      style={{ width: '32px', height: '32px' }}
+                      title="Enviar Mensaje"
+                    >
+                      <span className="material-symbols-outlined fs-6">forum</span>
+                    </Link>
+
                     {/* Botones de acción disponibles siempre para corregir errores */}
                     <div className="d-flex gap-1" style={{ minWidth: '70px', justifyContent: 'flex-end' }}>
-                        {(['FINALISTA', 'ACEPTADO', 'RECHAZADO'].includes(app.estado)) ? (
-                             <button
-                                className="btn btn-sm btn-outline-warning rounded-circle d-flex align-items-center justify-content-center p-0"
-                                style={{width: '32px', height: '32px'}}
-                                title="Deshacer / Volver a Pendiente"
-                                onClick={() => handleStatusChange(app.id, 'PENDIENTE')}
-                                disabled={loadingId === app.id}
-                            >
-                                {loadingId === app.id ? (
-                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                ) : (
-                                    <span className="material-symbols-outlined fs-6">undo</span>
-                                )}
-                            </button>
-                        ) : (
-                            <>
-                                <button
-                                    className="btn btn-sm btn-outline-success rounded-circle d-flex align-items-center justify-content-center p-0"
-                                    style={{width: '32px', height: '32px'}}
-                                    title="Aceptar / Finalista"
-                                    onClick={() => handleStatusChange(app.id, 'FINALISTA')}
-                                    disabled={loadingId === app.id}
-                                >
-                                    {loadingId === app.id && app.targetStatus === 'FINALISTA' ? (
-                                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                    ) : (
-                                        <span className="material-symbols-outlined fs-6">check</span>
-                                    )}
-                                </button>
-                                <button
-                                    className="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center p-0"
-                                    style={{width: '32px', height: '32px'}}
-                                    title="Rechazar"
-                                    onClick={() => handleStatusChange(app.id, 'RECHAZADO')}
-                                    disabled={loadingId === app.id}
-                                >
-                                    {loadingId === app.id && app.targetStatus === 'RECHAZADO' ? (
-                                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                    ) : (
-                                        <span className="material-symbols-outlined fs-6">close</span>
-                                    )}
-                                </button>
-                            </>
-                        )}
+                      {(['FINALISTA', 'ACEPTADO', 'RECHAZADO'].includes(app.estado)) ? (
+                        <button
+                          className="btn btn-sm btn-outline-warning rounded-circle d-flex align-items-center justify-content-center p-0"
+                          style={{ width: '32px', height: '32px' }}
+                          title="Deshacer / Volver a Pendiente"
+                          onClick={() => handleStatusChange(app.id, 'PENDIENTE')}
+                          disabled={loadingId === app.id}
+                        >
+                          {loadingId === app.id ? (
+                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                          ) : (
+                            <span className="material-symbols-outlined fs-6">undo</span>
+                          )}
+                        </button>
+                      ) : (
+                        <>
+                          <button
+                            className="btn btn-sm btn-outline-success rounded-circle d-flex align-items-center justify-content-center p-0"
+                            style={{ width: '32px', height: '32px' }}
+                            title="Aceptar / Finalista"
+                            onClick={() => handleStatusChange(app.id, 'FINALISTA')}
+                            disabled={loadingId === app.id}
+                          >
+                            {loadingId === app.id && app.targetStatus === 'FINALISTA' ? (
+                              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            ) : (
+                              <span className="material-symbols-outlined fs-6">check</span>
+                            )}
+                          </button>
+                          <button
+                            className="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center p-0"
+                            style={{ width: '32px', height: '32px' }}
+                            title="Rechazar"
+                            onClick={() => handleStatusChange(app.id, 'RECHAZADO')}
+                            disabled={loadingId === app.id}
+                          >
+                            {loadingId === app.id && app.targetStatus === 'RECHAZADO' ? (
+                              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            ) : (
+                              <span className="material-symbols-outlined fs-6">close</span>
+                            )}
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </td>
