@@ -48,6 +48,14 @@ export const userService = {
     },
 
     /**
+     * Obtiene los datos de una empresa por su ID.
+     * @param {number} id 
+     */
+    async getEmpresa(id) {
+        return await api.get(`/empresas/${id}`);
+    },
+
+    /**
      * Actualiza los datos del empleado.
      * @param {number} id 
      * @param {Object} data 
@@ -68,8 +76,9 @@ export const userService = {
     /**
      * Obtiene lista de usuarios (Admin only).
      */
-    async getUsers() {
-        return await api.get('/usuarios');
+    async getUsers(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return await api.get(`/usuarios?${query}`);
     },
 
     /**

@@ -1,0 +1,93 @@
+.notification-dropdown {
+    width: 350px;
+    border-radius: 16px !important;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+.notification-bell:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+}
+
+.notification-bell .badge {
+    font-size: 0.6rem;
+    padding: 2px 4px;
+    border: 1.5px solid #fff;
+    top: 8px !important;
+    left: 22px !important;
+    transform: none !important;
+}
+
+.notification-item {
+    cursor: pointer;
+    position: relative;
+}
+
+.notification-item:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.notification-item.unread {
+    background-color: rgba(var(--bs-primary-rgb), 0.03);
+}
+
+.notification-item.unread:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.05);
+}
+
+.unread-dot {
+    width: 8px;
+    height: 8px;
+    margin-top: 5px;
+}
+
+.notification-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notification-body::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.notification-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.transition-all {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Glassmorphism for the header */
+.notification-header {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.btn-delete-notification {
+    width: 15%;
+    min-width: 45px;
+    background: transparent;
+    opacity: 0;
+}
+
+.notification-item:hover .btn-delete-notification {
+    opacity: 1;
+}
+
+.btn-delete-notification:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545 !important;
+}
+
+.hover-danger:hover {
+    color: #dc3545 !important;
+}
+
+.notification-item a {
+    width: 85%;
+}

@@ -25,6 +25,7 @@ class EmpresaResource extends JsonResource
             'tamano_empresa' => $this->tamano_empresa,
             'ubicacion' => $this->ubicacion,
             'web' => $this->web,
+            'impresiones_restantes' => $this->impresiones_restantes,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'usuario' => new UsuarioResource($this->whenLoaded('usuario')),

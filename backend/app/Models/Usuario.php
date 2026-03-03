@@ -188,4 +188,24 @@ class Usuario extends Authenticatable
     {
         return $this->hasOne(Empleado::class);
     }
+
+    public function conversacionesComoUno()
+    {
+        return $this->hasMany(Conversacion::class, 'user_one_id');
+    }
+
+    public function conversacionesComoDos()
+    {
+        return $this->hasMany(Conversacion::class, 'user_two_id');
+    }
+
+    public function getConversacionesAttribute()
+    {
+        return $this->conversacionesComoUno->merge($this->conversacionesComoDos);
+    }
+
+    public function mensajes()
+    {
+        return $this->hasMany(Mensaje::class, 'sender_id');
+    }
 }

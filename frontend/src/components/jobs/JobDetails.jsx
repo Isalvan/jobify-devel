@@ -4,12 +4,11 @@ function JobDetails({ oferta }) {
     if (!oferta) return null;
 
     const datosExtra = [
-        { label: 'Modalidad', value: oferta.tipo_trabajo },
+        { label: 'Tipo de trabajo', value: oferta.tipo_trabajo },
+        { label: 'Modalidad', value: oferta.modalidad },
         { label: 'Ubicación', value: oferta.ubicacion },
         { label: 'Salario', value: oferta.salario ? `${parseFloat(oferta.salario).toLocaleString()}€` : 'No especificado' },
         { label: 'Publicado', value: new Date(oferta.created_at).toLocaleDateString() },
-        { label: 'Jornada', value: 'Jornada completa' },
-        { label: 'Contrato', value: 'Indefinido' },
     ];
 
     return (
@@ -33,7 +32,7 @@ function JobDetails({ oferta }) {
                     {datosExtra.map((d, i) => (
                         <div key={i} className="col-12 col-md-6 col-lg-4">
                             <div className="p-3 rounded bg-light border h-100">
-                                <small className="text-muted d-block mb-1 text-uppercase fw-bold" style={{fontSize: '0.75rem'}}>{d.label}</small>
+                                <small className="text-muted d-block mb-1 text-uppercase fw-bold" style={{ fontSize: '0.75rem' }}>{d.label}</small>
                                 <span className="fw-medium text-dark">{d.value}</span>
                             </div>
                         </div>

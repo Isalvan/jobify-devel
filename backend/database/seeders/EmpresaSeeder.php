@@ -27,6 +27,18 @@ class EmpresaSeeder extends Seeder
             ]);
         }
 
-        Empresa::factory(150)->create();
+        Empresa::factory(150)->create()->each(function ($empresa) {
+            $cantidadExtra = 500;
+            $empresa->update(['impresiones_restantes' => $cantidadExtra]);
+
+            \App\Models\Gasto::create([
+                'empresa_id' => $empresa->id,
+                'concepto' => 'Carga Inicial (Promoción Seeder)',
+                'cantidad' => $cantidadExtra / 10, // 1 Euro = 10 Créditos
+                'fecha' => now()->toDateString(),
+                'estado' => 'PAGADO',
+                'notas' => 'Añadido automáticamente por el sistema de semillas'
+            ]);
+        });
     }
 }

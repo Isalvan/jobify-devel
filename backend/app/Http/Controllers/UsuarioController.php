@@ -22,10 +22,21 @@ class UsuarioController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Usuario::class);
-        return UsuarioResource::collection(Usuario::paginate(15));
+        
+        $query = Usuario::query();
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('nombre', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        return UsuarioResource::collection($query->paginate($request->input('per_page', 15)));
     }
 
     /**

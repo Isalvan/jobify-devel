@@ -40,7 +40,7 @@ async function request(endpoint, { method = "GET", body, token, headers = {} } =
         if (!response.ok) {
             throw new Error(response.statusText || "Error en la petición (Respuesta no legible)");
         }
-        data = {}; 
+        data = {};
     }
 
     if (!response.ok) {
@@ -61,32 +61,29 @@ export const api = {
     delete: (endpoint, token) => request(endpoint, { method: "DELETE", token }),
     getFileUrl: (path) => {
         if (!path) return '';
-        
-        // Hardcode domain to ensure absolute URL
-        const domain = "http://92.190.194.223"; 
 
-        // If it's already the correct domain, return it.
-        if (path.startsWith(domain)) return path;
-        
-        // If it's an absolute URL
+        // Use current window location to derive the base URL
+        const domain = window.location.origin;
+
+        // If it's already an absolute URL
         if (path.startsWith('http')) {
-             // If it contains /storage/, assume it's a misconfigured local URL (e.g. localhost) 
-             // and try to fix it by extracting the relative path.
-             if (path.includes('/storage/')) {
-                 const relativePart = path.split('/storage/')[1];
-                 return `${domain}/api/storage/${relativePart}`;
-             }
-             // Otherwise assume it's a valid external URL (e.g. placehold.co)
-             return path;
+            // If it contains /storage/, assume it's a misconfigured local URL (e.g. localhost) 
+            // and try to fix it by extracting the relative path.
+            if (path.includes('/storage/')) {
+                const relativePart = path.split('/storage/')[1];
+                return `${domain}/api/storage/${relativePart}`;
+            }
+            // Otherwise assume it's a valid external URL (e.g. placehold.co)
+            return path;
         }
-        
+
         let cleanPath = path.startsWith('/') ? path.substring(1) : path;
-        
+
         // Remove 'storage/' prefix if present
         if (cleanPath.startsWith('storage/')) {
-            cleanPath = cleanPath.substring(8); 
+            cleanPath = cleanPath.substring(8);
         }
-        
+
         return `${domain}/api/storage/${cleanPath}`;
     }
 };

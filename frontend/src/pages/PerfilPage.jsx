@@ -1,6 +1,8 @@
 
 import { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import TinyEditor from '../components/common/TinyEditor';
+
 import { userService } from '../services/userService';
 import { jobService } from '../services/jobService';
 import { applicationService } from '../services/applicationService';
@@ -56,6 +58,9 @@ function PerfilPage() {
                     localizacion: data.candidato.ubicacion || '',
                     descripcion: data.candidato.descripcion || '',
                     urlCv: data.candidato.url_cv || '',
+                    experiencia: data.candidato.experiencia || '',
+                    educacion: data.candidato.educacion || '',
+                    habilidades: data.candidato.habilidades || '',
                 };
             } else if (data.rol === 'EMPRESA' && data.empresa) {
                 roleData = {
@@ -82,7 +87,7 @@ function PerfilPage() {
 
             // Fetch jobs if company
             if (data.rol === 'EMPRESA' && data.empresa) {
-               fetchCompanyJobs(data.empresa.id);
+                fetchCompanyJobs(data.empresa.id);
             }
 
             // Fetch applications if candidate and own profile
@@ -129,7 +134,7 @@ function PerfilPage() {
     };
 
     const handleProfilePicChange = (e) => {
-         if (e.target.files && e.target.files[0]) {
+        if (e.target.files && e.target.files[0]) {
             setEditData({ ...editData, fotoPerfilFile: e.target.files[0], fotoPerfilPreview: URL.createObjectURL(e.target.files[0]) });
         }
     };
@@ -138,15 +143,15 @@ function PerfilPage() {
         try {
             // Update User (Common data + Photo)
             if (editData.fotoPerfilFile) {
-                 const userFormData = new FormData();
-                 userFormData.append('nombre', editData.nombre);
-                 if(editData.telefono) userFormData.append('telefono', editData.telefono);
-                 userFormData.append('foto_perfil', editData.fotoPerfilFile);
-                 userFormData.append('_method', 'PUT');
-                 
-                 await api.post(`/usuarios/${editData.id}`, userFormData);
+                const userFormData = new FormData();
+                userFormData.append('nombre', editData.nombre);
+                if (editData.telefono) userFormData.append('telefono', editData.telefono);
+                userFormData.append('foto_perfil', editData.fotoPerfilFile);
+                userFormData.append('_method', 'PUT');
+
+                await api.post(`/usuarios/${editData.id}`, userFormData);
             } else {
-                 const userPayload = {
+                const userPayload = {
                     nombre: editData.nombre,
                     telefono: editData.telefono,
                 };
@@ -161,6 +166,9 @@ function PerfilPage() {
                     payload.append('fecha_nacimiento', editData.fechaNacimiento);
                     payload.append('ubicacion', editData.localizacion);
                     payload.append('descripcion', editData.descripcion);
+                    payload.append('experiencia', editData.experiencia || '');
+                    payload.append('educacion', editData.educacion || '');
+                    payload.append('habilidades', editData.habilidades || '');
                     payload.append('cv_file', editData.cvFile);
                     payload.append('_method', 'PUT');
                 } else {
@@ -168,9 +176,13 @@ function PerfilPage() {
                         apellidos: editData.apellidos,
                         fecha_nacimiento: editData.fechaNacimiento,
                         ubicacion: editData.localizacion,
-                        descripcion: editData.descripcion
+                        descripcion: editData.descripcion,
+                        experiencia: editData.experiencia,
+                        educacion: editData.educacion,
+                        habilidades: editData.habilidades
                     };
                 }
+
 
                 if (payload instanceof FormData) {
                     await api.post(`/candidatos/${editData.relationId}`, payload);
@@ -210,7 +222,7 @@ function PerfilPage() {
     };
 
     const handleBuyCredits = async () => {
-        const amountStr = window.prompt("¿Cuántos créditos (impresiones) deseas comprar?", "500");
+        const amountStr = window.prompt("¿Cuántos créditos (impresiones) deseas comprar? (1€ = 10 Créditos)", "500");
         if (!amountStr) return;
 
         const amount = parseInt(amountStr);
@@ -269,23 +281,23 @@ function PerfilPage() {
             <div className="card-premium p-4 mb-4">
                 <div className="row align-items-center">
                     <div className="col-auto">
-                        <div className="rounded-circle overflow-hidden border border-3 border-light shadow-sm position-relative group-hover-parent" style={{width: '100px', height: '100px'}}>
+                        <div className="rounded-circle overflow-hidden border border-3 border-light shadow-sm position-relative group-hover-parent" style={{ width: '100px', height: '100px' }}>
                             <img src={editData.fotoPerfilPreview || userData.fotoPerfil} alt="Foto" className="w-100 h-100 object-fit-cover" />
-                             
-                             {/* Overlay de edición */}
-                             {isEditing && (
+
+                            {/* Overlay de edición */}
+                            {isEditing && (
                                 <>
-                                    <div 
+                                    <div
                                         className="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex align-items-center justify-content-center cursor-pointer opacity-hover transition-opacity"
                                         style={{ cursor: 'pointer' }}
                                         onClick={() => document.getElementById('profile-pic-input').click()}
                                     >
                                         <span className="material-symbols-outlined text-white">photo_camera</span>
                                     </div>
-                                    <input 
-                                        type="file" 
-                                        id="profile-pic-input" 
-                                        className="d-none" 
+                                    <input
+                                        type="file"
+                                        id="profile-pic-input"
+                                        className="d-none"
                                         accept="image/*"
                                         onChange={handleProfilePicChange}
                                     />
@@ -309,14 +321,14 @@ function PerfilPage() {
                                     {userData.localizacion}
                                 </span>
                             )}
-                            
+
                             {!isEmpresa && userData.fechaNacimiento && (
                                 <span className="d-flex align-items-center gap-1">
                                     <span className="material-symbols-outlined fs-6">cake</span>
                                     {calcularEdad(userData.fechaNacimiento)}
                                 </span>
                             )}
-                            
+
                             {isEmpresa && userData.web && (
                                 <span className="d-flex align-items-center gap-1">
                                     <span className="material-symbols-outlined fs-6">language</span>
@@ -327,7 +339,7 @@ function PerfilPage() {
                     </div>
                     <div className="col-auto">
                         {/* Mostrar botón editar SOLO si es el perfil propio */}
-                        {isOwnProfile && (
+                        {isOwnProfile ? (
                             !isEditing ? (
                                 <button className="btn-premium px-4 d-flex align-items-center gap-2" onClick={() => setIsEditing(true)}>
                                     <span className="material-symbols-outlined fs-5 text-white">edit</span> Editar Perfil
@@ -342,6 +354,10 @@ function PerfilPage() {
                                     </button>
                                 </div>
                             )
+                        ) : (
+                            <Link to={`/chat?user_id=${userData.id}`} className="btn-premium px-4 d-flex align-items-center gap-2">
+                                <span className="material-symbols-outlined fs-5 text-white">mail</span> Enviar Mensaje
+                            </Link>
                         )}
                     </div>
                 </div>
@@ -357,7 +373,7 @@ function PerfilPage() {
                                 {isEmpresa ? 'Sobre la empresa' : 'Sobre mí'}
                             </h2>
                             {!isEditing ? (
-                                <p className="text-muted mb-0" style={{lineHeight: '1.6'}}>{userData.descripcion || 'No has añadido una descripción aún.'}</p>
+                                <p className="text-muted mb-0" style={{ lineHeight: '1.6' }}>{userData.descripcion || 'No has añadido una descripción aún.'}</p>
                             ) : (
                                 <textarea className="form-control" rows="4" value={editData.descripcion} onChange={(e) => handleChange('descripcion', e.target.value)} />
                             )}
@@ -387,7 +403,7 @@ function PerfilPage() {
                                     </div>
                                 </div>
                                 <div className="col-md-6">
-                                     <div className="p-3 bg-light rounded h-100">
+                                    <div className="p-3 bg-light rounded h-100">
                                         <label className="form-label small text-muted text-uppercase fw-bold mb-1">Tamaño</label>
                                         {!isEditing ? <p className="mb-0 fw-medium text-dark">{userData.tamanoEmpresa}</p>
                                             : (
@@ -402,6 +418,68 @@ function PerfilPage() {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    )}
+
+
+
+                    {(isCandidato || isEmpresa) && (
+                        <div className="card-premium p-4 mb-4">
+                            <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">work</span>
+                                Experiencia Profesional
+                            </h2>
+                            {!isEditing ? (
+                                userData.experiencia ? (
+                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: userData.experiencia }} />
+                                ) : <p className="text-muted small">No se ha añadido experiencia.</p>
+                            ) : (
+                                <TinyEditor
+                                    value={editData.experiencia || ''}
+                                    onChange={(val) => handleChange('experiencia', val)}
+                                    height={300}
+                                />
+                            )}
+                        </div>
+                    )}
+
+                    {(isCandidato || isEmpresa) && (
+                        <div className="card-premium p-4 mb-4">
+                            <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">school</span>
+                                Educación
+                            </h2>
+                            {!isEditing ? (
+                                userData.educacion ? (
+                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: userData.educacion }} />
+                                ) : <p className="text-muted small">No se ha añadido educación.</p>
+                            ) : (
+                                <TinyEditor
+                                    value={editData.educacion || ''}
+                                    onChange={(val) => handleChange('educacion', val)}
+                                    height={300}
+                                />
+                            )}
+                        </div>
+                    )}
+
+                    {(isCandidato || isEmpresa) && (
+                        <div className="card-premium p-4 mb-4">
+                            <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">stars</span>
+                                Habilidades
+                            </h2>
+                            {!isEditing ? (
+                                userData.habilidades ? (
+                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: userData.habilidades }} />
+                                ) : <p className="text-muted small">No se han añadido habilidades.</p>
+                            ) : (
+                                <TinyEditor
+                                    value={editData.habilidades || ''}
+                                    onChange={(val) => handleChange('habilidades', val)}
+                                    height={200}
+                                />
+                            )}
                         </div>
                     )}
 
@@ -465,42 +543,42 @@ function PerfilPage() {
                                 </div>
                             )}
 
-                                {!isEmpresa && (
-                                    <div className="col-md-6">
-                                        <div className="mb-3">
-                                            <label className="small text-muted mb-1 d-block">Curriculum Vitae</label>
-                                            {!isEditing ? (
-                                                userData.urlCv ? (
-                                                    <a href={api.getFileUrl(userData.urlCv)} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
-                                                        <span className="material-symbols-outlined fs-6">download</span> Ver CV actual
-                                                    </a>
-                                                ) : <span className="text-muted small">No hay CV subido</span>
-                                            ) : (
-                                                <input
-                                                    type="file"
-                                                    className="form-control form-control-sm"
-                                                    onChange={handleFileChange}
-                                                    accept=".pdf"
-                                                />
-                                            )}
-                                        </div>
+                            {!isEmpresa && (
+                                <div className="col-md-6">
+                                    <div className="mb-3">
+                                        <label className="small text-muted mb-1 d-block">Curriculum Vitae</label>
+                                        {!isEditing ? (
+                                            userData.urlCv ? (
+                                                <a href={api.getFileUrl(userData.urlCv)} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                                                    <span className="material-symbols-outlined fs-6">download</span> Ver CV actual
+                                                </a>
+                                            ) : <span className="text-muted small">No hay CV subido</span>
+                                        ) : (
+                                            <input
+                                                type="file"
+                                                className="form-control form-control-sm"
+                                                onChange={handleFileChange}
+                                                accept=".pdf"
+                                            />
+                                        )}
                                     </div>
-                                )}
-                            
-                                {!isEmpresa && (
-                                    <div className="col-md-6">
-                                        <div className="mb-3">
-                                            <label className="small text-muted mb-1 d-block">Fecha de nacimiento</label>
-                                            {!isEditing ? (
-                                                <p className="mb-0 fw-medium text-dark bg-light p-2 rounded">
-                                                    {userData.fechaNacimiento ? new Date(userData.fechaNacimiento).toLocaleDateString() : '-'}
-                                                </p>
-                                            ) : (
-                                                <input type="date" className="form-control" value={editData.fechaNacimiento} onChange={(e) => handleChange('fechaNacimiento', e.target.value)} />
-                                            )}
-                                        </div>
+                                </div>
+                            )}
+
+                            {!isEmpresa && (
+                                <div className="col-md-6">
+                                    <div className="mb-3">
+                                        <label className="small text-muted mb-1 d-block">Fecha de nacimiento</label>
+                                        {!isEditing ? (
+                                            <p className="mb-0 fw-medium text-dark bg-light p-2 rounded">
+                                                {userData.fechaNacimiento ? new Date(userData.fechaNacimiento).toLocaleDateString() : '-'}
+                                            </p>
+                                        ) : (
+                                            <input type="date" className="form-control" value={editData.fechaNacimiento} onChange={(e) => handleChange('fechaNacimiento', e.target.value)} />
+                                        )}
                                     </div>
-                                )}
+                                </div>
+                            )}
 
                         </div>
                     </div>
@@ -521,12 +599,16 @@ function PerfilPage() {
                                     <span className="display-6 fw-bold text-dark lh-1">{userData.impresionesRestantes}</span>
                                 </div>
                                 <p className="small text-muted mb-3">Las impresiones permiten que tus ofertas sean vistas como destacadas.</p>
-                                <button className="btn-premium w-100 justify-content-center" onClick={handleBuyCredits}>
+                                <button className="btn-premium w-100 justify-content-center mb-2" onClick={handleBuyCredits}>
                                     Comprar Créditos
                                 </button>
+                                <Link to="/facturacion" className="btn btn-outline-secondary w-100 justify-content-center d-flex align-items-center gap-2">
+                                    <span className="material-symbols-outlined fs-6">receipt_long</span>
+                                    Ver Facturación
+                                </Link>
                             </div>
                         )}
-                        
+
                         {isEmpresa ? (
                             <>
                                 {companyJobs.length > 0 ? (
@@ -536,18 +618,18 @@ function PerfilPage() {
                                                 <Link to={`/ofertas/${job.id}`} className="text-decoration-none text-dark d-block stretched-link">
                                                     <h6 className="fw-bold mb-1 text-primary-hover transition-colors">{job.titulo}</h6>
                                                 </Link>
-                                                <p className="text-muted small mb-2 text-truncate" style={{maxWidth: '300px'}}>{job.descripcion}</p>
+                                                <p className="text-muted small mb-2 text-truncate" style={{ maxWidth: '300px' }}>{job.descripcion}</p>
                                                 <div className="d-flex flex-wrap gap-2 small text-secondary">
                                                     <span className="badge bg-white text-secondary border fw-normal">{job.tipo_jornada}</span>
                                                     <span className="d-flex align-items-center gap-1">
-                                                        <span className="material-symbols-outlined" style={{fontSize: '14px'}}>location_on</span>
+                                                        <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>location_on</span>
                                                         {job.ubicacion}
                                                     </span>
                                                 </div>
                                             </div>
                                         ))}
-                                        <Link 
-                                            to={`/ofertas?empresa_id=${userData.relationId}`} 
+                                        <Link
+                                            to={`/ofertas-empresa/${userData.relationId}`}
                                             className="btn-premium-outline w-100 justify-content-center mt-3"
                                         >
                                             Ver más ofertas de esta empresa
@@ -570,21 +652,20 @@ function PerfilPage() {
                                                         </Link>
                                                         <p className="text-muted small mb-0">{app.trabajo.empresa?.nombre}</p>
                                                     </div>
-                                                    <span className={`badge rounded-pill fw-normal shadow-sm ${
-                                                        app.estado === 'ACEPTADA' ? 'bg-success-subtle text-success border border-success-subtle' : 
+                                                    <span className={`badge rounded-pill fw-normal shadow-sm ${app.estado === 'ACEPTADA' ? 'bg-success-subtle text-success border border-success-subtle' :
                                                         app.estado === 'RECHAZADA' ? 'bg-danger-subtle text-danger border border-danger-subtle' : 'bg-warning-subtle text-warning-emphasis border border-warning-subtle'
-                                                    }`}>
+                                                        }`}>
                                                         {app.estado}
                                                     </span>
                                                 </div>
                                                 <div className="d-flex align-items-center gap-1 small text-muted">
-                                                    <span className="material-symbols-outlined" style={{fontSize: '14px'}}>calendar_today</span>
+                                                    <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>calendar_today</span>
                                                     <span>Aplicado el {new Date(app.created_at).toLocaleDateString()}</span>
                                                 </div>
                                             </div>
                                         ))}
-                                        <Link 
-                                            to="/mis-aplicaciones" 
+                                        <Link
+                                            to="/mis-aplicaciones"
                                             className="btn-premium-outline w-100 justify-content-center mt-3"
                                         >
                                             Ver todas mis aplicaciones

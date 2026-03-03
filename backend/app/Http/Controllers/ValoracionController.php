@@ -62,6 +62,16 @@ class ValoracionController extends Controller
             ]
         );
 
+        // Notify the company
+        try {
+            $empresaUsuario = $valoracion->trabajo->empresa->usuario;
+            if ($empresaUsuario) {
+                $empresaUsuario->notify(new \App\Notifications\NewJobReview($valoracion));
+            }
+        } catch (\Exception $e) {
+            \Log::error("Failed to notify company about review: " . $e->getMessage());
+        }
+
         return new ValoracionResource($valoracion);
     }
     /**

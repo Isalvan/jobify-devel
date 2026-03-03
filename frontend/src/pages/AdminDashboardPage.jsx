@@ -3,7 +3,9 @@ import { AppContext } from '../contexts/AppProvider';
 import { Navigate } from 'react-router-dom';
 import AdminUsersTable from '../components/admin/AdminUsersTable';
 import AdminJobsTable from '../components/admin/AdminJobsTable';
+
 import AdminApplicationsTable from '../components/admin/AdminApplicationsTable';
+import AdminExpensesTable from '../components/admin/AdminExpensesTable';
 
 function AdminDashboardPage() {
     const { user } = useContext(AppContext);
@@ -23,37 +25,48 @@ function AdminDashboardPage() {
             <div className="card-premium p-4">
                 <ul className="nav nav-tabs mb-4">
                     <li className="nav-item">
-                        <button 
+                        <button
                             className={`nav-link ${activeTab === 'users' ? 'active' : ''}`}
                             onClick={() => setActiveTab('users')}
                         >
-                            <span className="material-symbols-outlined me-2" style={{fontSize: '18px', verticalAlign: 'text-bottom'}}>group</span>
+                            <span className="material-symbols-outlined me-2" style={{ fontSize: '18px', verticalAlign: 'text-bottom' }}>group</span>
                             Usuarios
                         </button>
                     </li>
                     <li className="nav-item">
-                        <button 
+                        <button
                             className={`nav-link ${activeTab === 'jobs' ? 'active' : ''}`}
                             onClick={() => setActiveTab('jobs')}
                         >
-                            <span className="material-symbols-outlined me-2" style={{fontSize: '18px', verticalAlign: 'text-bottom'}}>work</span>
+                            <span className="material-symbols-outlined me-2" style={{ fontSize: '18px', verticalAlign: 'text-bottom' }}>work</span>
                             Ofertas
                         </button>
                     </li>
                     <li className="nav-item">
-                        <button 
+                        <button
                             className={`nav-link ${activeTab === 'applications' ? 'active' : ''}`}
                             onClick={() => setActiveTab('applications')}
                         >
-                            <span className="material-symbols-outlined me-2" style={{fontSize: '18px', verticalAlign: 'text-bottom'}}>description</span>
+                            <span className="material-symbols-outlined me-2" style={{ fontSize: '18px', verticalAlign: 'text-bottom' }}>description</span>
                             Aplicaciones
+                        </button>
+                    </li>
+                    <li className="nav-item">
+                        <button
+                            className={`nav-link ${activeTab === 'expenses' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('expenses')}
+                        >
+                            <span className="material-symbols-outlined me-2" style={{ fontSize: '18px', verticalAlign: 'text-bottom' }}>attach_money</span>
+                            Gastos
                         </button>
                     </li>
                 </ul>
 
                 {activeTab === 'users' && <AdminUsersTable />}
                 {activeTab === 'jobs' && <AdminJobsTable />}
+
                 {activeTab === 'applications' && <AdminApplicationsTable />}
+                {activeTab === 'expenses' && <AdminExpensesTable />}
             </div>
         </div>
     );

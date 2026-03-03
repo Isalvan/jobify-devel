@@ -27,11 +27,12 @@ export const applicationService = {
     },
 
     /**
-     * Obtiene las aplicaciones del usuario (candidato).
+     * Obtiene las aplicaciones del usuario (candidato) o todas si es administrador.
      * @returns {Promise<Object>} Lista de aplicaciones
      */
-    async getMyApplications() {
-        return await api.get("/aplicaciones");
+    async getMyApplications(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return await api.get(`/aplicaciones?${query}`);
     },
 
     /**

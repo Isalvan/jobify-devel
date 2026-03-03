@@ -20,7 +20,7 @@ function Footer() {
             <Link to="/ofertas" className="nav-link px-3 text-muted">Ofertas</Link>
           </li>
         </ul>
-        <p className="text-center text-body-secondary">&copy; 2025 Company, Inc</p>
+        <p className="text-center text-body-secondary">&copy; 2026 Jobify</p>
       </div>
     </footer>
   </>
