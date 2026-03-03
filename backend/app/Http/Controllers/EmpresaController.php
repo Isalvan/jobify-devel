@@ -200,7 +200,7 @@ class EmpresaController extends Controller
         \App\Models\Gasto::create([
             'empresa_id' => $empresa->id,
             'concepto' => 'Compra de Créditos (Impresiones)',
-            'cantidad' => $request->amount, // Usamos la cantidad de créditos como "cantidad"
+            'cantidad' => $request->amount / 10, // 1 Euro = 10 Créditos
             'fecha' => now()->toDateString(),
             'estado' => 'PAGADO',
             'notas' => 'Añadido desde el Panel Admin o Perfil'

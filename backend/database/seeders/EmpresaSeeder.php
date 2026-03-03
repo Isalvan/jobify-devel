@@ -34,7 +34,7 @@ class EmpresaSeeder extends Seeder
             \App\Models\Gasto::create([
                 'empresa_id' => $empresa->id,
                 'concepto' => 'Carga Inicial (Promoción Seeder)',
-                'cantidad' => $cantidadExtra,
+                'cantidad' => $cantidadExtra / 10, // 1 Euro = 10 Créditos
                 'fecha' => now()->toDateString(),
                 'estado' => 'PAGADO',
                 'notas' => 'Añadido automáticamente por el sistema de semillas'

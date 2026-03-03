@@ -101,7 +101,6 @@ class ChatController extends Controller
                 return response()->json(['message' => 'Unauthorized'], 403);
             }
         } else {
-            // Find or create conversation
             $recipientId = (int) $request->recipient_id;
             if ($recipientId === $user->id) {
                 return response()->json(['message' => 'Cannot chat with yourself'], 400);
