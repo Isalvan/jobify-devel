@@ -48,6 +48,14 @@ export const userService = {
     },
 
     /**
+     * Obtiene los datos de una empresa por su ID.
+     * @param {number} id 
+     */
+    async getEmpresa(id) {
+        return await api.get(`/empresas/${id}`);
+    },
+
+    /**
      * Actualiza los datos del empleado.
      * @param {number} id 
      * @param {Object} data 

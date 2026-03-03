@@ -33,12 +33,14 @@ export default function EmpresaOfertasPage() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                // Fetch company details to show name in header
-                const companyRes = await userService.getUserProfile(id ? null : user.id, id);
-                // Note: userService.getUserProfile logic might need adjustment depending on how it works.
-                // For now, let's try to get profile if it's the current user, or specific user if ID provided.
-                // Actually, if we have targetEmpresaId which is the RELATION ID (empresa.id), 
-                // we might need a way to get the company name.
+                if (targetEmpresaId) {
+                    try {
+                        const companyRes = await userService.getEmpresa(targetEmpresaId);
+                        setEmpresa(companyRes.data || companyRes);
+                    } catch (e) {
+                        console.error("Could not fetch company details independently", e);
+                    }
+                }
 
                 const data = await jobService.getJobs({
                     empresa_id: targetEmpresaId,

@@ -16,6 +16,7 @@ import EmpresaOfertasPage from '../pages/EmpresaOfertasPage';
 import NotificationsPage from '../pages/NotificationsPage';
 import ChatPage from '../pages/ChatPage';
 import ProtectedRoute from "../components/auth/ProtectedRoute";
+import CompanyBillingPage from "../pages/CompanyBillingPage";
 import ErrorBoundary from "../components/common/ErrorBoundary";
 import NotFoundPage from "../pages/NotFoundPage";
 
@@ -36,6 +37,7 @@ function AppEnrutador() {
                     <Route path="/ofertas/:id" element={<DetallesOfertaPage />} />
                     {/* Perfil público (si tiene ID) */}
                     <Route path="/perfil/:id" element={<PerfilPage />} />
+                    <Route path="/ofertas-empresa/:id" element={<EmpresaOfertasPage />} />
 
                     {/* Rutas Protegidas */}
                     <Route element={<ProtectedRoute />}>
@@ -51,8 +53,7 @@ function AppEnrutador() {
                         <Route path="/ofertas/:id/editar" element={<CrearOfertaPage />} />
                         <Route path="/ofertas/:id/aplicaciones" element={<JobApplicationsPage />} />
                         <Route path="/mis-ofertas" element={<MisOfertasPage />} />
-                        <Route path="/ofertas-empresa/:id" element={<EmpresaOfertasPage />} />
-
+                        <Route path="/facturacion" element={<CompanyBillingPage />} />
                         {/* Admin */}
                         <Route path="/admin" element={<AdminDashboardPage />} />
                     </Route>

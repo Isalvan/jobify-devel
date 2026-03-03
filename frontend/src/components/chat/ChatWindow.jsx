@@ -123,7 +123,6 @@ const ChatWindow = ({ conversationId, initiatingUserId, onMessageSent }) => {
                             src={otherUser?.foto_perfil || 'https://via.placeholder.com/48'}
                             alt={otherUser?.nombre}
                             className="chat-avatar"
-                            style={{ width: '42px', height: '42px' }}
                         />
                     </div>
                     <div>

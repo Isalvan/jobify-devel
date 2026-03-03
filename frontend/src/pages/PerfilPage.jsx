@@ -222,7 +222,7 @@ function PerfilPage() {
     };
 
     const handleBuyCredits = async () => {
-        const amountStr = window.prompt("¿Cuántos créditos (impresiones) deseas comprar?", "500");
+        const amountStr = window.prompt("¿Cuántos créditos (impresiones) deseas comprar? (1€ = 10 Créditos)", "500");
         if (!amountStr) return;
 
         const amount = parseInt(amountStr);
@@ -599,9 +599,13 @@ function PerfilPage() {
                                     <span className="display-6 fw-bold text-dark lh-1">{userData.impresionesRestantes}</span>
                                 </div>
                                 <p className="small text-muted mb-3">Las impresiones permiten que tus ofertas sean vistas como destacadas.</p>
-                                <button className="btn-premium w-100 justify-content-center" onClick={handleBuyCredits}>
+                                <button className="btn-premium w-100 justify-content-center mb-2" onClick={handleBuyCredits}>
                                     Comprar Créditos
                                 </button>
+                                <Link to="/facturacion" className="btn btn-outline-secondary w-100 justify-content-center d-flex align-items-center gap-2">
+                                    <span className="material-symbols-outlined fs-6">receipt_long</span>
+                                    Ver Facturación
+                                </Link>
                             </div>
                         )}
 
