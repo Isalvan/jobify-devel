@@ -48,8 +48,13 @@ class EmpresaController extends Controller
     {
         $empresas = Empresa::with('usuario')->destacada()->inRandomOrder()->limit(6)->get();
 
-        foreach ($empresas as $empresa) {
-            $empresa->decrement('impresiones_restantes');
+        if ($empresas->isNotEmpty()) {
+            Empresa::whereIn('id', $empresas->pluck('id'))->decrement('impresiones_restantes');
+
+            // Actualizamos en memoria para que el recurso devuelto tenga los valores correctos
+            foreach ($empresas as $empresa) {
+                $empresa->impresiones_restantes--;
+            }
         }
 
         return EmpresaResource::collection($empresas);
