@@ -2,6 +2,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import TinyEditor from '../components/common/TinyEditor';
+import { sanitizeHtml } from '../utils/sanitize';
 
 import { userService } from '../services/userService';
 import { jobService } from '../services/jobService';
@@ -431,7 +432,7 @@ function PerfilPage() {
                             </h2>
                             {!isEditing ? (
                                 userData.experiencia ? (
-                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: userData.experiencia }} />
+                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: sanitizeHtml(userData.experiencia) }} />
                                 ) : <p className="text-muted small">No se ha añadido experiencia.</p>
                             ) : (
                                 <TinyEditor
@@ -451,7 +452,7 @@ function PerfilPage() {
                             </h2>
                             {!isEditing ? (
                                 userData.educacion ? (
-                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: userData.educacion }} />
+                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: sanitizeHtml(userData.educacion) }} />
                                 ) : <p className="text-muted small">No se ha añadido educación.</p>
                             ) : (
                                 <TinyEditor
@@ -471,7 +472,7 @@ function PerfilPage() {
                             </h2>
                             {!isEditing ? (
                                 userData.habilidades ? (
-                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: userData.habilidades }} />
+                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: sanitizeHtml(userData.habilidades) }} />
                                 ) : <p className="text-muted small">No se han añadido habilidades.</p>
                             ) : (
                                 <TinyEditor
