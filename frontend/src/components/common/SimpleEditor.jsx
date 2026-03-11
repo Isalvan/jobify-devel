@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 
 const SimpleEditor = ({ value, onChange, placeholder }) => {
     const editorRef = useRef(null);
@@ -8,7 +9,7 @@ const SimpleEditor = ({ value, onChange, placeholder }) => {
             // Only update if content is different to avoid cursor jumping
             // Basic check, ideally would use a more robust comparison or only set on init
             if (!editorRef.current.innerHTML && value) {
-                editorRef.current.innerHTML = value;
+                editorRef.current.innerHTML = DOMPurify.sanitize(value);
             } else if (value === '') {
                 editorRef.current.innerHTML = '';
             }
@@ -23,7 +24,8 @@ const SimpleEditor = ({ value, onChange, placeholder }) => {
 
     const handleChange = () => {
         if (editorRef.current) {
-            onChange(editorRef.current.innerHTML);
+            // Sanitize before sending to parent/state
+            onChange(DOMPurify.sanitize(editorRef.current.innerHTML));
         }
     };
 
@@ -74,7 +76,7 @@ const SimpleEditor = ({ value, onChange, placeholder }) => {
                 contentEditable
                 onInput={handleChange}
                 onBlur={handleChange}
-                dangerouslySetInnerHTML={{ __html: value }}
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }}
             />
         </div>
     );

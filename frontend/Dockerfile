@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:20-slim
 
 # Set working directory
 WORKDIR /app
@@ -11,6 +11,10 @@ RUN npm install --legacy-peer-deps
 
 # Copy rest of the frontend code
 COPY . .
+
+# Use a non-root user
+RUN chown -R node:node /app
+USER node
 
 # Expose port and run dev server
 EXPOSE 3000

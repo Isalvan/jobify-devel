@@ -1,7 +1,7 @@
-
 import { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import TinyEditor from '../components/common/TinyEditor';
+import DOMPurify from 'dompurify';
 
 import { userService } from '../services/userService';
 import { jobService } from '../services/jobService';
@@ -17,539 +17,345 @@ function PerfilPage() {
     const [error, setError] = useState(null);
 
     const isOwnProfile = !id || (user && user.id === parseInt(id));
+    const [userData, setUserData] = useState({
+        nombre: '',
+        email: '',
+        fotoPerfil: '',
+        telefono: '',
+        rol: '',
+        estado: '',
+        biografia: '',
+        experiencia: '',
+        educacion: '',
+        habilidades: '',
+        ubicacion: '',
+        fechaNacimiento: '',
+        urlCv: '',
+        relationId: null
+    });
 
-    const [userData, setUserData] = useState({});
     const [editData, setEditData] = useState({});
     const [companyJobs, setCompanyJobs] = useState([]);
     const [candidateApplications, setCandidateApplications] = useState([]);
 
     useEffect(() => {
-        loadProfile();
+        fetchUserData();
     }, [id]);
 
-    const loadProfile = async () => {
+    const fetchUserData = async () => {
         setLoading(true);
         try {
-            let response;
-            if (id) {
-                response = await userService.getUserProfile(id);
-            } else {
-                response = await userService.getProfile();
-            }
+            const userId = id || (user && user.id);
+            if (!userId) return;
 
+            const response = await userService.getProfile(userId);
             const data = response.data || response;
 
-            const commonData = {
-                id: data.id,
-                rol: data.rol,
+            const baseData = {
                 nombre: data.nombre || '',
                 email: data.email || '',
+                fotoPerfil: data.foto_perfil || '',
                 telefono: data.telefono || '',
-                fotoPerfil: data.foto_perfil ? api.getFileUrl(data.foto_perfil) : 'https://placehold.co/200x200',
+                rol: data.rol || '',
+                estado: data.estado || '',
             };
 
-            let roleData = {};
-
-            if (data.rol === 'CANDIDATO' && data.candidato) {
-                roleData = {
+            let additionalData = {};
+            if (data.candidato) {
+                additionalData = {
                     relationId: data.candidato.id,
-                    apellidos: data.candidato.apellidos || '',
-                    fechaNacimiento: data.candidato.fecha_nacimiento || '',
-                    localizacion: data.candidato.ubicacion || '',
-                    descripcion: data.candidato.descripcion || '',
-                    urlCv: data.candidato.url_cv || '',
+                    biografia: data.candidato.descripcion || '',
                     experiencia: data.candidato.experiencia || '',
                     educacion: data.candidato.educacion || '',
                     habilidades: data.candidato.habilidades || '',
+                    ubicacion: data.candidato.ubicacion || '',
+                    fechaNacimiento: data.candidato.fecha_nacimiento || '',
+                    urlCv: data.candidato.url_cv || '',
                 };
-            } else if (data.rol === 'EMPRESA' && data.empresa) {
-                roleData = {
+            } else if (data.empresa) {
+                additionalData = {
                     relationId: data.empresa.id,
-                    descripcion: data.empresa.descripcion || '',
-                    sector: data.empresa.sector || '',
-                    tamanoEmpresa: data.empresa.tamano_empresa || '1-10',
-                    localizacion: data.empresa.ubicacion || '',
-                    web: data.empresa.web || '',
+                    nombreEmpresa: data.empresa.nombre || '',
+                    biografia: data.empresa.descripcion || '',
+                    ubicacion: data.empresa.ubicacion || '',
+                    web: data.empresa.sitio_web || '',
                     impresionesRestantes: data.empresa.impresiones_restantes || 0
                 };
-            } else if (data.rol === 'EMPLEADO' && data.empleado) {
-                roleData = {
-                    relationId: data.empleado.id,
-                    apellidos: data.empleado.apellidos || '',
-                    fechaNacimiento: data.empleado.fecha_nacimiento || '',
-                    puesto: data.empleado.puesto || '',
-                };
             }
 
-            const finalData = { ...commonData, ...roleData };
-            setUserData(finalData);
-            setEditData(finalData);
+            const merged = { ...baseData, ...additionalData };
+            setUserData(merged);
+            setEditData(merged);
 
-            // Fetch jobs if company
-            if (data.rol === 'EMPRESA' && data.empresa) {
-                fetchCompanyJobs(data.empresa.id);
-            }
-
-            // Fetch applications if candidate and own profile
-            if (data.rol === 'CANDIDATO' && isOwnProfile) {
-                fetchCandidateApplications();
+            // Fetch relations
+            if (data.empresa) {
+                const jobs = await jobService.getJobs({ empresa_id: data.empresa.id });
+                setCompanyJobs(jobs.data || []);
+            } else if (data.candidato && isOwnProfile) {
+                const apps = await applicationService.getApplications();
+                setCandidateApplications(apps.data || apps);
             }
 
         } catch (err) {
-            console.error(err);
-            setError("Error al cargar el perfil.");
+            console.error('Error al cargar perfil:', err);
+            setError('No se pudo cargar la información del perfil.');
         } finally {
             setLoading(false);
         }
     };
 
-    const fetchCompanyJobs = async (empresaId) => {
-        try {
-            const data = await jobService.getJobs({ empresa_id: empresaId, page: 1 });
-            // Take only first 3
-            setCompanyJobs(data.data.slice(0, 3));
-        } catch (error) {
-            console.error("Error fetching company jobs:", error);
+    const handleEditToggle = () => {
+        if (isEditing) {
+            setEditData(userData);
         }
-    };
-
-    const fetchCandidateApplications = async () => {
-        try {
-            const data = await applicationService.getMyApplications();
-            // Take only first 3
-            setCandidateApplications(data.data.slice(0, 3));
-        } catch (error) {
-            console.error("Error fetching applications:", error);
-        }
+        setIsEditing(!isEditing);
     };
 
     const handleChange = (field, value) => {
-        setEditData({ ...editData, [field]: value });
+        setEditData(prev => ({ ...prev, [field]: value }));
     };
 
     const handleFileChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-            setEditData({ ...editData, cvFile: e.target.files[0] });
-        }
-    };
-
-    const handleProfilePicChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-            setEditData({ ...editData, fotoPerfilFile: e.target.files[0], fotoPerfilPreview: URL.createObjectURL(e.target.files[0]) });
+        const file = e.target.files[0];
+        if (file) {
+            setEditData(prev => ({ ...prev, cvFile: file }));
         }
     };
 
     const handleSave = async () => {
         try {
-            // Update User (Common data + Photo)
-            if (editData.fotoPerfilFile) {
-                const userFormData = new FormData();
-                userFormData.append('nombre', editData.nombre);
-                if (editData.telefono) userFormData.append('telefono', editData.telefono);
-                userFormData.append('foto_perfil', editData.fotoPerfilFile);
-                userFormData.append('_method', 'PUT');
+            const formData = new FormData();
+            formData.append('_method', 'PUT');
+            formData.append('nombre', editData.nombre);
+            formData.append('email', editData.email);
+            formData.append('telefono', editData.telefono);
 
-                await api.post(`/usuarios/${editData.id}`, userFormData);
-            } else {
-                const userPayload = {
-                    nombre: editData.nombre,
-                    telefono: editData.telefono,
-                };
-                await userService.updateUser(editData.id, userPayload);
-            }
-
-            if (editData.rol === 'CANDIDATO' && editData.relationId) {
-                let payload = {};
+            if (userData.rol === 'CANDIDATO') {
+                formData.append('descripcion', editData.biografia);
+                formData.append('experiencia', editData.experiencia);
+                formData.append('educacion', editData.educacion);
+                formData.append('habilidades', editData.habilidades);
+                formData.append('ubicacion', editData.ubicacion);
+                formData.append('fecha_nacimiento', editData.fechaNacimiento);
                 if (editData.cvFile) {
-                    payload = new FormData();
-                    payload.append('apellidos', editData.apellidos);
-                    payload.append('fecha_nacimiento', editData.fechaNacimiento);
-                    payload.append('ubicacion', editData.localizacion);
-                    payload.append('descripcion', editData.descripcion);
-                    payload.append('experiencia', editData.experiencia || '');
-                    payload.append('educacion', editData.educacion || '');
-                    payload.append('habilidades', editData.habilidades || '');
-                    payload.append('cv_file', editData.cvFile);
-                    payload.append('_method', 'PUT');
-                } else {
-                    payload = {
-                        apellidos: editData.apellidos,
-                        fecha_nacimiento: editData.fechaNacimiento,
-                        ubicacion: editData.localizacion,
-                        descripcion: editData.descripcion,
-                        experiencia: editData.experiencia,
-                        educacion: editData.educacion,
-                        habilidades: editData.habilidades
-                    };
+                    formData.append('url_cv', editData.cvFile);
                 }
-
-
-                if (payload instanceof FormData) {
-                    await api.post(`/candidatos/${editData.relationId}`, payload);
-                } else {
-                    await userService.updateCandidato(editData.relationId, payload);
-                }
-
-            } else if (editData.rol === 'EMPRESA' && editData.relationId) {
-                await userService.updateEmpresa(editData.relationId, {
-                    descripcion: editData.descripcion,
-                    sector: editData.sector,
-                    tamano_empresa: editData.tamanoEmpresa,
-                    ubicacion: editData.localizacion,
-                    web: editData.web
-                });
-            } else if (editData.rol === 'EMPLEADO' && editData.relationId) {
-                await userService.updateEmpleado(editData.relationId, {
-                    apellidos: editData.apellidos,
-                    fecha_nacimiento: editData.fechaNacimiento,
-                    puesto: editData.puesto
-                });
+            } else if (userData.rol === 'EMPRESA') {
+                formData.append('nombre_empresa', editData.nombreEmpresa);
+                formData.append('descripcion', editData.biografia);
+                formData.append('ubicacion', editData.ubicacion);
+                formData.append('sitio_web', editData.web);
             }
 
-            // Actualizar contexto global si es el perfil propio
+            const response = await userService.updateProfile(user.id, formData);
+            setUserData(editData);
             if (isOwnProfile) {
-                // Siempre recargamos el perfil completo para obtener la URL de la foto actualizada
-                const profileRes = await userService.getProfile();
-                updateUser(profileRes.data || profileRes);
+                updateUser(response.data || response);
             }
-
-            loadProfile();
             setIsEditing(false);
+            fetchUserData(); // Refresh to get server-side paths etc
         } catch (err) {
-            console.error(err);
-            alert("Error al guardar los cambios.");
+            console.error('Error al guardar perfil:', err);
+            alert('Error al guardar los cambios.');
         }
     };
 
-    const handleBuyCredits = async () => {
-        const amountStr = window.prompt("¿Cuántos créditos (impresiones) deseas comprar? (1€ = 10 Créditos)", "500");
-        if (!amountStr) return;
-
-        const amount = parseInt(amountStr);
-        if (isNaN(amount) || amount <= 0) {
-            alert("Por favor, introduce una cantidad válida.");
-            return;
-        }
-
-        try {
-            const response = await userService.addCredits(userData.relationId, amount);
-            // Actualizar el estado local
-            setUserData(prev => ({
-                ...prev,
-                impresionesRestantes: response.impresiones_restantes
-            }));
-            alert(`¡Compra realizada con éxito! Ahora tienes ${response.impresiones_restantes} créditos.`);
-        } catch (error) {
-            console.error("Error comprando créditos:", error);
-            alert("Error al procesar la compra. Inténtalo de nuevo.");
-        }
-    };
-
-    const handleCancel = () => {
-        setIsEditing(false);
-        setEditData({ ...userData });
-    };
-
-    const calcularEdad = (fecha) => {
-        if (!fecha) return '';
-        const hoy = new Date();
-        const nacimiento = new Date(fecha);
-        let edad = hoy.getFullYear() - nacimiento.getFullYear();
-        const mes = hoy.getMonth() - nacimiento.getMonth();
-        if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) edad--;
-        return `${edad} años`;
+    const handleBuyCredits = () => {
+        // Mock functionality
+        alert('Redirigiendo a pasarela de pago...');
     };
 
     if (loading) return (
-        <div className="d-flex justify-content-center align-items-center vh-100">
-            <div className="spinner-border text-primary" role="status"></div>
+        <div className="container py-5 text-center">
+            <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Cargando...</span>
+            </div>
         </div>
     );
+
     if (error) return (
-        <div className="container py-5 text-center text-danger">
-            <h3 className="h5">{error}</h3>
+        <div className="container py-5">
+            <div className="alert alert-danger">{error}</div>
         </div>
     );
 
     const isEmpresa = userData.rol === 'EMPRESA';
     const isCandidato = userData.rol === 'CANDIDATO';
-    const isEmpleado = userData.rol === 'EMPLEADO';
 
     return (
-        <div className="container py-5">
-            {/* Header */}
-            <div className="card-premium p-4 mb-4">
-                <div className="row align-items-center">
-                    <div className="col-auto">
-                        <div className="rounded-circle overflow-hidden border border-3 border-light shadow-sm position-relative group-hover-parent" style={{ width: '100px', height: '100px' }}>
-                            <img src={editData.fotoPerfilPreview || userData.fotoPerfil} alt="Foto" className="w-100 h-100 object-fit-cover" />
-
-                            {/* Overlay de edición */}
-                            {isEditing && (
-                                <>
-                                    <div
-                                        className="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex align-items-center justify-content-center cursor-pointer opacity-hover transition-opacity"
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() => document.getElementById('profile-pic-input').click()}
-                                    >
-                                        <span className="material-symbols-outlined text-white">photo_camera</span>
-                                    </div>
-                                    <input
-                                        type="file"
-                                        id="profile-pic-input"
-                                        className="d-none"
-                                        accept="image/*"
-                                        onChange={handleProfilePicChange}
-                                    />
-                                </>
-                            )}
-                        </div>
-                    </div>
-                    <div className="col">
-                        <h1 className="h3 fw-bold mb-1 text-gradient">
-                            {userData.nombre} {userData.apellidos || ''}
-                        </h1>
-
-                        {/* Subtítulo dinámico */}
-                        {isEmpresa && <p className="text-secondary mb-2 fw-medium">{userData.sector}</p>}
-                        {isEmpleado && <p className="text-secondary mb-2 fw-medium">{userData.puesto}</p>}
-
-                        <div className="d-flex flex-wrap gap-3 text-muted small">
-                            {userData.localizacion && (
-                                <span className="d-flex align-items-center gap-1">
-                                    <span className="material-symbols-outlined fs-6">location_on</span>
-                                    {userData.localizacion}
-                                </span>
-                            )}
-
-                            {!isEmpresa && userData.fechaNacimiento && (
-                                <span className="d-flex align-items-center gap-1">
-                                    <span className="material-symbols-outlined fs-6">cake</span>
-                                    {calcularEdad(userData.fechaNacimiento)}
-                                </span>
-                            )}
-
-                            {isEmpresa && userData.web && (
-                                <span className="d-flex align-items-center gap-1">
-                                    <span className="material-symbols-outlined fs-6">language</span>
-                                    <a href={userData.web} target="_blank" rel="noopener noreferrer" className="text-decoration-none">{userData.web}</a>
-                                </span>
-                            )}
-                        </div>
-                    </div>
-                    <div className="col-auto">
-                        {/* Mostrar botón editar SOLO si es el perfil propio */}
-                        {isOwnProfile ? (
-                            !isEditing ? (
-                                <button className="btn-premium px-4 d-flex align-items-center gap-2" onClick={() => setIsEditing(true)}>
-                                    <span className="material-symbols-outlined fs-5 text-white">edit</span> Editar Perfil
-                                </button>
-                            ) : (
-                                <div className="d-flex gap-2">
-                                    <button className="btn btn-outline-secondary d-flex align-items-center gap-2" onClick={handleCancel}>
-                                        <span className="material-symbols-outlined">close</span> Cancelar
-                                    </button>
-                                    <button className="btn btn-primary d-flex align-items-center gap-2" onClick={handleSave}>
-                                        <span className="material-symbols-outlined">save</span> Guardar
-                                    </button>
-                                </div>
-                            )
-                        ) : (
-                            <Link to={`/chat?user_id=${userData.id}`} className="btn-premium px-4 d-flex align-items-center gap-2">
-                                <span className="material-symbols-outlined fs-5 text-white">mail</span> Enviar Mensaje
-                            </Link>
-                        )}
-                    </div>
-                </div>
-            </div>
-
+        <div className="container py-4 py-lg-5">
             <div className="row g-4">
                 <div className="col-12 col-lg-8">
+                    {/* Main Info Card */}
+                    <div className="card-premium p-0 overflow-hidden mb-4">
+                        <div className="bg-gradient-primary-soft p-4 p-lg-5 text-center border-bottom position-relative">
+                            {isOwnProfile && (
+                                <button
+                                    onClick={isEditing ? handleSave : handleEditToggle}
+                                    className="btn btn-sm btn-light shadow-sm position-absolute top-0 end-0 m-3 d-flex align-items-center gap-1 z-1"
+                                >
+                                    <span className="material-symbols-outlined fs-6">{isEditing ? 'save' : 'edit'}</span>
+                                    {isEditing ? 'Guardar' : 'Editar'}
+                                </button>
+                            )}
 
-                    {(isCandidato || isEmpresa) && (
-                        <div className="card-premium p-4 mb-4">
-                            <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
-                                <span className="material-symbols-outlined text-primary">description</span>
-                                {isEmpresa ? 'Sobre la empresa' : 'Sobre mí'}
-                            </h2>
+                            <div className="position-relative d-inline-block mb-3">
+                                <img
+                                    src={userData.fotoPerfil}
+                                    alt={userData.nombre}
+                                    className="rounded-circle shadow-lg border border-4 border-white"
+                                    style={{ width: '120px', height: '120px', objectFit: 'cover' }}
+                                />
+                                {isEditing && (
+                                    <button className="btn btn-sm btn-primary rounded-circle position-absolute bottom-0 end-0 p-1 shadow">
+                                        <span className="material-symbols-outlined fs-6">camera_alt</span>
+                                    </button>
+                                )}
+                            </div>
+
                             {!isEditing ? (
-                                <p className="text-muted mb-0" style={{ lineHeight: '1.6' }}>{userData.descripcion || 'No has añadido una descripción aún.'}</p>
+                                <>
+                                    <h1 className="h3 fw-bold mb-1 text-dark">
+                                        {isEmpresa ? userData.nombreEmpresa : userData.nombre}
+                                    </h1>
+                                    <p className="text-muted d-flex align-items-center justify-content-center gap-2 mb-0">
+                                        <span className="material-symbols-outlined fs-6">location_on</span>
+                                        {userData.ubicacion || 'Ubicación no especificada'}
+                                        {isEmpresa && userData.web && (
+                                            <>
+                                                <span className="mx-1">•</span>
+                                                <span className="material-symbols-outlined fs-6">language</span>
+                                                <a href={userData.web} target="_blank" rel="noopener noreferrer" className="text-decoration-none text-primary">Web</a>
+                                            </>
+                                        )}
+                                    </p>
+                                </>
                             ) : (
-                                <textarea className="form-control" rows="4" value={editData.descripcion} onChange={(e) => handleChange('descripcion', e.target.value)} />
+                                <div className="max-w-md mx-auto">
+                                    <input
+                                        type="text"
+                                        className="form-control form-control-lg text-center mb-2"
+                                        value={isEmpresa ? editData.nombreEmpresa : editData.nombre}
+                                        onChange={(e) => handleChange(isEmpresa ? 'nombreEmpresa' : 'nombre', e.target.value)}
+                                        placeholder="Tu nombre"
+                                    />
+                                    <input
+                                        type="text"
+                                        className="form-control text-center"
+                                        value={editData.ubicacion}
+                                        onChange={(e) => handleChange('ubicacion', e.target.value)}
+                                        placeholder="Ciudad, País"
+                                    />
+                                </div>
                             )}
                         </div>
-                    )}
 
-                    {isEmpresa && (
-                        <div className="card-premium p-4 mb-4">
-                            <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
-                                <span className="material-symbols-outlined text-primary">business</span>
-                                Detalles de Empresa
+                        <div className="p-4 p-lg-5">
+                            <h2 className="h5 fw-bold mb-3 d-flex align-items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">person</span>
+                                {isEmpresa ? 'Sobre la empresa' : 'Biografía'}
                             </h2>
-                            <div className="row g-3">
-                                {isEditing && (
-                                    <div className="col-md-6">
-                                        <div className="p-3 bg-light rounded h-100">
-                                            <label className="form-label small text-muted text-uppercase fw-bold mb-1">Web</label>
-                                            <input type="url" className="form-control" value={editData.web} onChange={(e) => handleChange('web', e.target.value)} />
-                                        </div>
-                                    </div>
+                            {!isEditing ? (
+                                <p className="text-muted mb-0 lh-lg" style={{ whiteSpace: 'pre-line' }}>
+                                    {userData.biografia || 'Sin descripción disponible.'}
+                                </p>
+                            ) : (
+                                <textarea
+                                    className="form-control"
+                                    rows="4"
+                                    value={editData.biografia}
+                                    onChange={(e) => handleChange('biografia', e.target.value)}
+                                    placeholder="Cuéntanos un poco sobre ti..."
+                                ></textarea>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Additional Details for Candidate */}
+                    {isCandidato && (
+                        <div className="d-flex flex-column gap-4 mb-4">
+                            <div className="card-premium p-4 p-lg-5">
+                                <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
+                                    <span className="material-symbols-outlined text-primary">work_history</span>
+                                    Experiencia Profesional
+                                </h2>
+                                {!isEditing ? (
+                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(userData.experiencia) }} />
+                                ) : (
+                                    <TinyEditor
+                                        value={editData.experiencia}
+                                        onChange={(content) => handleChange('experiencia', content)}
+                                    />
                                 )}
-                                <div className="col-md-6">
-                                    <div className="p-3 bg-light rounded h-100">
-                                        <label className="form-label small text-muted text-uppercase fw-bold mb-1">Sector</label>
-                                        {!isEditing ? <p className="mb-0 fw-medium text-dark">{userData.sector}</p>
-                                            : <input type="text" className="form-control" value={editData.sector} onChange={(e) => handleChange('sector', e.target.value)} />}
-                                    </div>
-                                </div>
-                                <div className="col-md-6">
-                                    <div className="p-3 bg-light rounded h-100">
-                                        <label className="form-label small text-muted text-uppercase fw-bold mb-1">Tamaño</label>
-                                        {!isEditing ? <p className="mb-0 fw-medium text-dark">{userData.tamanoEmpresa}</p>
-                                            : (
-                                                <select className="form-select" value={editData.tamanoEmpresa} onChange={(e) => handleChange('tamanoEmpresa', e.target.value)}>
-                                                    <option value="1-10">1-10</option>
-                                                    <option value="11-50">11-50</option>
-                                                    <option value="51-200">51-200</option>
-                                                    <option value="201-500">201-500</option>
-                                                    <option value="+500">+500</option>
-                                                </select>
-                                            )}
-                                    </div>
-                                </div>
+                            </div>
+
+                            <div className="card-premium p-4 p-lg-5">
+                                <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
+                                    <span className="material-symbols-outlined text-primary">school</span>
+                                    Educación y Formación
+                                </h2>
+                                {!isEditing ? (
+                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(userData.educacion) }} />
+                                ) : (
+                                    <TinyEditor
+                                        value={editData.educacion}
+                                        onChange={(content) => handleChange('educacion', content)}
+                                    />
+                                )}
+                            </div>
+
+                            <div className="card-premium p-4 p-lg-5">
+                                <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
+                                    <span className="material-symbols-outlined text-primary">psychology</span>
+                                    Habilidades
+                                </h2>
+                                {!isEditing ? (
+                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(userData.habilidades) }} />
+                                ) : (
+                                    <TinyEditor
+                                        value={editData.habilidades}
+                                        onChange={(content) => handleChange('habilidades', content)}
+                                    />
+                                )}
                             </div>
                         </div>
                     )}
 
-
-
-                    {(isCandidato || isEmpresa) && (
-                        <div className="card-premium p-4 mb-4">
-                            <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
-                                <span className="material-symbols-outlined text-primary">work</span>
-                                Experiencia Profesional
-                            </h2>
-                            {!isEditing ? (
-                                userData.experiencia ? (
-                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: userData.experiencia }} />
-                                ) : <p className="text-muted small">No se ha añadido experiencia.</p>
-                            ) : (
-                                <TinyEditor
-                                    value={editData.experiencia || ''}
-                                    onChange={(val) => handleChange('experiencia', val)}
-                                    height={300}
-                                />
-                            )}
-                        </div>
-                    )}
-
-                    {(isCandidato || isEmpresa) && (
-                        <div className="card-premium p-4 mb-4">
-                            <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
-                                <span className="material-symbols-outlined text-primary">school</span>
-                                Educación
-                            </h2>
-                            {!isEditing ? (
-                                userData.educacion ? (
-                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: userData.educacion }} />
-                                ) : <p className="text-muted small">No se ha añadido educación.</p>
-                            ) : (
-                                <TinyEditor
-                                    value={editData.educacion || ''}
-                                    onChange={(val) => handleChange('educacion', val)}
-                                    height={300}
-                                />
-                            )}
-                        </div>
-                    )}
-
-                    {(isCandidato || isEmpresa) && (
-                        <div className="card-premium p-4 mb-4">
-                            <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
-                                <span className="material-symbols-outlined text-primary">stars</span>
-                                Habilidades
-                            </h2>
-                            {!isEditing ? (
-                                userData.habilidades ? (
-                                    <div className="text-muted" dangerouslySetInnerHTML={{ __html: userData.habilidades }} />
-                                ) : <p className="text-muted small">No se han añadido habilidades.</p>
-                            ) : (
-                                <TinyEditor
-                                    value={editData.habilidades || ''}
-                                    onChange={(val) => handleChange('habilidades', val)}
-                                    height={200}
-                                />
-                            )}
-                        </div>
-                    )}
-
-                    <div className="card-premium p-4">
+                    {/* Contact Info Card */}
+                    <div className="card-premium p-4 p-lg-5">
                         <h2 className="h5 fw-bold mb-4 d-flex align-items-center gap-2">
-                            <span className="material-symbols-outlined text-primary">person</span>
-                            Información Personal
+                            <span className="material-symbols-outlined text-primary">contact_page</span>
+                            Información de Contacto
                         </h2>
                         <div className="row g-3">
-
                             <div className="col-md-6">
                                 <div className="mb-3">
                                     <label className="small text-muted mb-1 d-block">Email</label>
-                                    <p className="mb-0 fw-medium text-dark bg-light p-2 rounded">{userData.email}</p>
+                                    {!isEditing ? (
+                                        <p className="mb-0 fw-medium text-dark bg-light p-2 rounded">{userData.email}</p>
+                                    ) : (
+                                        <input type="email" className="form-control" value={editData.email} onChange={(e) => handleChange('email', e.target.value)} />
+                                    )}
                                 </div>
                             </div>
-
-                            <div className="col-md-6">
-                                <div className="mb-3">
-                                    <label className="small text-muted mb-1 d-block">Nombre</label>
-                                    {!isEditing ? <p className="mb-0 fw-medium text-dark bg-light p-2 rounded">{userData.nombre}</p>
-                                        : <input type="text" className="form-control" value={editData.nombre} onChange={(e) => handleChange('nombre', e.target.value)} />}
-                                </div>
-                            </div>
-
-                            {!isEmpresa && (
-                                <div className="col-md-6">
-                                    <div className="mb-3">
-                                        <label className="small text-muted mb-1 d-block">Apellidos</label>
-                                        {!isEditing ? <p className="mb-0 fw-medium text-dark bg-light p-2 rounded">{userData.apellidos}</p>
-                                            : <input type="text" className="form-control" value={editData.apellidos} onChange={(e) => handleChange('apellidos', e.target.value)} />}
-                                    </div>
-                                </div>
-                            )}
-
                             <div className="col-md-6">
                                 <div className="mb-3">
                                     <label className="small text-muted mb-1 d-block">Teléfono</label>
-                                    {!isEditing ? <p className="mb-0 fw-medium text-dark bg-light p-2 rounded">{userData.telefono}</p>
-                                        : <input type="tel" className="form-control" value={editData.telefono} onChange={(e) => handleChange('telefono', e.target.value)} />}
+                                    {!isEditing ? (
+                                        <p className="mb-0 fw-medium text-dark bg-light p-2 rounded">{userData.telefono || '-'}</p>
+                                    ) : (
+                                        <input type="tel" className="form-control" value={editData.telefono} onChange={(e) => handleChange('telefono', e.target.value)} />
+                                    )}
                                 </div>
                             </div>
 
-                            {(isCandidato || isEmpresa) && (
-                                <div className="col-md-6">
-                                    <div className="mb-3">
-                                        <label className="small text-muted mb-1 d-block">Localización</label>
-                                        {!isEditing ? <p className="mb-0 fw-medium text-dark bg-light p-2 rounded">{userData.localizacion}</p>
-                                            : <input type="text" className="form-control" value={editData.localizacion} onChange={(e) => handleChange('localizacion', e.target.value)} />}
-                                    </div>
-                                </div>
-                            )}
-
-                            {isEmpleado && (
-                                <div className="col-md-6">
-                                    <div className="mb-3">
-                                        <label className="small text-muted mb-1 d-block">Puesto</label>
-                                        {!isEditing ? <p className="mb-0 fw-medium text-dark bg-light p-2 rounded">{userData.puesto}</p>
-                                            : <input type="text" className="form-control" value={editData.puesto} onChange={(e) => handleChange('puesto', e.target.value)} />}
-                                    </div>
-                                </div>
-                            )}
-
-                            {!isEmpresa && (
+                            {isCandidato && (
                                 <div className="col-md-6">
                                     <div className="mb-3">
                                         <label className="small text-muted mb-1 d-block">Curriculum Vitae</label>
                                         {!isEditing ? (
                                             userData.urlCv ? (
-                                                <a href={api.getFileUrl(userData.urlCv)} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                                                <a href={`${import.meta.env.VITE_API_URL || 'http://localhost/api'}/storage/${userData.urlCv}`} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
                                                     <span className="material-symbols-outlined fs-6">download</span> Ver CV actual
                                                 </a>
                                             ) : <span className="text-muted small">No hay CV subido</span>
