@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { sanitizeHtml } from '../../utils/sanitize';
 
 const SimpleEditor = ({ value, onChange, placeholder }) => {
     const editorRef = useRef(null);
@@ -74,7 +75,7 @@ const SimpleEditor = ({ value, onChange, placeholder }) => {
                 contentEditable
                 onInput={handleChange}
                 onBlur={handleChange}
-                dangerouslySetInnerHTML={{ __html: value }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(value) }}
             />
         </div>
     );
