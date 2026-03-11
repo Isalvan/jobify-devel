@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
+import DOMPurify from 'dompurify';
 
 const TinyEditor = ({ value, onChange, placeholder, height = 300 }) => {
     const editorRef = useRef(null);
@@ -10,7 +11,10 @@ const TinyEditor = ({ value, onChange, placeholder, height = 300 }) => {
                 tinymceScriptSrc="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"
                 onInit={(evt, editor) => editorRef.current = editor}
                 value={value}
-                onEditorChange={(newValue, editor) => onChange(newValue)}
+                onEditorChange={(newValue, editor) => {
+                    // Sanitize content before sending to parent
+                    onChange(DOMPurify.sanitize(newValue));
+                }}
                 init={{
                     height: height,
                     menubar: false,

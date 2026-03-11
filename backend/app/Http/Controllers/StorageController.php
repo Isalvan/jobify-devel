@@ -10,11 +10,28 @@ class StorageController extends Controller
 {
     public function download($path)
     {
-        // Decode URL components just in case, though Laravel routing handles it usually
-        // But since we use a greedy pattern matching in route, we receive the full relative path
+        // Prevent path traversal and restrict to specific directories if needed
+        // For now, at least ensure it doesn't contain '..'
+        if (str_contains($path, '..')) {
+            abort(403, 'Invalid path');
+        }
 
         if (!Storage::disk('public')->exists($path)) {
             abort(404, 'File not found');
+        }
+
+        // Restrict to allowed directories to avoid accidental exposure of other public files
+        $allowedPrefixes = ['perfiles/', 'cvs/', 'documentos/', 'logos/'];
+        $isAllowed = false;
+        foreach ($allowedPrefixes as $prefix) {
+            if (str_starts_with($path, $prefix)) {
+                $isAllowed = true;
+                break;
+            }
+        }
+
+        if (!$isAllowed) {
+            abort(403, 'Access denied to this resource');
         }
 
         return Storage::disk('public')->response($path);
