@@ -8,6 +8,7 @@ use App\Http\Requests\StoreTrabajoRequest;
 use App\Http\Requests\UpdateTrabajoRequest;
 use App\Http\Resources\TrabajoResource;
 use Illuminate\Http\Request;
+use App\Support\QueryHelper;
 use Illuminate\Support\Str;
 use OpenApi\Annotations as OA;
 
@@ -24,7 +25,7 @@ class TrabajoController extends Controller
      *     )
      * )
      */
-    public function index(Request $request)
+    public function index(Request )
     {
         $query = Trabajo::query()->with(['empresa.usuario']);
 
@@ -64,7 +65,7 @@ class TrabajoController extends Controller
         }
 
         if ($request->has('search')) {
-            $search = $request->input('search');
+            $search = QueryHelper::escapeLike($request->input('search'));
             $query->where(function ($q) use ($search) {
                 $q->where('titulo', 'like', "%{$search}%")
                     ->orWhereHas('empresa.usuario', function ($q) use ($search) {
@@ -74,7 +75,8 @@ class TrabajoController extends Controller
         }
 
         if ($request->filled('location')) {
-            $query->where('ubicacion', 'like', '%' . $request->location . '%');
+            $location = QueryHelper::escapeLike($request->location);
+            $query->where('ubicacion', 'like', '%' . $location . '%');
         }
 
         if ($request->filled('salary_min')) {

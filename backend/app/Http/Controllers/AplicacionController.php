@@ -10,6 +10,7 @@ use App\Http\Requests\StoreAplicacionRequest;
 use App\Http\Requests\UpdateAplicacionRequest;
 use App\Http\Resources\AplicacionResource;
 use Illuminate\Http\Request;
+use App\Support\QueryHelper;
 use OpenApi\Annotations as OA;
 
 class AplicacionController extends Controller
@@ -35,7 +36,7 @@ class AplicacionController extends Controller
             $query = Aplicacion::with(['candidato.usuario', 'trabajo.empresa.usuario']);
 
             if ($request->has('search')) {
-                $search = $request->input('search');
+                $search = QueryHelper::escapeLike($request->input('search'));
                 $query->where(function ($q) use ($search) {
                     $q->whereHas('candidato.usuario', function ($sq) use ($search) {
                         $sq->where('nombre', 'like', "%{$search}%");
