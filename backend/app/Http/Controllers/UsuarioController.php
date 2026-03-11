@@ -6,6 +6,7 @@ use App\Models\Usuario;
 use App\Http\Requests\UpdateUsuarioRequest;
 use App\Http\Resources\UsuarioResource;
 use Illuminate\Http\Request;
+use App\Support\QueryHelper;
 use Illuminate\Support\Facades\Hash;
 use OpenApi\Annotations as OA;
 
@@ -29,7 +30,7 @@ class UsuarioController extends Controller
         $query = Usuario::query();
 
         if ($request->has('search')) {
-            $search = $request->input('search');
+            $search = QueryHelper::escapeLike($request->input('search'));
             $query->where(function ($q) use ($search) {
                 $q->where('nombre', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%");

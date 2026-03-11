@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Gasto;
 use App\Models\Empresa;
 use Illuminate\Http\Request;
+use App\Support\QueryHelper;
 use OpenApi\Annotations as OA;
 
 class GastoController extends Controller
@@ -42,7 +43,7 @@ class GastoController extends Controller
         }
 
         if ($request->has('search')) {
-            $search = $request->input('search');
+            $search = QueryHelper::escapeLike($request->input('search'));
             $query->where(function ($q) use ($search) {
                 $q->where('concepto', 'like', "%{$search}%")
                   ->orWhereHas('empresa.usuario', function ($sq) use ($search) {
