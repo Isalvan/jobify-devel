@@ -1,12 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { api } from '../../utils/api';
 import { Link } from 'react-router-dom';
+import { useChat } from '../../contexts/ChatContext';
 import './notifications.css';
 
 const NotificationDropdown = () => {
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [loading, setLoading] = useState(false);
+    const { isSocketConnected } = useChat();
     const dropdownRef = useRef(null);
 
     const fetchNotifications = async () => {
@@ -24,10 +26,33 @@ const NotificationDropdown = () => {
 
     useEffect(() => {
         fetchNotifications();
-        // Poll for notifications every 60 seconds
-        const interval = setInterval(fetchNotifications, 60000);
-        return () => clearInterval(interval);
+
+        const handleWsNotification = (e) => {
+            console.log('Notification received via WebSocket:', e.detail);
+            fetchNotifications(); // Refresh to get the latest data structure
+        };
+
+        window.addEventListener('notification-received', handleWsNotification);
+
+        return () => {
+            window.removeEventListener('notification-received', handleWsNotification);
+        };
     }, []);
+
+    useEffect(() => {
+        // Fallback polling only if socket is NOT connected
+        let interval = null;
+        if (!isSocketConnected) {
+            console.log('Starting notification polling (socket disconnected)');
+            interval = setInterval(fetchNotifications, 60000);
+        } else {
+            console.log('Stopping notification polling (socket connected)');
+        }
+
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [isSocketConnected]);
 
     const markAsRead = async (id) => {
         try {

@@ -5,8 +5,10 @@ namespace App\Notifications;
 use App\Models\Aplicacion;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class ApplicationStatusChanged extends Notification
+class ApplicationStatusChanged extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
@@ -19,7 +21,7 @@ class ApplicationStatusChanged extends Notification
 
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     public function toArray($notifiable)
@@ -32,5 +34,10 @@ class ApplicationStatusChanged extends Notification
             'mensaje' => "El estado de tu aplicación para '" . $this->aplicacion->trabajo->titulo . "' ha cambiado a: " . $this->aplicacion->estado,
             'url' => "/mis-aplicaciones#app-" . $this->aplicacion->id,
         ];
+    }
+
+    public function toBroadcast($notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage($this->toArray($notifiable));
     }
 }

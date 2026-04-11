@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
 use App\Models\Conversacion;
 use App\Models\Mensaje;
 use App\Models\Usuario;
@@ -122,6 +123,9 @@ class ChatController extends Controller
             $conversacion->update(['last_message_at' => now()]);
             return $msg;
         });
+
+        // Broadcast the message
+        broadcast(new MessageSent($message))->toOthers();
 
         return response()->json($message->load('sender'), 201);
     }
