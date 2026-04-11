@@ -5,8 +5,10 @@ namespace App\Notifications;
 use App\Models\Valoracion;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class NewJobReview extends Notification
+class NewJobReview extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
@@ -19,7 +21,7 @@ class NewJobReview extends Notification
 
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     public function toArray($notifiable)
@@ -32,5 +34,10 @@ class NewJobReview extends Notification
             'mensaje' => "Has recibido una nueva valoración (" . $this->valoracion->puntuacion . " estrellas) para: " . $this->valoracion->trabajo->titulo,
             'url' => "/ofertas/" . $this->valoracion->trabajo_id,
         ];
+    }
+
+    public function toBroadcast($notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage($this->toArray($notifiable));
     }
 }

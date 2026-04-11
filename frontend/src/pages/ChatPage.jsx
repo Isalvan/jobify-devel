@@ -10,7 +10,7 @@ const ChatPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
-    const { conversations, fetchConversations, loading } = useChat();
+    const { conversations, fetchConversations, loading, isSocketConnected } = useChat();
     const [selectedConversation, setSelectedConversation] = useState(null);
     const [initiatingUserId, setInitiatingUserId] = useState(null);
 
@@ -49,9 +49,20 @@ const ChatPage = () => {
 
     useEffect(() => {
         fetchConversations();
-        const interval = setInterval(() => fetchConversations(true), 5000);
-        return () => clearInterval(interval);
     }, []);
+
+    useEffect(() => {
+        // Fallback polling only if socket is NOT connected
+        let interval = null;
+        if (!isSocketConnected) {
+            console.log('Starting chat list polling (socket disconnected)');
+            interval = setInterval(() => fetchConversations(true), 5000);
+        }
+
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [isSocketConnected]);
 
     useEffect(() => {
         if (id && conversations.length > 0) {

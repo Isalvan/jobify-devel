@@ -5,8 +5,10 @@ namespace App\Notifications;
 use App\Models\Aplicacion;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class JobApplied extends Notification
+class JobApplied extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
@@ -19,7 +21,7 @@ class JobApplied extends Notification
 
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     public function toArray($notifiable)
@@ -32,5 +34,10 @@ class JobApplied extends Notification
             'mensaje' => "Nueva aplicación para el puesto: " . $this->aplicacion->trabajo->titulo,
             'url' => "/ofertas/" . $this->aplicacion->trabajo_id . "/aplicaciones",
         ];
+    }
+
+    public function toBroadcast($notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage($this->toArray($notifiable));
     }
 }

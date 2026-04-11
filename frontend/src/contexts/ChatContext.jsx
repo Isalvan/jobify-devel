@@ -1,16 +1,19 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { chatService } from '../services/chatService';
 import { ChatToastContainer } from '../components/chat/ChatToast';
 import { AppContext } from './AppProvider';
+import { getEcho, destroyEcho } from '../utils/echo';
 
 const ChatContext = createContext();
 
 export const ChatProvider = ({ children }) => {
-    const { token } = useContext(AppContext);
+    const { token, user } = useContext(AppContext);
     const [unreadCount, setUnreadCount] = useState(0);
     const [conversations, setConversations] = useState([]);
     const [loading, setLoading] = useState(false);
     const [toasts, setToasts] = useState([]);
+    const [isSocketConnected, setIsSocketConnected] = useState(false);
+    const echoRef = useRef(null);
 
     const addToast = (message) => {
         const id = Date.now();
@@ -25,14 +28,7 @@ export const ChatProvider = ({ children }) => {
         if (!token) return;
         try {
             const data = await chatService.getUnreadCount();
-            const newCount = data.unread_count;
-
-            // If count increased and we're not on the chat page, notify
-            if (newCount > unreadCount && !window.location.pathname.startsWith('/chat')) {
-                addToast(`Tienes mensajes sin leer`);
-            }
-
-            setUnreadCount(newCount);
+            setUnreadCount(data.unread_count);
         } catch (error) {
             console.error('Error fetching chat unread count:', error);
         }
@@ -44,15 +40,7 @@ export const ChatProvider = ({ children }) => {
         try {
             const data = await chatService.getConversations();
             setConversations(data);
-            // Update unread count from conversations list if available
             const total = data.reduce((acc, conv) => acc + (conv.unread_count || 0), 0);
-
-            if (total > unreadCount && !window.location.pathname.startsWith('/chat')) {
-                const latestConv = data.find(c => c.unread_count > 0);
-                const senderName = latestConv?.other_user?.nombre || 'Alguien';
-                addToast(`Nuevo mensaje de ${senderName}`);
-            }
-
             setUnreadCount(total);
         } catch (error) {
             console.error('Error fetching conversations:', error);
@@ -61,43 +49,112 @@ export const ChatProvider = ({ children }) => {
         }
     };
 
+    // WebSocket implementation
+    useEffect(() => {
+        if (!token || !user) {
+            destroyEcho();
+            echoRef.current = null;
+            setIsSocketConnected(false);
+            return;
+        }
+
+        const echo = getEcho();
+        if (!echo) return;
+        echoRef.current = echo;
+
+        echo.connector.pusher.connection.bind('connected', () => {
+            console.log('Chat WebSocket connected');
+            setIsSocketConnected(true);
+        });
+
+        echo.connector.pusher.connection.bind('disconnected', () => {
+            console.log('Chat WebSocket disconnected');
+            setIsSocketConnected(false);
+        });
+
+        // Listen for notifications and messages
+        const channel = echo.private(`App.Models.Usuario.${user.id}`);
+
+        channel.notification((notification) => {
+            console.log('Notification received:', notification);
+            window.dispatchEvent(new CustomEvent('notification-received', { detail: notification }));
+            fetchUnreadCount();
+            if (window.location.pathname.startsWith('/chat')) fetchConversations(true);
+        });
+
+        channel.listen('.message.sent', (e) => {
+            console.log('Global message event received:', e.mensaje);
+            // Refresh counts if it's not the active conversation (active window handles its own)
+            fetchUnreadCount();
+            if (window.location.pathname.startsWith('/chat')) fetchConversations(true);
+
+            // Add toast if not on chat page
+            if (!window.location.pathname.startsWith('/chat')) {
+                addToast(`Nuevo mensaje de ${e.mensaje.sender.nombre}`);
+            }
+        });
+
+        return () => {
+            if (user && echo) {
+                echo.leave(`App.Models.Usuario.${user.id}`);
+            }
+        };
+    }, [token, user]);
+
     // Reset state on logout
     useEffect(() => {
         if (!token) {
             setUnreadCount(0);
             setConversations([]);
             setToasts([]);
+            destroyEcho();
+            echoRef.current = null;
+            setIsSocketConnected(false);
         } else {
             fetchUnreadCount();
         }
     }, [token]);
 
+    // Fallback polling: only if socket is NOT connected
     useEffect(() => {
         if (!token) return;
 
-        // Background polling (every 60 seconds)
-        const interval = setInterval(fetchUnreadCount, 60000);
+        let interval = null;
+        if (!isSocketConnected) {
+            console.log('Starting global polling fallback');
+            interval = setInterval(fetchUnreadCount, 60000);
+        }
 
-        return () => clearInterval(interval);
-    }, [token, unreadCount]); // Dependency on unreadCount for the notification logic comparison
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [token, isSocketConnected]);
 
     // Listen for custom events to trigger refresh
     useEffect(() => {
         const handleRefresh = () => {
-            if (token) fetchUnreadCount();
+            if (token) {
+                fetchUnreadCount();
+                if (window.location.pathname.startsWith('/chat')) {
+                    fetchConversations(true);
+                }
+            }
         };
         window.addEventListener('chat-updated', handleRefresh);
         return () => window.removeEventListener('chat-updated', handleRefresh);
-    }, [token, unreadCount]);
+    }, [token]);
 
     return (
         <ChatContext.Provider value={{
             unreadCount,
             setUnreadCount,
             conversations,
+            setConversations,
             fetchConversations,
             loading,
-            addToast
+            addToast,
+            isSocketConnected,
+            echo: echoRef.current
         }}>
             {children}
             <ChatToastContainer toasts={toasts} onRemove={removeToast} />

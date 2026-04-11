@@ -13,7 +13,7 @@ const ChatWindow = ({ conversationId, initiatingUserId, onMessageSent }) => {
     const [tempOtherUser, setTempOtherUser] = useState(null); // For when initiating
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null); // Ref para el input de mensaje
-    const { conversations } = useChat();
+    const { conversations, isSocketConnected, echo } = useChat();
     const { user } = useContext(AppContext); // Get current user
     const navigate = useNavigate();
 
@@ -32,7 +32,11 @@ const ChatWindow = ({ conversationId, initiatingUserId, onMessageSent }) => {
 
             if (lastId) {
                 if (data.length > 0) {
-                    setMessages(prev => [...prev, ...data]);
+                    setMessages(prev => {
+                        // Filter out duplicates just in case
+                        const newMsgs = data.filter(dm => !prev.some(pm => pm.id === dm.id));
+                        return [...prev, ...newMsgs];
+                    });
                     // If new messages arrived, trigger a count update
                     window.dispatchEvent(new CustomEvent('chat-updated'));
                 }
@@ -70,13 +74,44 @@ const ChatWindow = ({ conversationId, initiatingUserId, onMessageSent }) => {
         if (conversationId) {
             setMessages([]); // Clear previous messages
             fetchMessages();
-            // Active polling (every 5 seconds)
-            const interval = setInterval(() => fetchMessages(true), 5000);
-            return () => clearInterval(interval);
         } else if (initiatingUserId) {
             initNew();
         }
     }, [conversationId, initiatingUserId]);
+
+    useEffect(() => {
+        if (!conversationId || !echo) return;
+
+        console.log(`Subscribing to chat.${conversationId}`);
+        const channel = echo.private(`chat.${conversationId}`);
+
+        channel.listen('.message.sent', (e) => {
+            console.log('New message received via WebSocket:', e.mensaje);
+            setMessages(prev => {
+                if (prev.some(m => m.id === e.mensaje.id)) return prev;
+                return [...prev, e.mensaje];
+            });
+            window.dispatchEvent(new CustomEvent('chat-updated'));
+            scrollToBottom();
+        });
+
+        return () => {
+            echo.leave(`chat.${conversationId}`);
+        };
+    }, [conversationId, echo]);
+
+    useEffect(() => {
+        // Fallback polling only if socket is NOT connected
+        let interval = null;
+        if (conversationId && !isSocketConnected) {
+            console.log('Starting chat polling (socket disconnected)');
+            interval = setInterval(() => fetchMessages(true), 5000);
+        }
+
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [conversationId, isSocketConnected, messages.length]);
 
     useEffect(() => {
         scrollToBottom();
@@ -93,11 +128,15 @@ const ChatWindow = ({ conversationId, initiatingUserId, onMessageSent }) => {
 
             if (onMessageSent) onMessageSent(true);
 
+            // Optimistic update if socket is not working yet or for immediate feedback
+            setMessages(prev => {
+                if (prev.some(m => m.id === data.id)) return prev;
+                return [...prev, data];
+            });
+
             // If it was a new conversation, navigate to the newly created ID
             if (!conversationId && data.conversacion_id) {
                 navigate(`/chat/${data.conversacion_id}`, { replace: true });
-            } else {
-                await fetchMessages(true);
             }
 
             // Devolver el foco al input después de enviar
@@ -175,7 +214,6 @@ const ChatWindow = ({ conversationId, initiatingUserId, onMessageSent }) => {
                             onChange={(e) => setNewMessage(e.target.value)}
                             disabled={sending}
                         />
-                        {/* Emoji button could go here */}
                     </div>
                     <button type="submit" className="btn-send shadow-sm" disabled={sending || !newMessage.trim()}>
                         {sending ? (
